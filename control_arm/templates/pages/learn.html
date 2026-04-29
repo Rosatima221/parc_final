@@ -2,837 +2,971 @@
 {% block title %}Learn — PRL{% endblock %}
 {% block extra_css %}
 <style>
-        .learn-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 24px;
-        }
-
-        .learn-hero {
-            text-align: center;
-            padding: 60px 20px;
-            margin-bottom: 60px;
-            background: linear-gradient(180deg, var(--bg2) 0%, transparent 100%);
-            border-radius: 16px;
-        }
-
-        .learn-hero h1 {
-            font-size: 36px;
-            margin-bottom: 16px;
-        }
-
-        .learn-hero p {
-            font-size: 16px;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Course Navigation */
-        .course-nav {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 48px;
-            flex-wrap: wrap;
-        }
-
-        .course-nav-btn {
-            padding: 10px 20px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: var(--r);
-            color: var(--text-muted);
-            font-family: var(--mono);
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .course-nav-btn:hover {
-            border-color: var(--border2);
-            color: var(--text);
-        }
-
-        .course-nav-btn.active {
-            background: var(--blue-dim);
-            border-color: var(--blue);
-            color: var(--blue);
-        }
-
-        .course-nav-btn.locked {
-            opacity: 0.55;
-            cursor: not-allowed;
-            border-color: var(--border);
-            color: var(--text-muted);
-        }
-
-        .course-nav-btn.locked:hover {
-            background: var(--bg3);
-            color: var(--text-muted);
-        }
-
-        /* Course Modules */
-        .course-modules {
-            display: grid;
-            gap: 24px;
-        }
-
-        .module {
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .module-header {
-            padding: 24px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: background 0.2s;
-        }
-
-        .module-header:hover {
-            background: var(--bg4);
-        }
-
-        .module-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .module-num {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--blue-dim);
-            color: var(--blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--mono);
-            font-size: 14px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .module-title h3 {
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .module-title p {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .module-toggle {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--bg2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            transition: all 0.2s;
-        }
-
-        .module.open .module-toggle {
-            background: var(--blue);
-            color: #fff;
-            transform: rotate(180deg);
-        }
-
-        .module-content {
-            display: none;
-            padding: 0 24px 24px;
-            border-top: 1px solid var(--border);
-        }
-
-        .module.open .module-content {
-            display: block;
-        }
-
-        .module.locked {
-            border-color: rgba(239, 68, 68, 0.22);
-        }
-
-        .module.locked .module-header {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .module.locked .module-header::after {
-            content: 'Locked';
-            position: absolute;
-            top: 18px;
-            right: 20px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--red);
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: 999px;
-            padding: 6px 10px;
-        }
-
-        .module.locked .module-toggle {
-            opacity: 0.4;
-        }
-
-        .module.locked .module-title h3,
-        .module.locked .module-title p {
-            opacity: 0.8;
-        }
-
-        /* Lesson List */
-        .lesson-list {
-            margin-top: 20px;
-        }
-
-        .lesson {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            background: var(--bg2);
-            border-radius: var(--r);
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .lesson:hover {
-            background: var(--bg4);
-            transform: translateX(4px);
-        }
-
-        .lesson-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--blue);
-            flex-shrink: 0;
-        }
-
-        .lesson-info {
-            flex: 1;
-        }
-
-        .lesson-info h4 {
-            font-size: 13px;
-            margin-bottom: 2px;
-        }
-
-        .lesson-info p {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .lesson-duration {
-            font-family: var(--mono);
-            font-size: 10px;
-            color: var(--text-dim);
-        }
-
-        /* Progress Bar */
-        .progress-bar {
-            height: 4px;
-            background: var(--bg4);
-            border-radius: 2px;
-            margin-top: 40px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--blue);
-            width: 25%;
-            border-radius: 2px;
-            transition: width 0.3s;
-        }
-
-        .progress-text {
-            text-align: center;
-            margin-top: 12px;
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        /* Sidebar */
-        .learn-layout {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 40px;
-        }
-
-        @media (max-width: 900px) {
-            .learn-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .learn-sidebar {
-            position: sticky;
-            top: calc(var(--header-height) + 20px);
-            height: fit-content;
-        }
-
-        .sidebar-card {
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .sidebar-card h4 {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 12px;
-        }
-
-        .stat-row:last-child {
-            border-bottom: none;
-        }
-
-        .stat-row span:first-child {
-            color: var(--text-muted);
-        }
-
-        .stat-row span:last-child {
-            font-family: var(--mono);
-            color: var(--blue);
-        }
-
-        /* AI Tutor Sidebar */
-        .ai-tutor-panel {
-            position: fixed;
-            right: -420px;
-            top: var(--header-height);
-            width: 400px;
-            height: calc(100vh - var(--header-height));
-            background: var(--bg2);
-            border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            transition: right 0.3s ease;
-            z-index: 100;
-        }
-
-        .ai-tutor-panel.open {
-            right: 0;
-        }
-
-        .ai-tutor-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--bg3);
-        }
-
-        .ai-tutor-header h3 {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-        }
-
-        .ai-tutor-close {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            background: var(--bg4);
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .ai-tutor-close:hover {
-            border-color: var(--red);
-            color: var(--red);
-        }
-
-        .ai-tutor-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .ai-tutor-messages .chat-message {
-            max-width: 90%;
-            padding: 14px 18px;
-            border-radius: 16px;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .ai-tutor-messages .chat-message.user {
-            align-self: flex-end;
-            background: var(--blue-dim);
-            color: var(--blue);
-            border-bottom-right-radius: 4px;
-        }
-
-        .ai-tutor-messages .chat-message.ai {
-            align-self: flex-start;
-            background: var(--bg4);
-            color: var(--text);
-            border-bottom-left-radius: 4px;
-        }
-
-        .ai-tutor-input {
-            padding: 16px 20px;
-            border-top: 1px solid var(--border);
-            background: var(--bg3);
-            display: flex;
-            gap: 10px;
-        }
-
-        .ai-tutor-input input {
-            flex: 1;
-            padding: 12px 16px;
-            background: var(--bg4);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            color: var(--text);
-            font-size: 13px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .ai-tutor-input input:focus {
-            border-color: var(--blue);
-        }
-
-        .ai-tutor-input button {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--blue);
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .ai-tutor-input button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 16px var(--blue-glow);
-        }
-
-        .ai-tutor-toggle {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--blue);
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px var(--blue-glow);
-            z-index: 99;
-            transition: all 0.3s;
-        }
-
-        .ai-tutor-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        .ai-tutor-toggle.active {
-            background: var(--bg3);
-            color: var(--text);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-    </style>
+    /* Premium Styling Overrides */
+    :root {
+        --glass-bg: rgba(16, 22, 35, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --glass-highlight: rgba(255, 255, 255, 0.03);
+        --glow-blue: rgba(59, 130, 246, 0.5);
+        --glow-purple: rgba(139, 92, 246, 0.4);
+        --text-bright: #ffffff;
+    }
+
+    [data-theme='light'] {
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-border: rgba(0, 0, 0, 0.05);
+        --glass-highlight: rgba(255, 255, 255, 0.5);
+        --text-bright: #000000;
+    }
+
+    .learn-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 24px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Animated Background Elements */
+    .bg-blobs {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        animation: float 20s infinite alternate ease-in-out;
+    }
+    .blob-1 {
+        top: -10%; left: -10%; width: 500px; height: 500px;
+        background: var(--glow-blue);
+        animation-delay: 0s;
+    }
+    .blob-2 {
+        bottom: -20%; right: -10%; width: 600px; height: 600px;
+        background: var(--glow-purple);
+        animation-delay: -5s;
+    }
+    @keyframes float {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(50px, 30px) scale(1.1); }
+    }
+
+    /* Hero Section */
+    .learn-hero {
+        text-align: center;
+        padding: 80px 20px;
+        margin-bottom: 60px;
+        background: linear-gradient(180deg, var(--glass-highlight) 0%, transparent 100%);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    .learn-hero::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--blue), transparent);
+        opacity: 0.5;
+    }
+    .learn-hero h1 {
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
+        background: linear-gradient(to right, var(--text-bright), var(--blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .learn-hero p {
+        font-size: 18px;
+        color: var(--text-muted);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Course Navigation */
+    .course-nav {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 48px;
+        background: var(--glass-bg);
+        padding: 8px;
+        border-radius: 999px;
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .course-nav-btn {
+        padding: 12px 24px;
+        background: transparent;
+        border: none;
+        border-radius: 999px;
+        color: var(--text-muted);
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+    .course-nav-btn:hover:not(.locked) {
+        color: var(--text-bright);
+    }
+    .course-nav-btn.active {
+        background: var(--blue);
+        color: #fff;
+        box-shadow: 0 4px 16px var(--glow-blue);
+    }
+    .course-nav-btn.locked {
+        opacity: 0.5;
+        cursor: not-allowed;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Modules Grid */
+    .learn-layout {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 40px;
+    }
+    @media (max-width: 960px) {
+        .learn-layout { grid-template-columns: 1fr; }
+    }
+    
+    .course-modules {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* Premium Module Cards */
+    .module {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .module:hover {
+        border-color: rgba(59, 130, 246, 0.3);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    
+    .module-header {
+        padding: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(180deg, var(--glass-highlight) 0%, transparent 100%);
+    }
+    
+    .module-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .module-num {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--blue), var(--purple));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 700;
+        box-shadow: 0 4px 12px var(--glow-blue);
+    }
+    
+    .module-title h3 {
+        font-size: 18px;
+        margin-bottom: 4px;
+        color: var(--text-bright);
+    }
+    .module-title p {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+    
+    .module-toggle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .module.open .module-toggle {
+        transform: rotate(180deg);
+        background: var(--blue);
+        color: white;
+        border-color: var(--blue);
+        box-shadow: 0 2px 8px var(--glow-blue);
+    }
+    
+    .module-content {
+        display: none;
+        padding: 0 24px 24px;
+    }
+    .module.open .module-content {
+        display: block;
+        animation: slideDown 0.3s ease forwards;
+    }
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Lesson Items */
+    .lesson-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 16px;
+    }
+    .lesson {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .lesson:hover:not(.locked) {
+        background: var(--bg3);
+        border-color: var(--blue);
+        transform: translateX(4px);
+    }
+    .lesson::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0; width: 4px;
+        background: var(--blue);
+        transform: scaleY(0);
+        transition: transform 0.2s ease;
+        transform-origin: center;
+    }
+    .lesson:hover:not(.locked)::before {
+        transform: scaleY(1);
+    }
+    .lesson.completed::before {
+        background: var(--green);
+        transform: scaleY(1);
+    }
+    
+    .lesson-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    .lesson:hover:not(.locked) .lesson-icon {
+        background: var(--blue-dim);
+        color: var(--blue);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+    .lesson.completed .lesson-icon {
+        background: var(--green-dim);
+        color: var(--green);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .lesson-info {
+        flex: 1;
+    }
+    .lesson-info h4 {
+        font-size: 14px;
+        color: var(--text-bright);
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .lesson-info p {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+    .lesson-duration {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text-dim);
+        padding: 4px 8px;
+        background: var(--bg3);
+        border-radius: 6px;
+    }
+
+    /* Lock and Badges */
+    .module.locked, .lesson.locked {
+        opacity: 0.6;
+        cursor: not-allowed;
+        border-color: var(--border);
+    }
+    .module.locked:hover, .lesson.locked:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    .module.locked .module-num {
+        background: var(--bg3);
+        color: var(--text-dim);
+        box-shadow: none;
+        border: 1px solid var(--border);
+    }
+    .module.locked .module-toggle {
+        display: none;
+    }
+    .lock-icon {
+        width: 16px;
+        height: 16px;
+        stroke: var(--red);
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .badge-req {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: var(--red);
+        border-radius: 999px;
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Sidebar Progress */
+    .learn-sidebar {
+        position: sticky;
+        top: calc(var(--hdr-h) + 24px);
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .sidebar-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 24px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    .sidebar-card h4 {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+    }
+    .stat-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .stat-row span:first-child { color: var(--text-secondary); }
+    .stat-row span:last-child {
+        font-family: var(--mono);
+        color: var(--text-bright);
+        font-weight: 600;
+        background: var(--bg3);
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+
+    /* Progress Bar Premium */
+    .progress-container {
+        margin-top: 24px;
+    }
+    .progress-bar {
+        height: 8px;
+        background: var(--bg3);
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--blue), var(--purple));
+        width: 0%;
+        border-radius: 4px;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+    .progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* Quick Links */
+    .quick-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        margin-bottom: 8px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: var(--text-secondary);
+        font-size: 13px;
+        font-weight: 500;
+    }
+    .quick-link:hover {
+        background: var(--bg3);
+        border-color: var(--blue);
+        color: var(--text-bright);
+        transform: translateY(-2px);
+    }
+    .quick-link svg {
+        width: 18px;
+        height: 18px;
+        color: var(--blue);
+    }
+
+    /* Lesson Modal Premium */
+    .lesson-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 7, 10, 0.8);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    
+    .lesson-modal-content {
+        background: var(--bg2);
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        border-radius: 24px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        transform: translateY(20px);
+        animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes slideUp { to { transform: translateY(0); } }
+
+    .modal-close {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.2s;
+    }
+    .modal-close:hover {
+        background: var(--red-dim);
+        color: var(--red);
+        border-color: var(--red);
+        transform: rotate(90deg);
+    }
+
+    .lesson-header {
+        padding: 48px 48px 32px;
+        background: linear-gradient(135deg, var(--bg3) 0%, var(--bg2) 100%);
+        border-bottom: 1px solid var(--border);
+        position: relative;
+    }
+    .lesson-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 4px;
+        background: linear-gradient(90deg, var(--blue), var(--purple));
+    }
+    .lesson-header h2 {
+        font-size: 32px;
+        color: var(--text-bright);
+        margin-bottom: 8px;
+        letter-spacing: -0.01em;
+    }
+    .lesson-header p {
+        color: var(--blue);
+        font-family: var(--mono);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+    }
+
+    .lesson-body {
+        flex: 1;
+        padding: 40px 48px;
+        overflow-y: auto;
+        line-height: 1.8;
+        font-size: 15px;
+        color: var(--text-secondary);
+    }
+    .lesson-body h4 {
+        color: var(--text-bright);
+        font-size: 18px;
+        margin: 32px 0 16px;
+    }
+    .lesson-body p {
+        margin-bottom: 16px;
+    }
+
+    .lesson-footer {
+        padding: 24px 48px;
+        border-top: 1px solid var(--border);
+        background: var(--bg3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Quiz Styling */
+    .quiz-option {
+        display: block;
+        width: 100%;
+        padding: 16px 20px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        text-align: left;
+        color: var(--text-bright);
+        font-size: 15px;
+        transition: all 0.2s;
+        font-family: var(--sans);
+    }
+    .quiz-option:hover {
+        border-color: var(--blue);
+        background: var(--blue-dim);
+        transform: translateX(4px);
+    }
+    .quiz-option.correct {
+        background: var(--green-dim);
+        border-color: var(--green);
+        color: var(--green);
+    }
+    .quiz-option.wrong {
+        background: var(--red-dim);
+        border-color: var(--red);
+        color: var(--red);
+    }
+
+</style>
 {% endblock %}
 {% block content %}
-<main style="height: calc(100vh - var(--hdr-h)); overflow-y: auto;">
-        <div class="learn-container">
-            <div class="learn-hero">
-                <h1>{{ t('learn.hero_title') }}</h1>
-                <p>{{ t('learn.hero_subtitle') }}</p>
-            </div>
+<div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+</div>
 
-            <div class="course-nav">
-                <button class="course-nav-btn active" onclick="filterLevel('beginner')">{{ t('learn.nav.beginner') }}</button>
-                <button class="course-nav-btn locked" onclick="showLocked('intermediate')">{{ t('learn.nav.intermediate') }}</button>
-                <button class="course-nav-btn locked" onclick="showLocked('advanced')">{{ t('learn.nav.advanced') }}</button>
-            </div>
-
-            <div class="learn-layout">
-                <div class="course-modules">
-                    <!-- Module 1: Introduction (Beginner) -->
-                    <div class="module open" data-level="beginner">
-                        <div class="module-header" onclick="toggleModule(this)">
-                            <div class="module-info">
-                                <div class="module-num">1</div>
-                                <div class="module-title">
-                                    <h3>{{ t('learn.module1.title') }}</h3>
-                                    <p>{{ t('learn.module1.subtitle') }}</p>
-                                </div>
-                            </div>
-                            <div class="module-toggle">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="lesson-list">
-                                <div class="lesson" onclick="openLesson('lesson1_1')">
-                                    <div class="lesson-icon">01</div>
-                                    <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson1_1.title') }}</h4>
-                                        <p>{{ t('learn.lesson1_1.desc') }}</p>
-                                    </div>
-                                    <span class="lesson-duration">25 min</span>
-                                </div>
-                                <div class="lesson" onclick="openLesson('lesson1_2')">
-                                    <div class="lesson-icon">02</div>
-                                    <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson1_2.title') }}</h4>
-                                        <p>{{ t('learn.lesson1_2.desc') }}</p>
-                                    </div>
-                                    <span class="lesson-duration">30 min</span>
-                                </div>
-                                <div class="lesson" onclick="openLesson('lesson1_3')">
-                                    <div class="lesson-icon">03</div>
-                                    <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson1_3.title') }}</h4>
-                                        <p>{{ t('learn.lesson1_3.desc') }}</p>
-                                    </div>
-                                    <span class="lesson-duration">35 min</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Module 2: Mechanics (Beginner) -->
-                    <div class="module" data-level="beginner">
-                        <div class="module-header" onclick="toggleModule(this)">
-                            <div class="module-info">
-                                <div class="module-num">2</div>
-                                <div class="module-title">
-                                    <h3>Hardware & Control</h3>
-                                    <p>Understanding servos and serial communication</p>
-                                </div>
-                            </div>
-                            <div class="module-toggle">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="lesson-list">
-                                <div class="lesson" onclick="openLesson('lesson2_1')">
-                                    <div class="lesson-icon">01</div>
-                                    <div class="lesson-info">
-                                        <h4>Servo Mechanics</h4>
-                                        <p>How PWM and position control work</p>
-                                    </div>
-                                    <span class="lesson-duration">40 min</span>
-                                </div>
-                                <div class="lesson" onclick="openLesson('lesson2_2')">
-                                    <div class="lesson-icon">02</div>
-                                    <div class="lesson-info">
-                                        <h4>Serial Protocol</h4>
-                                        <p>Communicating with the robot via USB</p>
-                                    </div>
-                                    <span class="lesson-duration">35 min</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Module 3: Kinematics (Intermediate) -->
-                    <div class="module locked" data-level="intermediate">
-                        <div class="module-header" onclick="toggleModule(this)">
-                            <div class="module-info">
-                                <div class="module-num">3</div>
-                                <div class="module-title">
-                                    <h3>{{ t('learn.module2.title') }}</h3>
-                                    <p>{{ t('learn.module2.subtitle') }}</p>
-                                </div>
-                            </div>
-                            <div class="module-toggle">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="lesson-list">
-                                <div class="lesson" onclick="openLesson('lesson3_1')">
-                                    <div class="lesson-icon">01</div>
-                                    <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson2_1.title') }}</h4>
-                                        <p>{{ t('learn.lesson2_1.desc') }}</p>
-                                    </div>
-                                    <span class="lesson-duration">50 min</span>
-                                </div>
-                                <div class="lesson" onclick="openLesson('lesson3_2')">
-                                    <div class="lesson-icon">02</div>
-                                    <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson2_2.title') }}</h4>
-                                        <p>{{ t('learn.lesson2_2.desc') }}</p>
-                                    </div>
-                                    <span class="lesson-duration">55 min</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Module 4: Motion Planning (Intermediate) -->
-                    <div class="module locked" data-level="intermediate">
-                        <div class="module-header" onclick="toggleModule(this)">
-                            <div class="module-info">
-                                <div class="module-num">4</div>
-                                <div class="module-title">
-                                    <h3>{{ t('learn.module3.title') }}</h3>
-                                    <p>{{ t('learn.module3.subtitle') }}</p>
-                                </div>
-                            </div>
-                            <div class="module-toggle">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="lesson-list">
-                                <div class="lesson" onclick="openLesson('lesson4_1')">
-                                    <div class="lesson-icon">01</div>
-                                    <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson3_1.title') }}</h4>
-                                        <p>{{ t('learn.lesson3_1.desc') }}</p>
-                                    </div>
-                                    <span class="lesson-duration">55 min</span>
-                                </div>
-                                <div class="lesson" onclick="openLesson('lesson4_2')">
-                                    <div class="lesson-icon">02</div>
-                                    <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson3_2.title') }}</h4>
-                                        <p>{{ t('learn.lesson3_2.desc') }}</p>
-                                    </div>
-                                    <span class="lesson-duration">65 min</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Module 5: AI & Vision (Advanced) -->
-                    <div class="module locked" data-level="advanced">
-                        <div class="module-header" onclick="toggleModule(this)">
-                            <div class="module-info">
-                                <div class="module-num">5</div>
-                                <div class="module-title">
-                                    <h3>AI Vision & Perception</h3>
-                                    <p>Integrating cameras and deep learning</p>
-                                </div>
-                            </div>
-                            <div class="module-toggle">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="lesson-list">
-                                <div class="lesson" onclick="openLesson('lesson5_1')">
-                                    <div class="lesson-icon">01</div>
-                                    <div class="lesson-info">
-                                        <h4>YOLOE Object Detection</h4>
-                                        <p>Training and deploying vision models on Jetson</p>
-                                    </div>
-                                    <span class="lesson-duration">90 min</span>
-                                </div>
-                                <div class="lesson" onclick="openLesson('lesson5_2')">
-                                    <div class="lesson-icon">02</div>
-                                    <div class="lesson-info">
-                                        <h4>Visual Servoing</h4>
-                                        <p>Closing the loop with camera feedback</p>
-                                    </div>
-                                    <span class="lesson-duration">80 min</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Module 6: Advanced Autonomy (Advanced) -->
-                    <div class="module locked" data-level="advanced">
-                        <div class="module-header" onclick="toggleModule(this)">
-                            <div class="module-info">
-                                <div class="module-num">6</div>
-                                <div class="module-title">
-                                    <h3>LLM Task Planning</h3>
-                                    <p>Giving natural language commands to robots</p>
-                                </div>
-                            </div>
-                            <div class="module-toggle">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="lesson-list">
-                                <div class="lesson" onclick="openLesson('lesson6_1')">
-                                    <div class="lesson-icon">01</div>
-                                    <div class="lesson-info">
-                                        <h4>Reasoning with LFM</h4>
-                                        <p>Decomposing complex tasks into actions</p>
-                                    </div>
-                                    <span class="lesson-duration">100 min</span>
-                                </div>
-                                <div class="lesson" onclick="openLesson('lesson6_2')">
-                                    <div class="lesson-icon">02</div>
-                                    <div class="lesson-info">
-                                        <h4>Multi-Modal Interaction</h4>
-                                        <p>Combining voice, vision, and touch</p>
-                                    </div>
-                                    <span class="lesson-duration">120 min</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sidebar -->
-                <div class="learn-sidebar">
-                    <div class="sidebar-card">
-                        <h4>{{ t('learn.progress') }}</h4>
-                        <div class="stat-row">
-                            <span>{{ t('learn.courses_completed') }}</span>
-                            <span id="courses-completed">0 / 3</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>{{ t('learn.lessons_completed') }}</span>
-                            <span id="lessons-completed">0 / 12</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>{{ t('learn.time_spent') }}</span>
-                            <span id="time-spent">0 min</span>
-                        </div>
-                    </div>
-
-                    <div class="sidebar-card">
-                        <h4>{{ t('learn.quick_links') }}</h4>
-                        <div class="lesson" style="margin-bottom: 8px;" onclick="showGlossary()">
-                            <div class="lesson-info">
-                                <h4>{{ t('learn.glossary') }}</h4>
-                            </div>
-                        </div>
-                        <div class="lesson" style="margin-bottom: 8px;" onclick="showCheatsheet()">
-                            <div class="lesson-info">
-                                <h4>{{ t('learn.cheatsheet') }}</h4>
-                            </div>
-                        </div>
-                        <div class="lesson" onclick="window.open('https://github.com/utachicodes/parc_final', '_blank')">
-                            <div class="lesson-info">
-                                <h4>{{ t('learn.documentation') }}</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-            <div class="progress-text">{{ t('learn.progress_text') }}</div>
+<main style="height: calc(100vh - var(--hdr-h)); overflow-y: auto; position: relative; z-index: 10;">
+    <div class="learn-container">
+        <div class="learn-hero">
+            <h1>{{ t('learn.hero_title') }}</h1>
+            <p>{{ t('learn.hero_subtitle') }}</p>
         </div>
 
-        <!-- Lesson Viewer Modal -->
-        <div id="lesson-modal" class="lesson-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
-            <div class="modal-content" style="background:var(--bg2); width:90%; max-width:800px; max-height:90vh; border-radius:16px; border:1px solid var(--border); overflow:hidden; display:flex; flex-direction:column; position:relative;">
-                <button onclick="closeLesson()" style="position:absolute; top:20px; right:20px; background:var(--bg4); border:none; color:var(--text); width:32px; height:32px; border-radius:50%; cursor:pointer; z-index:10;">&times;</button>
-                
-                <div id="lesson-header" style="padding:40px; background:linear-gradient(90deg, var(--blue-dim), transparent); border-bottom:1px solid var(--border);">
-                    <h2 id="modal-title" style="font-size:24px; margin-bottom:8px;">Lesson Title</h2>
-                    <p id="modal-subtitle" style="color:var(--text-muted); font-size:14px;">Module 1 / Lesson 1</p>
+        <div class="course-nav">
+            <button class="course-nav-btn active" onclick="filterLevel('beginner')">
+                {{ t('learn.nav.beginner') }}
+            </button>
+            <button class="course-nav-btn locked" onclick="showLocked('intermediate')">
+                <svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                {{ t('learn.nav.intermediate') }}
+            </button>
+            <button class="course-nav-btn locked" onclick="showLocked('advanced')">
+                <svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                {{ t('learn.nav.advanced') }}
+            </button>
+        </div>
+
+        <div class="learn-layout">
+            <div class="course-modules">
+                <!-- Module 1: Introduction (Beginner) -->
+                <div class="module open" data-level="beginner">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-info">
+                            <div class="module-num">01</div>
+                            <div class="module-title">
+                                <h3>{{ t('learn.module1.title') }}</h3>
+                                <p>{{ t('learn.module1.subtitle') }}</p>
+                            </div>
+                        </div>
+                        <div class="module-toggle">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="module-content">
+                        <div class="lesson-list">
+                            <div class="lesson" onclick="openLesson('lesson1_1')">
+                                <div class="lesson-icon">1.1</div>
+                                <div class="lesson-info">
+                                    <h4>{{ t('learn.lesson1_1.title') }}</h4>
+                                    <p>{{ t('learn.lesson1_1.desc') }}</p>
+                                </div>
+                                <span class="lesson-duration">25 min</span>
+                            </div>
+                            <div class="lesson" onclick="openLesson('lesson1_2')">
+                                <div class="lesson-icon">1.2</div>
+                                <div class="lesson-info">
+                                    <h4>{{ t('learn.lesson1_2.title') }}</h4>
+                                    <p>{{ t('learn.lesson1_2.desc') }}</p>
+                                </div>
+                                <span class="lesson-duration">30 min</span>
+                            </div>
+                            <div class="lesson" onclick="openLesson('lesson1_3')">
+                                <div class="lesson-icon">1.3</div>
+                                <div class="lesson-info">
+                                    <h4>{{ t('learn.lesson1_3.title') }}</h4>
+                                    <p>{{ t('learn.lesson1_3.desc') }}</p>
+                                </div>
+                                <span class="lesson-duration">35 min</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div id="lesson-body" style="flex:1; padding:40px; overflow-y:auto; line-height:1.7; font-size:15px; color:var(--text-secondary);">
-                    <!-- Content injected here -->
+
+                <!-- Module 2: Mechanics (Beginner) -->
+                <div class="module" data-level="beginner">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-info">
+                            <div class="module-num">02</div>
+                            <div class="module-title">
+                                <h3>Hardware & Control</h3>
+                                <p>Understanding servos and serial communication</p>
+                            </div>
+                        </div>
+                        <div class="module-toggle">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="module-content">
+                        <div class="lesson-list">
+                            <div class="lesson" onclick="openLesson('lesson2_1')">
+                                <div class="lesson-icon">2.1</div>
+                                <div class="lesson-info">
+                                    <h4>Servo Mechanics</h4>
+                                    <p>How PWM and position control work</p>
+                                </div>
+                                <span class="lesson-duration">40 min</span>
+                            </div>
+                            <div class="lesson" onclick="openLesson('lesson2_2')">
+                                <div class="lesson-icon">2.2</div>
+                                <div class="lesson-info">
+                                    <h4>Serial Protocol</h4>
+                                    <p>Communicating with the robot via USB</p>
+                                </div>
+                                <span class="lesson-duration">35 min</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div id="lesson-footer" style="padding:20px 40px; border-top:1px solid var(--border); background:var(--bg3); display:flex; justify-content:space-between; align-items:center;">
-                    <span id="lesson-status" style="font-family:var(--mono); font-size:11px; color:var(--text-muted);">READY</span>
-                    <button id="quiz-btn" onclick="startQuiz()" class="btn btn-primary">Take Quiz</button>
-                    <button id="finish-btn" onclick="finishLesson()" class="btn btn-success" style="display:none;">Finish Lesson</button>
+
+                <!-- Module 3: Kinematics (Intermediate) -->
+                <div class="module locked" data-level="intermediate">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-info">
+                            <div class="module-num">
+                                <svg class="lock-icon" style="stroke:white;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <div class="module-title">
+                                <h3>Kinematics</h3>
+                                <p>Understanding robot geometry</p>
+                            </div>
+                        </div>
+                        <div class="badge-req" style="margin-right:24px;">Complete Beginner</div>
+                    </div>
+                    <div class="module-content">
+                        <div class="lesson-list">
+                            <div class="lesson locked" onclick="showLocked('intermediate')">
+                                <div class="lesson-icon"><svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                                <div class="lesson-info">
+                                    <h4>Forward Kinematics</h4>
+                                    <p>Calculating end effector position</p>
+                                </div>
+                                <span class="lesson-duration">50 min</span>
+                            </div>
+                            <div class="lesson locked" onclick="showLocked('intermediate')">
+                                <div class="lesson-icon"><svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                                <div class="lesson-info">
+                                    <h4>Inverse Kinematics</h4>
+                                    <p>Target to Joint Angles</p>
+                                </div>
+                                <span class="lesson-duration">55 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Module 4: Motion Planning (Intermediate) -->
+                <div class="module locked" data-level="intermediate">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-info">
+                            <div class="module-num">
+                                <svg class="lock-icon" style="stroke:white;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <div class="module-title">
+                                <h3>Motion Planning</h3>
+                                <p>Smooth trajectories and obstacle avoidance</p>
+                            </div>
+                        </div>
+                        <div class="badge-req" style="margin-right:24px;">Complete Beginner</div>
+                    </div>
+                    <div class="module-content">
+                        <div class="lesson-list">
+                            <div class="lesson locked" onclick="showLocked('intermediate')">
+                                <div class="lesson-icon"><svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                                <div class="lesson-info">
+                                    <h4>Trajectory Generation</h4>
+                                    <p>Creating smooth paths</p>
+                                </div>
+                                <span class="lesson-duration">45 min</span>
+                            </div>
+                            <div class="lesson locked" onclick="showLocked('intermediate')">
+                                <div class="lesson-icon"><svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                                <div class="lesson-info">
+                                    <h4>Collision Avoidance</h4>
+                                    <p>Avoiding self-collision and obstacles</p>
+                                </div>
+                                <span class="lesson-duration">60 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Module 5: AI & Vision (Advanced) -->
+                <div class="module locked" data-level="advanced">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-info">
+                            <div class="module-num">
+                                <svg class="lock-icon" style="stroke:white;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <div class="module-title">
+                                <h3>AI Vision & Perception</h3>
+                                <p>Integrating cameras and deep learning</p>
+                            </div>
+                        </div>
+                        <div class="badge-req" style="margin-right:24px;">Complete Intermediate</div>
+                    </div>
+                    <div class="module-content">
+                        <div class="lesson-list">
+                            <div class="lesson locked" onclick="showLocked('advanced')">
+                                <div class="lesson-icon"><svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                                <div class="lesson-info">
+                                    <h4>Camera Calibration</h4>
+                                    <p>Mapping pixels to the real world</p>
+                                </div>
+                                <span class="lesson-duration">60 min</span>
+                            </div>
+                            <div class="lesson locked" onclick="showLocked('advanced')">
+                                <div class="lesson-icon"><svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                                <div class="lesson-info">
+                                    <h4>YOLOE Object Detection</h4>
+                                    <p>Training and deploying vision models</p>
+                                </div>
+                                <span class="lesson-duration">90 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Module 6: System Integration (Advanced) -->
+                <div class="module locked" data-level="advanced">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-info">
+                            <div class="module-num">
+                                <svg class="lock-icon" style="stroke:white;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <div class="module-title">
+                                <h3>System Integration</h3>
+                                <p>Putting it all together for full autonomy</p>
+                            </div>
+                        </div>
+                        <div class="badge-req" style="margin-right:24px;">Complete Intermediate</div>
+                    </div>
+                    <div class="module-content">
+                        <div class="lesson-list">
+                            <div class="lesson locked" onclick="showLocked('advanced')">
+                                <div class="lesson-icon"><svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                                <div class="lesson-info">
+                                    <h4>Real-time Control Loops</h4>
+                                    <p>Ensuring deterministic execution</p>
+                                </div>
+                                <span class="lesson-duration">45 min</span>
+                            </div>
+                            <div class="lesson locked" onclick="showLocked('advanced')">
+                                <div class="lesson-icon"><svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                                <div class="lesson-info">
+                                    <h4>Final Project: Pick & Place</h4>
+                                    <p>Autonomous operation using vision and IK</p>
+                                </div>
+                                <span class="lesson-duration">120 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="learn-sidebar">
+                <div class="sidebar-card">
+                    <h4>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--blue);">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        {{ t('learn.progress') }}
+                    </h4>
+                    <div class="stat-row">
+                        <span>{{ t('learn.courses_completed') }}</span>
+                        <span id="courses-completed">0 / 3</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>{{ t('learn.lessons_completed') }}</span>
+                        <span id="lessons-completed">0 / 12</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>{{ t('learn.time_spent') }}</span>
+                        <span id="time-spent">0 min</span>
+                    </div>
+                    <div class="progress-container">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <span style="font-size:11px; color:var(--text-muted); font-family:var(--mono);">OVERALL</span>
+                            <span id="progress-text" style="font-size:11px; color:var(--blue); font-family:var(--mono); font-weight:700;">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <h4>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--purple);">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+                        </svg>
+                        {{ t('learn.quick_links') }}
+                    </h4>
+                    <div class="quick-link" onclick="showGlossary()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        {{ t('learn.glossary') }}
+                    </div>
+                    <div class="quick-link" onclick="showCheatsheet()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                        {{ t('learn.cheatsheet') }}
+                    </div>
+                    <div class="quick-link" onclick="window.open('https://github.com/utachicodes/parc_final', '_blank')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        {{ t('learn.documentation') }}
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <style>
-            .quiz-option {
-                display: block;
-                width: 100%;
-                padding: 12px 16px;
-                background: var(--bg4);
-                border: 1px solid var(--border);
-                border-radius: 8px;
-                margin-bottom: 10px;
-                cursor: pointer;
-                text-align: left;
-                transition: all 0.2s;
-            }
-            .quiz-option:hover {
-                border-color: var(--blue);
-                background: var(--blue-dim);
-            }
-            .quiz-option.correct { background: var(--green-dim); border-color: var(--green); color: var(--green); }
-            .quiz-option.wrong { background: var(--red-dim); border-color: var(--red); color: var(--red); }
-        </style>
-
-        <button class="ai-tutor-toggle" id="ai-tutor-toggle" onclick="toggleAITutor()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-            </svg>
-        </button>
-    </main>
+    <!-- Premium Lesson Viewer Modal -->
+    <div id="lesson-modal" class="lesson-modal-overlay">
+        <div class="lesson-modal-content">
+            <button class="modal-close" onclick="closeLesson()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            
+            <div class="lesson-header" id="lesson-header">
+                <p id="modal-subtitle">Module 1 / Lesson 1</p>
+                <h2 id="modal-title">Lesson Title</h2>
+            </div>
+            
+            <div class="lesson-body" id="lesson-body">
+                <!-- Content injected here -->
+            </div>
+            
+            <div class="lesson-footer" id="lesson-footer">
+                <span id="lesson-status" style="font-family:var(--mono); font-size:12px; font-weight:600; color:var(--text-muted); padding:6px 12px; background:var(--bg2); border-radius:6px; border:1px solid var(--border);">READY</span>
+                <button id="quiz-btn" onclick="startQuiz()" class="btn btn-primary" style="padding:12px 24px;">Take Quiz →</button>
+                <button id="finish-btn" onclick="finishLesson()" class="btn btn-success" style="display:none; padding:12px 24px;">Finish Lesson ✓</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const LESSON_DATA = {
@@ -841,17 +975,13 @@
                 content: `
                     <p>A robot is an autonomous machine that combines sensing, decision-making, and physical action to interact with the real world. It is not just a machine that moves; it perceives its environment, adapts to new situations, and carries out tasks using its body.</p>
                     <p>On the SO-101, this means the arm can use cameras, joint encoders, and other sensors to understand where it is, then choose the correct motion and execute it smoothly.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">The Sense-Think-Act Loop</h4>
+                    <h4>The Sense-Think-Act Loop</h4>
                     <p>Every robot operates on a fundamental loop that defines its autonomy. The loop repeats continuously so the robot can react to changing conditions.</p>
                     <ul style="margin-left:20px; margin-top:10px;">
                         <li><strong>Sense:</strong> The robot collects data with sensors like cameras, encoders, IMUs, or force sensors. This tells it where the arm is, where objects are, and whether the task is proceeding correctly.</li>
-                        <li><strong>Think:</strong> The brain of the robot—on the SO-101 this can be a Jetson Orin Nano—processes the sensor data. It runs algorithms or AI models to estimate the best next motion, adjust for errors, and plan safe trajectories.</li>
-                        <li><strong>Act:</strong> The robot applies the decision using actuators such as motors, servos, and grippers. It turns electrical signals into motion to move joints, open a gripper, or maintain contact with an object.</li>
+                        <li><strong>Think:</strong> The brain of the robot processes the sensor data. It runs algorithms or AI models to estimate the best next motion, adjust for errors, and plan safe trajectories.</li>
+                        <li><strong>Act:</strong> The robot applies the decision using actuators such as motors, servos, and grippers. It turns electrical signals into motion to move joints.</li>
                     </ul>
-                    <p>These steps are not separate stages. The robot is constantly sensing while thinking and acting, so it can adapt if the environment changes, an object moves, or a task fails.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Why this loop matters</h4>
-                    <p>Modern robotics is all about feedback. If the arm reaches for a cup and the cup shifts, the robot must sense the new position, update its plan, and correct its motion immediately. That is the Sense-Think-Act loop in action.</p>
-                    <p>In the context of the SO-101, the loop gives the robot the ability to learn from its sensors, decide on safer and more efficient moves, and perform real tasks without human micromanagement.</p>
                 `,
                 quiz: {
                     question: "Which part of the loop involves sensors like cameras collecting data?",
@@ -863,9 +993,8 @@
                 title: "Degrees of Freedom (DOF)",
                 content: `
                     <p>Degrees of Freedom (DOF) describes how many independent motions a robot can make. Each joint gives the SO-101 one more way to position its arm.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Why 6 DOF Matters</h4>
+                    <h4>Why 6 DOF Matters</h4>
                     <p>The SO-101 has <strong>6 DOF</strong>, which means it can place its end effector in most positions and orientations needed for manipulation. The six axes are base rotation, shoulder lift, elbow bend, wrist pitch, wrist roll, and gripper action.</p>
-                    <p>Having enough DOF lets the robot avoid obstacles and align its tool precisely, which is essential for real tasks like picking, placing, and assembly.</p>
                 `,
                 quiz: {
                     question: "How many independent parameters define position and orientation in 3D space?",
@@ -877,11 +1006,10 @@
                 title: "Coordinate Systems",
                 content: `
                     <p>Robots need coordinate systems to know where they are and where they should go. The two most useful systems are joint space and Cartesian space.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Joint Space</h4>
+                    <h4>Joint Space</h4>
                     <p>Joint space is defined by servo angles such as [q1, q2, q3, q4, q5, q6]. It is the natural way to command the arm's motors.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Cartesian Space</h4>
+                    <h4>Cartesian Space</h4>
                     <p>Cartesian space uses [X, Y, Z] plus orientation [Roll, Pitch, Yaw] to describe the end effector relative to the base. It is the easiest way to think about the task.</p>
-                    <p>Converting between these spaces is a key part of robot control.</p>
                 `,
                 quiz: {
                     question: "Which space uses X, Y, Z coordinates?",
@@ -893,9 +1021,8 @@
                 title: "Servo Mechanics",
                 content: `
                     <p>Servos are the robot’s actuators: they move joints and hold them in place. Unlike simple motors, servos are designed to reach and stay at a specified angle.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Closed-Loop Feedback</h4>
+                    <h4>Closed-Loop Feedback</h4>
                     <p>The SO-101 uses servos that report their current position back to the controller. That feedback allows the system to correct errors, improving accuracy and reliability.</p>
-                    <p>Good servo control reduces vibration, keeps the motion smooth, and protects the mechanism from sudden impacts.</p>
                 `,
                 quiz: {
                     question: "What is a major advantage of Serial Bus Servos?",
@@ -907,7 +1034,7 @@
                 title: "Serial Protocol",
                 content: `
                     <p>The Jetson Orin Nano sends commands to the servo controller over a serial bus. Each message carries an ID, instruction code, parameters, and a checksum for safety.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Why Checksums Matter</h4>
+                    <h4>Why Checksums Matter</h4>
                     <p>Checksums let the controller detect interference or corrupted data. If a packet is malformed, the system ignores it instead of acting on a bad command.</p>
                 `,
                 quiz: {
@@ -919,99 +1046,106 @@
             "lesson3_1": {
                 title: "Forward Kinematics",
                 content: `
-                    <p>Forward Kinematics calculates the position of the robot’s end effector using the known joint angles. It is a straightforward geometric computation.</p>
-                    <p>For the SO-101, FK tells us where the gripper is in space when each servo is at a certain angle.</p>
+                    <p>Forward Kinematics (FK) is the mathematical process of calculating the position and orientation of the end effector, given the angles of all the joints.</p>
+                    <h4>Denavit-Hartenberg (DH) Parameters</h4>
+                    <p>In robotics, we typically use DH parameters (link lengths, twists, offsets, and angles) to systematically build transformation matrices from the base to the end effector.</p>
                 `,
                 quiz: {
-                    question: "FK calculates ___ from joint angles.",
-                    options: ["Weight", "Torque", "Cartesian position", "Battery level"],
-                    answer: 2
+                    question: "What does Forward Kinematics calculate?",
+                    options: ["Joint angles", "End effector position", "Motor torque", "Camera position"],
+                    answer: 1
                 }
             },
             "lesson3_2": {
                 title: "Inverse Kinematics",
                 content: `
-                    <p>Inverse Kinematics works in reverse: it finds the joint angles needed to move the end effector to a desired point. IK is harder because a single target can have multiple solutions.</p>
-                    <p>The robot must also avoid configurations where motion becomes unstable, called singularities.</p>
+                    <p>Inverse Kinematics (IK) solves the opposite problem: given a desired target position for the end effector, what joint angles are required to reach it?</p>
+                    <h4>Solving IK</h4>
+                    <p>IK can be solved analytically (using geometry) or numerically (using iterative algorithms like Jacobian-based methods). For a 6-DOF arm like the SO-101, multiple solutions may exist.</p>
                 `,
                 quiz: {
-                    question: "Why is IK harder than FK?",
-                    options: ["It requires less math", "Multiple configurations can reach the same point", "It only works on 3-DOF", "It's slower"],
+                    question: "If a 6-DOF arm reaches a point, how many possible solutions might exist?",
+                    options: ["Only one", "Multiple solutions", "Zero solutions", "Always two"],
                     answer: 1
                 }
             },
             "lesson4_1": {
-                title: "Path vs Trajectory",
+                title: "Trajectory Generation",
                 content: `
-                    <p>A path defines the spatial route the robot should take. A trajectory adds timing, specifying how fast and with what acceleration the robot moves along that path.</p>
-                    <p>Without timing, the robot might move too quickly or too abruptly, causing jerks and stress on the hardware.</p>
+                    <p>Trajectory generation determines the path a robot arm takes over time to get from point A to point B smoothly.</p>
+                    <h4>Why Smoothness Matters</h4>
+                    <p>Moving instantly between points causes infinite acceleration, which damages motors. We use polynomial trajectories or spline interpolation to ensure velocity and acceleration change gradually.</p>
                 `,
                 quiz: {
-                    question: "What does a Trajectory add to a Path?",
-                    options: ["Color", "Timing and Velocity", "Weight", "Length"],
+                    question: "What is the primary reason for smoothing trajectories?",
+                    options: ["To look cool", "To prevent motor damage", "To save memory", "To use less code"],
                     answer: 1
                 }
             },
             "lesson4_2": {
-                title: "Cubic Splines",
+                title: "Collision Avoidance",
                 content: `
-                    <p>Cubic Splines are smooth curves used to connect points in a trajectory. They keep velocity and acceleration continuous, which reduces mechanical shock and creates safer motion.</p>
-                    <p>Robots use splines when moving between waypoints so the motion appears natural and avoids sudden changes.</p>
+                    <p>When planning a motion, the robot must ensure it does not collide with the environment or itself (self-collision).</p>
+                    <h4>Bounding Boxes</h4>
+                    <p>We often simplify the robot links and obstacles into geometric shapes like cylinders or bounding boxes to speed up collision detection mathematics during trajectory planning.</p>
                 `,
                 quiz: {
-                    question: "What is the main benefit of Cubic Splines?",
-                    options: ["Lower power usage", "Smooth velocity transitions", "Higher speed", "Easier math"],
+                    question: "Why do we use bounding boxes for collision detection?",
+                    options: ["They are perfectly accurate", "They are computationally faster", "They look better", "They are required by law"],
                     answer: 1
                 }
             },
             "lesson5_1": {
-                title: "YOLOE Vision",
+                title: "Camera Calibration",
                 content: `
-                    <p>YOLOE is a lightweight object detection engine that runs in real time on the Jetson Orin Nano. It finds and labels items in camera images so the robot can understand its workspace.</p>
-                    <p>With YOLOE, the SO-101 can recognize objects like cubes, markers, or tools and decide how to interact with them.</p>
+                    <p>To use vision, a robot must map pixels to the physical world. Camera calibration estimates the intrinsic parameters (focal length, distortion) and extrinsic parameters (camera's position relative to the arm).</p>
+                    <h4>Checkerboard Calibration</h4>
+                    <p>By showing a checkerboard pattern to the camera, the software can calculate a matrix that converts 2D pixel coordinates into 3D rays.</p>
                 `,
                 quiz: {
-                    question: "What is YOLOE used for?",
-                    options: ["Power management", "Object detection", "Speech synthesis", "Cooling"],
+                    question: "What pattern is commonly used to calibrate cameras?",
+                    options: ["A circle", "A checkerboard", "A QR code", "A barcode"],
                     answer: 1
                 }
             },
             "lesson5_2": {
-                title: "Visual Servoing",
+                title: "YOLOE Object Detection",
                 content: `
-                    <p>Visual Servoing closes the loop with vision. The robot uses camera feedback to adjust its motion continuously, keeping the target centered even if it moves.</p>
-                    <p>This technique makes motion more robust when the environment is not perfectly predictable.</p>
+                    <p>YOLOE is a state-of-the-art, real-time object detection model. It allows the robot to draw bounding boxes around objects it needs to interact with.</p>
+                    <h4>Inference on the Edge</h4>
+                    <p>The SO-101 runs YOLOE locally on its Jetson Orin Nano, providing high-speed inference without relying on cloud processing, which is critical for low-latency robotics.</p>
                 `,
                 quiz: {
-                    question: "Which sensor provides feedback for Visual Servoing?",
-                    options: ["Microphone", "Camera", "Thermal sensor", "Battery sensor"],
+                    question: "Why is running YOLOE locally important for robotics?",
+                    options: ["Cloud processing is too fast", "It reduces latency", "It saves battery", "It uses more data"],
                     answer: 1
                 }
             },
             "lesson6_1": {
-                title: "LLM Reasoning",
+                title: "Real-time Control Loops",
                 content: `
-                    <p>Large Language Models help translate high-level instructions into sequences of lower-level commands that the robot can execute.</p>
-                    <p>For example, the system can convert "pick up the red cube" into a series of motions, grasping commands, and safety checks.</p>
+                    <p>A real-time control loop guarantees that code executes at a strict, deterministic interval (e.g., 100 Hz or 10ms). This ensures stable control of the robotic arm.</p>
+                    <h4>Jitter</h4>
+                    <p>If the loop timing varies (known as jitter), the arm's motion will become jerky and inaccurate. Real-time operating systems (RTOS) or high-priority threads are used to minimize jitter.</p>
                 `,
                 quiz: {
-                    question: "What does the 'Thinking' model do?",
-                    options: ["Charges the robot", "Translates intent into actions", "Saves logs", "Cleans the arm"],
+                    question: "What happens if a control loop has high jitter?",
+                    options: ["The arm moves smoothly", "The arm becomes jerky", "The arm moves faster", "The arm shuts down"],
                     answer: 1
                 }
             },
             "lesson6_2": {
-                title: "Task Space Control",
+                title: "Final Project: Pick & Place",
                 content: `
-                    <p>Task Space Control focuses on the end effector goal instead of joint angles. This makes it easier to move the gripper to a target location while the controller handles the joint math.</p>
-                    <p>It is used for high-level tasks like reaching, tracking, and manipulating objects in the workspace.</p>
+                    <p>In this final challenge, you will combine Vision, Inverse Kinematics, and Trajectory Planning to perform an autonomous pick-and-place task.</p>
+                    <h4>The Workflow</h4>
+                    <p>1. Detect the object using YOLOE. <br>2. Calculate its 3D position using the calibrated camera. <br>3. Solve the IK to find joint angles. <br>4. Generate a smooth trajectory. <br>5. Execute the motion and close the gripper.</p>
                 `,
                 quiz: {
-                    question: "Task Space control is ___.",
-                    options: ["Manual joint control", "Goal-oriented", "Power-saving", "Offline"],
-                    answer: 1
+                    question: "What is the first step in an autonomous pick-and-place task?",
+                    options: ["Solve IK", "Generate trajectory", "Detect the object", "Close gripper"],
+                    answer: 2
                 }
-            }
         };
 
         const PROGRESS_KEY = 'parc_learning_progress';
@@ -1021,7 +1155,7 @@
             advanced: ['lesson5_1', 'lesson5_2', 'lesson6_1', 'lesson6_2']
         };
         const completedLessons = new Set(JSON.parse(localStorage.getItem(PROGRESS_KEY) || '[]'));
-        const totalLessons = Object.keys(LESSON_DATA).length;
+        const totalLessons = 13; // Estimated total for all tracks
 
         let currentLessonId = null;
 
@@ -1042,11 +1176,15 @@
                 const match = clickAttr && clickAttr.match(/openLesson\('([^']+)'\)/);
                 if (!match) return;
                 const lessonId = match[1];
-                el.classList.toggle('completed', completedLessons.has(lessonId));
+                if(completedLessons.has(lessonId)){
+                    el.classList.add('completed');
+                    el.classList.remove('locked');
+                }
             });
         }
 
         function trackComplete(level) {
+            if(!LESSON_TRACKS[level]) return false;
             return LESSON_TRACKS[level].every(id => completedLessons.has(id));
         }
 
@@ -1057,7 +1195,7 @@
             document.getElementById('lessons-completed').textContent = `${completedCount} / ${totalLessons}`;
             document.getElementById('time-spent').textContent = `${completedCount * 20} min`;
             const percent = Math.round((completedCount / totalLessons) * 100);
-            document.getElementById('progress-text').textContent = `${percent}% complete`;
+            document.getElementById('progress-text').textContent = `${percent}%`;
             document.querySelector('.progress-fill').style.width = `${percent}%`;
         }
 
@@ -1104,13 +1242,15 @@
         function startQuiz() {
             const lesson = LESSON_DATA[currentLessonId];
             if (!lesson || !lesson.quiz) return;
-            let html = `<h4 style="margin-bottom:20px; color:var(--text);">${lesson.quiz.question}</h4>`;
+            let html = `<h4>${lesson.quiz.question}</h4><div style="margin-top:24px;">`;
             lesson.quiz.options.forEach((opt, i) => {
                 html += `<button class="quiz-option" onclick="checkAnswer(${i})">${opt}</button>`;
             });
+            html += `</div>`;
             document.getElementById('lesson-body').innerHTML = html;
             document.getElementById('quiz-btn').style.display = 'none';
             document.getElementById('lesson-status').textContent = 'QUIZ IN PROGRESS';
+            document.getElementById('lesson-status').style.color = 'var(--blue)';
         }
 
         function checkAnswer(idx) {
@@ -1127,6 +1267,7 @@
                 PARC.toast("Correct! Well done.", "ok");
                 document.getElementById('finish-btn').style.display = 'block';
                 document.getElementById('lesson-status').textContent = 'PASSED';
+                document.getElementById('lesson-status').style.color = 'var(--green)';
             } else {
                 PARC.toast("Not quite. Try again!", "err");
                 setTimeout(() => startQuiz(), 1500);
@@ -1139,14 +1280,56 @@
 
             document.querySelectorAll('.module').forEach(mod => {
                 const level = mod.getAttribute('data-level');
-                if (level === 'intermediate') mod.classList.toggle('locked', !beginnerDone);
-                if (level === 'advanced') mod.classList.toggle('locked', !intermediateDone);
+                if (level === 'intermediate') {
+                    mod.classList.toggle('locked', !beginnerDone);
+                    if(beginnerDone){
+                        // Unlock module visually
+                        const h3 = mod.querySelector('.module-title h3');
+                        let moduleIndex = h3.innerText.includes('Kinematics') ? '03' : '04';
+                        let modNumStr = h3.innerText.includes('Kinematics') ? '3' : '4';
+
+                        const num = mod.querySelector('.module-num');
+                        if(num) num.innerHTML = moduleIndex;
+                        const badge = mod.querySelector('.badge-req');
+                        if(badge) badge.style.display = 'none';
+                        // Enable lessons
+                        mod.querySelectorAll('.lesson.locked').forEach((l, idx) => {
+                            l.classList.remove('locked');
+                            l.setAttribute('onclick', `openLesson('lesson${modNumStr}_${idx+1}')`);
+                            l.querySelector('.lesson-icon').innerHTML = `${modNumStr}.${idx+1}`;
+                        });
+                    }
+                }
+                if (level === 'advanced') {
+                    mod.classList.toggle('locked', !intermediateDone);
+                    if(intermediateDone){
+                        const h3 = mod.querySelector('.module-title h3');
+                        let moduleIndex = h3.innerText.includes('AI Vision') ? '05' : '06';
+                        let modNumStr = h3.innerText.includes('AI Vision') ? '5' : '6';
+
+                        const num = mod.querySelector('.module-num');
+                        if(num) num.innerHTML = moduleIndex;
+                        const badge = mod.querySelector('.badge-req');
+                        if(badge) badge.style.display = 'none';
+                        mod.querySelectorAll('.lesson.locked').forEach((l, idx) => {
+                            l.classList.remove('locked');
+                            l.setAttribute('onclick', `openLesson('lesson${modNumStr}_${idx+1}')`);
+                            l.querySelector('.lesson-icon').innerHTML = `${modNumStr}.${idx+1}`;
+                        });
+                    }
+                }
             });
 
             document.querySelectorAll('.course-nav-btn').forEach(btn => {
                 const text = btn.innerText.toLowerCase();
-                if (text.includes('intermediate')) btn.classList.toggle('locked', !beginnerDone);
-                if (text.includes('advanced')) btn.classList.toggle('locked', !intermediateDone);
+                if (text.includes('intermediate')) {
+                    btn.classList.toggle('locked', !beginnerDone);
+                    if(beginnerDone) btn.innerHTML = btn.innerText.replace('Locked', '').trim();
+                }
+                if (text.includes('advanced')) {
+                    btn.classList.toggle('locked', !intermediateDone);
+                    if(intermediateDone) btn.innerHTML = btn.innerText.replace('Locked', '').trim();
+                }
             });
         }
 
@@ -1154,7 +1337,7 @@
             markLessonCompleted(currentLessonId);
             updateProgressDisplay();
             updateModuleLocks();
-            PARC.toast("Lesson completed and saved. Unlocking the next track as soon as prerequisites are met.", "ok");
+            PARC.toast("Lesson completed and saved.", "ok");
             closeLesson();
         }
 
@@ -1169,11 +1352,11 @@
 
         function showLocked(level) {
             if (level === 'intermediate') {
-                PARC.toast('Complete all beginner lessons and quizzes before unlocking intermediate material.', 'info');
+                PARC.toast('Complete all beginner lessons to unlock.', 'info');
                 return;
             }
             if (level === 'advanced') {
-                PARC.toast('Complete all intermediate lessons and quizzes before unlocking advanced material.', 'info');
+                PARC.toast('Complete all intermediate lessons to unlock.', 'info');
                 return;
             }
             PARC.toast('That track is currently locked.', 'info');
@@ -1194,7 +1377,13 @@
             });
 
             document.querySelectorAll('.module').forEach(mod => {
-                mod.style.display = mod.getAttribute('data-level') === level ? 'block' : 'none';
+                if (mod.getAttribute('data-level') === level) {
+                    mod.style.display = 'block';
+                    setTimeout(() => mod.style.opacity = '1', 50);
+                } else {
+                    mod.style.display = 'none';
+                    mod.style.opacity = '0';
+                }
             });
         }
 
@@ -1203,21 +1392,13 @@
             document.getElementById('modal-title').textContent = "Robotics Glossary";
             document.getElementById('modal-subtitle').textContent = "Essential terminology";
             document.getElementById('lesson-body').innerHTML = `
-                <dl style="display:grid; grid-template-columns: auto 1fr; gap: 16px 24px; align-items: baseline;">
+                <dl style="display:grid; grid-template-columns: auto 1fr; gap: 24px; align-items: baseline;">
                     <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Actuator</dt>
-                    <dd>A component of a machine that is responsible for moving and controlling a mechanism or system (e.g., a motor).</dd>
-                    
+                    <dd>A component of a machine that is responsible for moving and controlling a mechanism.</dd>
                     <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">End Effector</dt>
-                    <dd>The device at the end of a robotic arm, designed to interact with the environment (e.g., a gripper, welder, or sprayer).</dd>
-                    
+                    <dd>The device at the end of a robotic arm, designed to interact with the environment.</dd>
                     <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Kinematics</dt>
-                    <dd>The study of the motion of a robot without considering the forces that cause the motion.</dd>
-                    
-                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Pose</dt>
-                    <dd>The combined position (x, y, z) and orientation (roll, pitch, yaw) of a robot component in space.</dd>
-                    
-                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Workspace</dt>
-                    <dd>The set of all points that a robot's end effector can reach.</dd>
+                    <dd>The study of the motion of a robot without considering forces.</dd>
                 </dl>
             `;
             document.getElementById('lesson-modal').style.display = 'flex';
@@ -1228,27 +1409,16 @@
 
         function showCheatsheet() {
             currentLessonId = 'cheatsheet';
-            document.getElementById('modal-title').textContent = "Python Control Cheatsheet";
-            document.getElementById('modal-subtitle').textContent = "Common API commands";
+            document.getElementById('modal-title').textContent = "Python Cheatsheet";
+            document.getElementById('modal-subtitle').textContent = "API commands";
             document.getElementById('lesson-body').innerHTML = `
-                <div style="background:var(--bg4); padding:20px; border-radius:8px; font-family:var(--mono); font-size:13px;">
-                    <pre><code style="color:var(--text-dim);"># Connect to robot
+                <div style="background:var(--bg4); padding:24px; border-radius:12px; font-family:var(--mono); font-size:14px; border:1px solid var(--border);">
+                    <pre><code style="color:var(--text-bright);"># Connect to robot
 from parl_robot import Robot
 arm = Robot('/dev/ttyUSB0')
 
-# Move to angles (degrees)
-arm.set_angles([0, 45, -45, 0, 90, 0])
-
-# Move to Cartesian coordinates (mm)
-arm.set_pose(x=150, y=0, z=200, pitch=-90)
-
-# Control Gripper
-arm.open_gripper()
-arm.close_gripper(force=50)
-
-# Get current state
-pos = arm.get_pose()
-print(f"Current X: {pos.x}")</code></pre>
+# Move to angles
+arm.set_angles([0, 45, -45, 0, 90, 0])</code></pre>
                 </div>
             `;
             document.getElementById('lesson-modal').style.display = 'flex';
@@ -1257,54 +1427,11 @@ print(f"Current X: {pos.x}")</code></pre>
             document.getElementById('lesson-status').textContent = 'REFERENCE';
         }
 
-        // Initialize view
+        // Initialize
         updateLessonBadges();
         updateModuleLocks();
         updateProgressDisplay();
         filterLevel('beginner');
-
-        function toggleAITutor() {
-            const panel = document.getElementById('ai-tutor-panel');
-            const toggle = document.getElementById('ai-tutor-toggle');
-            panel.classList.toggle('open');
-            toggle.classList.toggle('active');
-        }
-
-        function handleTutorKey(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendTutorMessage();
-            }
-        }
-
-        async function sendTutorMessage() {
-            const input = document.getElementById('ai-tutor-input');
-            const msg = input.value.trim();
-            if (!msg) return;
-
-            const messages = document.getElementById('ai-tutor-messages');
-            messages.innerHTML += `<div class="chat-message user">${msg}</div>`;
-            input.value = '';
-
-            const typing = document.createElement('div');
-            typing.className = 'chat-message ai';
-            typing.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
-            messages.appendChild(typing);
-            messages.scrollTop = messages.scrollHeight;
-
-            try {
-                const resp = await fetch('/api/ai/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg, context: 'learn', stream: false })
-                });
-                const data = await resp.json();
-                typing.innerHTML = data.response || data.error || 'Error occurred';
-            } catch (e) {
-                typing.innerHTML = 'Failed to connect to AI tutor';
-            }
-        }
     </script>
 </main>
 {% endblock %}
-</html>
