@@ -20,7 +20,7 @@ services:
       - "${HTTP_PORT:-38000}:38000"
       - "${WS_PORT:-38001}:38001"
     volumes:
-      - "${SO101_DIR:-/home/parc/Desktop/InverseKinematics/so101-inverse-kinematics-main/so101}:/opt/so101:ro"
+      - "${SO101_DIR:-C:\\Users\\abdou\\Documents\\parc_final\\InverseKinematics\\so101-inverse-kinematics-main\\so101}:/opt/so101:ro"
     environment:
       SO101_DIR: /opt/so101
       WEB_DIR:   /app/web

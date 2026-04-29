@@ -17,8 +17,8 @@ import numpy as np
 import mujoco
 import websockets
 
-SO101_DIR = "/home/parc/Desktop/InverseKinematics/so101-inverse-kinematics-main/so101"
-WEB_DIR = "/home/parc/Desktop/InverseKinematics/web"
+SO101_DIR = r"C:\Users\abdou\Documents\parc_final\InverseKinematics\so101-inverse-kinematics-main\so101"
+WEB_DIR = r"C:\Users\abdou\Documents\parc_final\InverseKinematics\web"
 STL_DIR = SO101_DIR + "/assets"
 PORT = 38000
 WS_PORT = 38001

@@ -1040,7 +1040,7 @@ def setup_ai_routes(app):
                 subprocess.run([
                     'python3',
                     'llama_integration/rag/seed_knowledge.py'
-                ], cwd=request.environ.get('SCRIPT_DIR', '/home/parc/Desktop/PARC-Remote-Lab'))
+                ], cwd=request.environ.get('SCRIPT_DIR', r'C:\Users\abdou\Documents\parc_final\control_arm'))
 
             thread = threading.Thread(target=seed_task)
             thread.start()

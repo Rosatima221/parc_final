@@ -2,7 +2,7 @@ import numpy as np
 import mujoco.viewer
 import sys
 
-ASSETS_DIR = "/home/parc/Desktop/InverseKinematics/so101-inverse-kinematics-main/so101"
+ASSETS_DIR = r"C:\Users\abdou\Documents\parc_final\InverseKinematics\so101-inverse-kinematics-main\so101"
 XML_FILE = ASSETS_DIR + "/so_101.xml"
 
 
