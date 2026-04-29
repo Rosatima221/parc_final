@@ -105,7 +105,8 @@
         margin-bottom: 18px;
     }
 
-    .mc-icon svg {
+    .mc-icon svg,
+    .mc-icon i {
         width: 17px; height: 17px;
         stroke: var(--mc-accent, var(--amber));
         fill: none;
@@ -228,6 +229,56 @@
     .mcard[data-c="green"]  { --mc-accent: #22d07a; --mc-dim: rgba(34,208,122,0.07); }
     .mcard[data-c="violet"] { --mc-accent: #9b79f8; --mc-dim: rgba(155,121,248,0.07); }
     .mcard[data-c="slate"]  { --mc-accent: #7c8fa8; --mc-dim: rgba(124,143,168,0.07); }
+
+    .dash-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) 1fr;
+        gap: 32px;
+        align-items: center;
+        padding: 22px 0 40px;
+    }
+
+    .dash-hero h1 {
+        font-size: clamp(2.4rem, 2vw + 1.8rem, 3.8rem);
+        line-height: 1.05;
+        margin-bottom: 18px;
+        letter-spacing: -0.04em;
+    }
+
+    .dash-copy {
+        max-width: 680px;
+        color: var(--text-muted);
+        line-height: 1.8;
+        margin-bottom: 24px;
+    }
+
+    .dash-hero-actions {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .dash-hero-card {
+        padding: 24px;
+        background: linear-gradient(180deg, rgba(59,130,246,0.14), transparent 100%);
+        border: 1px solid rgba(59,130,246,0.22);
+        border-radius: 18px;
+        box-shadow: 0 18px 60px rgba(17, 25, 45, 0.18);
+    }
+
+    .mcard {
+        animation: cardEntrance 0.55s ease both;
+    }
+
+    .mcard:nth-child(1)  { animation-delay: 0.04s; }
+    .mcard:nth-child(2)  { animation-delay: 0.08s; }
+    .mcard:nth-child(3)  { animation-delay: 0.12s; }
+    .mcard:nth-child(4)  { animation-delay: 0.16s; }
+
+    @keyframes cardEntrance {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 </style>
 {% endblock %}
 
@@ -236,7 +287,47 @@
     <div class="dash-inner">
         <div class="dash-header">
             <div class="dash-eyebrow">PARC Robotics Lab / SO-101 Controller</div>
-            <div class="dash-title">Select a module</div>
+            <div class="dash-title">Launch your next robotics session</div>
+        </div>
+
+        <div class="dash-hero">
+            <div>
+                <h1>One platform for learning, testing, and controlling the SO-101.</h1>
+                <p class="dash-copy">Explore guided lessons, drive the arm in play mode, and monitor AI systems from a single polished dashboard. Everything is built for fast hands-on progress.</p>
+                <div class="dash-hero-actions">
+                    <a href="/learn" class="btn btn-primary">Start learning</a>
+                    <a href="/play" class="btn btn-secondary">Open play mode</a>
+                </div>
+            </div>
+            <div class="dash-hero-card">
+                <div class="mc-head" style="margin-bottom: 18px; gap: 12px;">
+                    <div class="mc-icon" style="background: rgba(59, 130, 246, 0.12);">
+                        <i data-lucide="sparkles"></i>
+                    </div>
+                    <div>
+                        <div class="mc-title" style="font-size: 14px;">AI-powered learning</div>
+                        <div class="mc-desc" style="margin: 6px 0 0;">Structured lessons with longer content, quizzes, and real robotics examples.</div>
+                    </div>
+                </div>
+                <div class="mc-head" style="margin-bottom: 18px; gap: 12px;">
+                    <div class="mc-icon" style="background: rgba(16, 185, 129, 0.12);">
+                        <i data-lucide="cpu"></i>
+                    </div>
+                    <div>
+                        <div class="mc-title" style="font-size: 14px;">Live hardware control</div>
+                        <div class="mc-desc" style="margin: 6px 0 0;">Switch from learning to playing with seamless robot and viewer control.</div>
+                    </div>
+                </div>
+                <div class="mc-head" style="gap: 12px;">
+                    <div class="mc-icon" style="background: rgba(245, 158, 11, 0.12);">
+                        <i data-lucide="shield"></i>
+                    </div>
+                    <div>
+                        <div class="mc-title" style="font-size: 14px;">Safe and confident</div>
+                        <div class="mc-desc" style="margin: 6px 0 0;">Locked advanced tracks keep progression clear until beginner topics are completed.</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="mod-grid">
@@ -244,7 +335,7 @@
             <!-- Learn -->
             <a href="/learn" class="mcard" data-c="blue" aria-label="Open Learn module">
                 <div class="mc-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    <i data-lucide="book-open"></i>
                 </div>
                 <div class="mc-head">
                     <span class="mc-title">{{ t('cards.learn.title') }}</span>
@@ -264,7 +355,7 @@
             <!-- Play -->
             <a href="/play" class="mcard" data-c="amber" aria-label="Open Play module">
                 <div class="mc-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01M17 12h.01"/><path d="M5 10v4M7 12H3"/></svg>
+                    <i data-lucide="gamepad2"></i>
                 </div>
                 <div class="mc-head">
                     <span class="mc-title">{{ t('cards.play.title') }}</span>
@@ -287,7 +378,7 @@
                  aria-label="Launch MuJoCo Viewer"
                  onkeydown="if(event.key==='Enter'||event.key===' ')dashLaunchViewer(event)">
                 <div class="mc-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    <i data-lucide="layers"></i>
                 </div>
                 <div class="mc-head">
                     <span class="mc-title">MuJoCo Viewer</span>
@@ -306,7 +397,7 @@
             <!-- Settings -->
             <a href="/settings" class="mcard" data-c="slate" aria-label="Open Settings">
                 <div class="mc-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <i data-lucide="settings"></i>
                 </div>
                 <div class="mc-head">
                     <span class="mc-title">{{ t('cards.settings.title') }}</span>
@@ -328,7 +419,9 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
 <script>
+    lucide.replace({ 'stroke-width': 1.8, 'width': 20, 'height': 20 });
     /* Viewer card status */
     const viewerTag    = document.getElementById('viewer-tag');
     const viewerAction = document.getElementById('viewer-action');

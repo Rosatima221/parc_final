@@ -96,49 +96,6 @@
             color: var(--blue);
         }
 
-        /* Theme Colors */
-        .theme-options {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .theme-option {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .theme-option:hover {
-            transform: scale(1.1);
-        }
-
-        .theme-option.active {
-            border-color: var(--text);
-            box-shadow: 0 0 0 2px var(--bg3);
-        }
-
-        .theme-option::after {
-            content: attr(data-label);
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 9px;
-            color: var(--text-muted);
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .theme-option:hover::after {
-            opacity: 1;
-        }
-
         /* Toggle Switch */
         .toggle {
             position: relative;
@@ -665,25 +622,6 @@
                 </div>
             </div>
 
-            <!-- Appearance Section -->
-            <div class="settings-section">
-                <div class="settings-section-title">{{ t('settings.appearance') }}</div>
-                
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>{{ t('settings.theme_title') }}</h4>
-                        <p>{{ t('settings.theme_desc') }}</p>
-                    </div>
-                    <div class="theme-options">
-                        <div class="theme-option active" style="background: #05070a;" data-color="dark" data-label="Dark" onclick="setTheme('dark')"></div>
-                        <div class="theme-option" style="background: #f8fafc;" data-color="light" data-label="Light" onclick="setTheme('light')"></div>
-                        <div class="theme-option" style="background: #0f172a;" data-color="midnight" data-label="Midnight" onclick="setTheme('midnight')"></div>
-                        <div class="theme-option" style="background: linear-gradient(135deg, #05070a 50%, #f8fafc 50%);" data-color="auto" data-label="Auto" onclick="setTheme('auto')"></div>
-                    </div>
-                </div>
-
-            </div>
-
             <!-- Notifications Section -->
             <div class="settings-section">
                 <div class="settings-section-title">{{ t('settings.notifications') }}</div>
@@ -908,13 +846,6 @@
         function setLang(lang) {
             document.cookie = `lang=${lang};path=/;max-age=${60*60*24*365}`;
             window.location.reload();
-        }
-
-        function setTheme(theme) {
-            document.querySelectorAll('.theme-option[data-color]').forEach(el => el.classList.remove('active'));
-            document.querySelector(`.theme-option[data-color="${theme}"]`).classList.add('active');
-            document.cookie = `theme=${theme};path=/;max-age=${60*60*24*365}`;
-            // Theme change would be applied here
         }
 
         function setAccent(color) {
