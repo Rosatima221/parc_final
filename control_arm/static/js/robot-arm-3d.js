@@ -56,7 +56,7 @@ class RobotArm3D {
         this.options = {
             width: options.width || container.clientWidth || 400,
             height: options.height || container.clientHeight || 400,
-            background: options.background || 0x1a1a2e,
+            background: options.background || 0x111624,
             showGrid: options.showGrid !== false,
             showAxes: options.showAxes !== false,
             enableOrbit: options.enableOrbit !== false,

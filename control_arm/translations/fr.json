@@ -3,15 +3,43 @@
     "title": "Parc Robotics - Contrôleur"
   },
   "nav": {
+    "dashboard": "Tableau de Bord",
+    "learn": "Apprendre",
+    "play": "Jouer",
+    "mujoco": "MuJoCo",
+    "settings": "Paramètres",
     "back": "Retour",
     "home": "Accueil"
   },
   "landing": {
     "hero": {
       "title": "Contrôleur Parc Robotics",
-      "subtitle": "Un systeme de controle de bras robotique 6-DDL puissant avec cinematique en temps reel, programmation assistee par IA et modules d'apprentissage interactifs.",
-      "cta": "Commencer a Apprendre"
+      "subtitle": "Un système de contrôle de bras robotique 6-DDL puissant avec cinématique en temps réel, programmation assistée par IA et modules d'apprentissage interactifs.",
+      "cta": "Commencer l'Apprentissage"
     }
+  },
+  "common": {
+    "available": "Disponible",
+    "idle": "Inactif",
+    "stopped": "Arrêté",
+    "open": "Ouvrir",
+    "control": "Contrôler",
+    "launch": "Lancer",
+    "configure": "Configurer"
+  },
+  "home": {
+    "hero_eyebrow": "Laboratoire de Robotique PARC / Contrôleur SO-101",
+    "hero_title": "Optimisez votre flux de travail robotique",
+    "hero_h1": "La plateforme unifiée pour l'apprentissage et le pilotage robotique.",
+    "hero_desc": "Maîtrisez le bras SO-101 grâce à un environnement de contrôle haute-fidélité, des modules d'apprentissage guidés par l'IA et une synchronisation physique-virtuelle en temps réel.",
+    "btn_learn": "Débuter la formation",
+    "btn_play": "Accéder au pilotage",
+    "feat1_title": "Apprentissage IA Adaptatif",
+    "feat1_desc": "Des leçons structurées avec un tuteur IA pour vous accompagner dans la maîtrise de la cinématique et du contrôle matériel.",
+    "feat2_title": "Contrôle Temps Réel",
+    "feat2_desc": "Basculez instantanément entre la simulation MuJoCo et le robot physique pour une validation rapide de vos algorithmes.",
+    "feat3_title": "Progression Sécurisée",
+    "feat3_desc": "Un système de validation par étapes garantissant que les bases sont acquises avant de manipuler les modes avancés."
   },
   "gallery": {
     "label": "Modules",
@@ -27,9 +55,13 @@
 
     "play": {
       "title": "Jouer",
-      "desc": "Interface de controle direct du robot avec curseurs articulaires, poses predefinies, actions rapides et visualisation 3D en temps reel. Surveillez la position de l'effecteur et executez des modes de mouvement pre-integres.",
-      "tag1": "Controle",
+      "desc": "Interface de contrôle direct du robot avec curseurs articulaires, poses prédéfinies, actions rapides et visualisation 3D en temps réel. Surveillez la position de l'effecteur et exécutez des modes de mouvement pré-intégrés.",
+      "tag1": "Contrôle",
       "tag2": "Vue en Direct"
+    },
+    "mujoco": {
+      "title": "Visionneur MuJoCo",
+      "desc": "Visionneur physique natif pour le SO-101. Manipulez les articulations pour piloter le bras réel en temps réel."
     },
     "settings": {
       "title": "Parametres",
@@ -155,6 +187,151 @@
       "desc": "Utilisation de l'IA pour la detection des mains et poses"
     },
     "progress": "Votre Progression",
+    "courses_completed": "Cours Termines",
+    "lessons_completed": "Lecons Terminees",
+    "time_spent": "Temps Passe",
+    "cheatsheet": {
+        "title": "Aide-mémoire Python",
+        "subtitle": "Commandes API",
+        "code": "# Connexion au robot\nfrom parl_robot import Robot\narm = Robot('/dev/ttyUSB0')\n\n# Déplacement aux angles\narm.set_angles([0, 45, -45, 0, 90, 0])"
+    },
+    "glossary": {
+        "title": "Glossaire Robotique",
+        "subtitle": "Terminologie essentielle",
+        "terms": {
+            "actuator": {
+                "term": "Actionneur",
+                "desc": "Composant d'une machine responsable du mouvement et du contrôle d'un mécanisme."
+            },
+            "end_effector": {
+                "term": "Effecteur final",
+                "desc": "Dispositif à l'extrémité d'un bras robotique, conçu pour interagir avec l'environnement."
+            },
+            "kinematics": {
+                "term": "Cinématique",
+                "desc": "Étude du mouvement d'un robot sans tenir compte des forces."
+            }
+        }
+    },
+    "lessons": {
+        "lesson1_1": {
+            "title": "Qu'est-ce qu'un Robot ?",
+            "content": "<p>Un robot est une machine autonome qui combine la détection, la prise de décision et l'action physique pour interagir avec le monde réel. Ce n'est pas seulement une machine qui bouge ; il perçoit son environnement, s'adapte à de nouvelles situations et accomplit des tâches en utilisant son corps.</p><p>Sur le SO-101, cela signifie que le bras peut utiliser des caméras, des encodeurs d'articulation et d'autres capteurs pour comprendre où il se trouve, puis choisir le bon mouvement et l'exécuter en douceur.</p><h4>La boucle Percevoir-Penser-Agir</h4><p>Chaque robot fonctionne sur une boucle fondamentale qui définit son autonomie. La boucle se répète continuellement pour que le robot puisse réagir aux changements de conditions.</p><ul style=\"margin-left:20px; margin-top:10px;\"><li><strong>Percevoir :</strong> Le robot collecte des données avec des capteurs tels que des caméras, des encodeurs, des IMU ou des capteurs de force. Cela lui indique où se trouve le bras, où sont les objets et si la tâche se déroule correctement.</li><li><strong>Penser :</strong> Le cerveau du robot traite les données des capteurs. Il exécute des algorithmes ou des modèles d'IA pour estimer le meilleur mouvement suivant, corriger les erreurs et planifier des trajectoires sûres.</li><li><strong>Agir :</strong> Le robot applique la décision à l'aide d'actionneurs tels que des moteurs, des servos et des pinces. Il transforme les signaux électriques en mouvement pour déplacer les articulations.</li></ul>",
+            "quiz": {
+                "question": "Quelle partie de la boucle implique la collecte de données par des capteurs comme des caméras ?",
+                "options": ["Percevoir", "Penser", "Agir", "Puissance"],
+                "answer": 0
+            }
+        },
+        "lesson1_2": {
+            "title": "Degrés de Liberté (DOF)",
+            "content": "<p>Les degrés de liberté (DOF) décrivent le nombre de mouvements indépendants qu'un robot peut effectuer. Chaque articulation donne au SO-101 une possibilité supplémentaire de positionner son bras.</p><h4>Pourquoi 6 DOF est important</h4><p>Le SO-101 possède <strong>6 DOF</strong>, ce qui signifie qu'il peut placer son effecteur final dans la plupart des positions et orientations nécessaires à la manipulation. Les six axes sont : rotation de la base, levage de l'épaule, flexion du coude, tangage du poignet, roulis du poignet et action de la pince.</p>",
+            "quiz": {
+                "question": "Combien de paramètres indépendants définissent la position et l'orientation dans l'espace 3D ?",
+                "options": ["3", "4", "6", "9"],
+                "answer": 2
+            }
+        },
+        "lesson1_3": {
+            "title": "Systèmes de Coordonnées",
+            "content": "<p>Les robots ont besoin de systèmes de coordonnées pour savoir où ils se trouvent et où ils doivent aller. Les deux systèmes les plus utiles sont l'espace articulaire et l'espace cartésien.</p><h4>Espace Articulaire</h4><p>L'espace articulaire est défini par les angles des servos tels que [q1, q2, q3, q4, q5, q6]. C'est la manière naturelle de commander les moteurs du bras.</p><h4>Espace Cartésien</h4><p>L'espace cartésien utilise [X, Y, Z] plus l'orientation [Roulis, Tangage, Lacet] pour décrire l'effecteur final par rapport à la base. C'est la façon la plus simple de penser à la tâche.</p>",
+            "quiz": {
+                "question": "Quel espace utilise les coordonnées X, Y, Z ?",
+                "options": ["Espace Articulaire", "Espace Cartésien", "Espace Angulaire", "Espace Nul"],
+                "answer": 1
+            }
+        },
+        "lesson2_1": {
+            "title": "Mécanique des Servos",
+            "content": "<p>Les servos sont les actionneurs du robot : ils déplacent les articulations et les maintiennent en place. Contrairement aux moteurs simples, les servos sont conçus pour atteindre et rester à un angle spécifié.</p><h4>Rétroaction en boucle fermée</h4><p>Le SO-101 utilise des servos qui rapportent leur position actuelle au contrôleur. Cette rétroaction permet au système de corriger les erreurs, améliorant ainsi la précision et la fiabilité.</p>",
+            "quiz": {
+                "question": "Quel est l'avantage majeur des servos à bus série ?",
+                "options": ["Ils consomment plus d'énergie", "Ils fournissent un retour en temps réel", "Ils sont plus lents", "Ils sont plus grands"],
+                "answer": 1
+            }
+        },
+        "lesson2_2": {
+            "title": "Protocole Série",
+            "content": "<p>Le Jetson Orin Nano envoie des commandes au contrôleur de servo via un bus série. Chaque message porte un identifiant (ID), un code d'instruction, des paramètres et une somme de contrôle (checksum) pour la sécurité.</p><h4>Pourquoi les sommes de contrôle sont importantes</h4><p>Les sommes de contrôle permettent au contrôleur de détecter les interférences ou les données corrompues. Si un paquet est malformé, le système l'ignore au lieu d'agir sur une mauvaise commande.</p>",
+            "quiz": {
+                "question": "Qu'est-ce qui garantit qu'un paquet série n'a pas été corrompu ?",
+                "options": ["ID", "Checksum", "Longueur", "Vitesse de transmission"],
+                "answer": 1
+            }
+        },
+        "lesson3_1": {
+            "title": "Cinématique Directe",
+            "content": "<p>La cinématique directe (FK) est le processus mathématique consistant à calculer la position et l'orientation de l'effecteur final, compte tenu des angles de toutes les articulations.</p><h4>Paramètres de Denavit-Hartenberg (DH)</h4><p>En robotique, nous utilisons généralement les paramètres DH (longueurs de segments, torsions, décalages et angles) pour construire systématiquement des matrices de transformation de la base à l'effecteur final.</p>",
+            "quiz": {
+                "question": "Que calcule la cinématique directe ?",
+                "options": ["Angles d'articulation", "Position de l'effecteur final", "Couple moteur", "Position de la caméra"],
+                "answer": 1
+            }
+        },
+        "lesson3_2": {
+            "title": "Cinématique Inverse",
+            "content": "<p>La cinématique inverse (IK) résout le problème opposé : étant donné une position cible souhaitée pour l'effecteur final, quels angles d'articulation sont nécessaires pour l'atteindre ?</p><h4>Résolution de l'IK</h4><p>L'IK peut être résolue analytiquement (en utilisant la géométrie) ou numériquement (en utilisant des algorithmes itératifs comme les méthodes basées sur le jacobien). Pour un bras à 6 DOF comme le SO-101, plusieurs solutions peuvent exister.</p>",
+            "quiz": {
+                "question": "Si un bras à 6 DOF atteint un point, combien de solutions possibles peuvent exister ?",
+                "options": ["Une seule", "Plusieurs solutions", "Zéro solution", "Toujours deux"],
+                "answer": 1
+            }
+        },
+        "lesson4_1": {
+            "title": "Génération de Trajectoire",
+            "content": "<p>La génération de trajectoire détermine le chemin qu'un bras de robot emprunte au fil du temps pour aller d'un point A à un point B en douceur.</p><h4>Pourquoi la fluidité est importante</h4><p>Se déplacer instantanément entre deux points provoque une accélération infinie, ce qui endommage les moteurs. Nous utilisons des trajectoires polynomiales ou une interpolation par spline pour garantir que la vitesse et l'accélération changent progressivement.</p>",
+            "quiz": {
+                "question": "Quelle est la raison principale pour lisser les trajectoires ?",
+                "options": ["Pour l'esthétique", "Pour éviter d'endommager les moteurs", "Pour économiser de la mémoire", "Pour utiliser moins de code"],
+                "answer": 1
+            }
+        },
+        "lesson4_2": {
+            "title": "Évitement de Collision",
+            "content": "<p>Lors de la planification d'un mouvement, le robot doit s'assurer qu'il n'entre pas en collision avec l'environnement ou avec lui-même (auto-collision).</p><h4>Boîtes de délimitation (Bounding Boxes)</h4><p>Nous simplifions souvent les segments du robot et les obstacles en formes géométriques comme des cylindres ou des boîtes de délimitation pour accélérer les calculs mathématiques de détection de collision lors de la planification de trajectoire.</p>",
+            "quiz": {
+                "question": "Pourquoi utilisons-nous des boîtes de délimitation pour la détection de collision ?",
+                "options": ["Elles sont parfaitement précises", "Elles sont plus rapides à calculer", "Elles sont plus esthétiques", "Elles sont imposées par la loi"],
+                "answer": 1
+            }
+        },
+        "lesson5_1": {
+            "title": "Calibrage de Caméra",
+            "content": "<p>Pour utiliser la vision, un robot doit mapper les pixels au monde physique. Le calibrage de la caméra estime les paramètres intrinsèques (distance focale, distorsion) et les paramètres extrinsèques (position de la caméra par rapport au bras).</p><h4>Calibrage par damier</h4><p>En montrant un motif en damier à la caméra, le logiciel peut calculer une matrice qui convertit les coordonnées de pixels 2D en rayons 3D.</p>",
+            "quiz": {
+                "question": "Quel motif est couramment utilisé pour calibrer les caméras ?",
+                "options": ["Un cercle", "Un damier", "Un code QR", "Un code-barres"],
+                "answer": 1
+            }
+        },
+        "lesson5_2": {
+            "title": "Détection d'objets YOLOE",
+            "content": "<p>YOLOE est un modèle de détection d'objets en temps réel à la pointe de la technologie. Il permet au robot de dessiner des boîtes de délimitation autour des objets avec lesquels il doit interagir.</p><h4>Inférence en périphérie (Edge Inference)</h4><p>Le SO-101 exécute YOLOE localement sur son Jetson Orin Nano, offrant une inférence à haute vitesse sans dépendre du traitement dans le cloud, ce qui est critique pour la robotique à faible latence.</p>",
+            "quiz": {
+                "question": "Pourquoi l'exécution locale de YOLOE est-elle importante pour la robotique ?",
+                "options": ["Le traitement cloud est trop rapide", "Cela réduit la latence", "Cela économise la batterie", "Cela utilise plus de données"],
+                "answer": 1
+            }
+        },
+        "lesson6_1": {
+            "title": "Boucles de Contrôle en Temps Réel",
+            "content": "<p>Une boucle de contrôle en temps réel garantit que le code s'exécute à un intervalle strict et déterministe (par exemple, 100 Hz ou 10 ms). Cela assure un contrôle stable du bras robotique.</p><h4>Gigue (Jitter)</h4><p>Si la synchronisation de la boucle varie (phénomène connu sous le nom de gigue), le mouvement du bras deviendra saccadé et imprécis. Des systèmes d'exploitation en temps réel (RTOS) ou des threads à haute priorité sont utilisés pour minimiser la gigue.</p>",
+            "quiz": {
+                "question": "Que se passe-t-il si une boucle de contrôle présente une gigue élevée ?",
+                "options": ["Le bras bouge en douceur", "Le bras devient saccadé", "Le bras bouge plus vite", "Le bras s'arrête"],
+                "answer": 1
+            }
+        },
+        "lesson6_2": {
+            "title": "Projet Final : Pick & Place",
+            "content": "<p>Dans ce défi final, vous combinerez la vision, la cinématique inverse et la planification de trajectoire pour effectuer une tâche autonome de saisie et de placement (pick-and-place).</p><h4>Le flux de travail</h4><p>1. Détecter l'objet à l'aide de YOLOE. <br>2. Calculer sa position 3D à l'aide de la caméra calibrée. <br>3. Résoudre l'IK pour trouver les angles d'articulation. <br>4. Générer une trajectoire fluide. <br>5. Exécuter le mouvement et fermer la pince.</p>",
+            "quiz": {
+                "question": "Quelle est la première étape d'une tâche autonome de saisie et placement ?",
+                "options": ["Résoudre l'IK", "Générer la trajectoire", "Détecter l'objet", "Fermer la pince"],
+                "answer": 2
+            }
+        }
+    },
     "courses_completed": "Cours Termines",
     "lessons_completed": "Lecons Terminees",
     "time_spent": "Temps Passe",

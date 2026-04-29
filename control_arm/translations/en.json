@@ -13,6 +13,29 @@
       "cta": "Start Learning"
     }
   },
+  "common": {
+    "available": "Available",
+    "idle": "Idle",
+    "stopped": "Stopped",
+    "open": "Open",
+    "control": "Control",
+    "launch": "Launch",
+    "configure": "Configure"
+  },
+  "home": {
+    "hero_eyebrow": "PARC Robotics Lab / SO-101 Controller",
+    "hero_title": "Optimize your robotics workflow",
+    "hero_h1": "The Unified Platform for Advanced Robotics Learning & Control.",
+    "hero_desc": "Master the SO-101 robotic arm through a high-fidelity control environment, AI-guided learning modules, and seamless real-time hardware synchronization.",
+    "btn_learn": "Start learning",
+    "btn_play": "Open play mode",
+    "feat1_title": "Adaptive AI Learning",
+    "feat1_desc": "Structured curriculum paired with an AI tutor to guide you through complex kinematics and hardware integration.",
+    "feat2_title": "Real-Time Hardware Sync",
+    "feat2_desc": "Instantly bridge the gap between MuJoCo simulations and physical robot movements for rapid iteration.",
+    "feat3_title": "Safety-First Progression",
+    "feat3_desc": "Smart skill-gate system ensures operational safety and fundamental mastery before unlocking advanced capabilities."
+  },
   "gallery": {
     "label": "Modules",
     "hint": "Select a module to begin. Each module contains interactive tutorials and hands-on exercises."
@@ -30,6 +53,10 @@
       "desc": "Direct robot control interface with joint sliders, preset poses, quick actions, and real-time 3D visualization. Monitor end-effector position and execute pre-built motion modes.",
       "tag1": "Control",
       "tag2": "Live View"
+    },
+    "mujoco": {
+      "title": "MuJoCo Viewer",
+      "desc": "Native desktop physics viewer for the SO-101. Drag joints to drive the real arm in real time."
     },
     "settings": {
       "title": "Settings",
@@ -158,10 +185,148 @@
     "courses_completed": "Courses Completed",
     "lessons_completed": "Lessons Completed",
     "time_spent": "Time Spent",
-    "quick_links": "Quick Links",
-    "glossary": "Glossary",
-    "cheatsheet": "Quick Reference",
-    "documentation": "Full Documentation",
+    "cheatsheet": {
+        "title": "Python Cheatsheet",
+        "subtitle": "API commands",
+        "code": "# Connect to robot\nfrom parl_robot import Robot\narm = Robot('/dev/ttyUSB0')\n\n# Move to angles\narm.set_angles([0, 45, -45, 0, 90, 0])"
+    },
+    "glossary": {
+        "title": "Robotics Glossary",
+        "subtitle": "Essential terminology",
+        "terms": {
+            "actuator": {
+                "term": "Actuator",
+                "desc": "A component of a machine that is responsible for moving and controlling a mechanism."
+            },
+            "end_effector": {
+                "term": "End Effector",
+                "desc": "The device at the end of a robotic arm, designed to interact with the environment."
+            },
+            "kinematics": {
+                "term": "Kinematics",
+                "desc": "The study of the motion of a robot without considering forces."
+            }
+        }
+    },
+    "lessons": {
+        "lesson1_1": {
+            "title": "What is a Robot?",
+            "content": "<p>A robot is an autonomous machine that combines sensing, decision-making, and physical action to interact with the real world. It is not just a machine that moves; it perceives its environment, adapts to new situations, and carries out tasks using its body.</p><p>On the SO-101, this means the arm can use cameras, joint encoders, and other sensors to understand where it is, then choose the correct motion and execute it smoothly.</p><h4>The Sense-Think-Act Loop</h4><p>Every robot operates on a fundamental loop that defines its autonomy. The loop repeats continuously so the robot can react to changing conditions.</p><ul style=\"margin-left:20px; margin-top:10px;\"><li><strong>Sense:</strong> The robot collects data with sensors like cameras, encoders, IMUs, or force sensors. This tells it where the arm is, where objects are, and whether the task is proceeding correctly.</li><li><strong>Think:</strong> The brain of the robot processes the sensor data. It runs algorithms or AI models to estimate the best next motion, adjust for errors, and plan safe trajectories.</li><li><strong>Act:</strong> The robot applies the decision using actuators such as motors, servos, and grippers. It turns electrical signals into motion to move joints.</li></ul>",
+            "quiz": {
+                "question": "Which part of the loop involves sensors like cameras collecting data?",
+                "options": ["Sense", "Think", "Act", "Power"],
+                "answer": 0
+            }
+        },
+        "lesson1_2": {
+            "title": "Degrees of Freedom (DOF)",
+            "content": "<p>Degrees of Freedom (DOF) describes how many independent motions a robot can make. Each joint gives the SO-101 one more way to position its arm.</p><h4>Why 6 DOF Matters</h4><p>The SO-101 has <strong>6 DOF</strong>, which means it can place its end effector in most positions and orientations needed for manipulation. The six axes are base rotation, shoulder lift, elbow bend, wrist pitch, wrist roll, and gripper action.</p>",
+            "quiz": {
+                "question": "How many independent parameters define position and orientation in 3D space?",
+                "options": ["3", "4", "6", "9"],
+                "answer": 2
+            }
+        },
+        "lesson1_3": {
+            "title": "Coordinate Systems",
+            "content": "<p>Robots need coordinate systems to know where they are and where they should go. The two most useful systems are joint space and Cartesian space.</p><h4>Joint Space</h4><p>Joint space is defined by servo angles such as [q1, q2, q3, q4, q5, q6]. It is the natural way to command the arm's motors.</p><h4>Cartesian Space</h4><p>Cartesian space uses [X, Y, Z] plus orientation [Roll, Pitch, Yaw] to describe the end effector relative to the base. It is the easiest way to think about the task.</p>",
+            "quiz": {
+                "question": "Which space uses X, Y, Z coordinates?",
+                "options": ["Joint Space", "Cartesian Space", "Angular Space", "Null Space"],
+                "answer": 1
+            }
+        },
+        "lesson2_1": {
+            "title": "Servo Mechanics",
+            "content": "<p>Servos are the robot’s actuators: they move joints and hold them in place. Unlike simple motors, servos are designed to reach and stay at a specified angle.</p><h4>Closed-Loop Feedback</h4><p>The SO-101 uses servos that report their current position back to the controller. That feedback allows the system to correct errors, improving accuracy and reliability.</p>",
+            "quiz": {
+                "question": "What is a major advantage of Serial Bus Servos?",
+                "options": ["They use more power", "They provide real-time feedback", "They are slower", "They are larger"],
+                "answer": 1
+            }
+        },
+        "lesson2_2": {
+            "title": "Serial Protocol",
+            "content": "<p>The Jetson Orin Nano sends commands to the servo controller over a serial bus. Each message carries an ID, instruction code, parameters, and a checksum for safety.</p><h4>Why Checksums Matter</h4><p>Checksums let the controller detect interference or corrupted data. If a packet is malformed, the system ignores it instead of acting on a bad command.</p>",
+            "quiz": {
+                "question": "What ensures that a serial packet wasn't corrupted?",
+                "options": ["ID", "Checksum", "Length", "Baud rate"],
+                "answer": 1
+            }
+        },
+        "lesson3_1": {
+            "title": "Forward Kinematics",
+            "content": "<p>Forward Kinematics (FK) is the mathematical process of calculating the position and orientation of the end effector, given the angles of all the joints.</p><h4>Denavit-Hartenberg (DH) Parameters</h4><p>In robotics, we typically use DH parameters (link lengths, twists, offsets, and angles) to systematically build transformation matrices from the base to the end effector.</p>",
+            "quiz": {
+                "question": "What does Forward Kinematics calculate?",
+                "options": ["Joint angles", "End effector position", "Motor torque", "Camera position"],
+                "answer": 1
+            }
+        },
+        "lesson3_2": {
+            "title": "Inverse Kinematics",
+            "content": "<p>Inverse Kinematics (IK) solves the opposite problem: given a desired target position for the end effector, what joint angles are required to reach it?</p><h4>Solving IK</h4><p>IK can be solved analytically (using geometry) or numerically (using iterative algorithms like Jacobian-based methods). For a 6-DOF arm like the SO-101, multiple solutions may exist.</p>",
+            "quiz": {
+                "question": "If a 6-DOF arm reaches a point, how many possible solutions might exist?",
+                "options": ["Only one", "Multiple solutions", "Zero solutions", "Always two"],
+                "answer": 1
+            }
+        },
+        "lesson4_1": {
+            "title": "Trajectory Generation",
+            "content": "<p>Trajectory generation determines the path a robot arm takes over time to get from point A to point B smoothly.</p><h4>Why Smoothness Matters</h4><p>Moving instantly between points causes infinite acceleration, which damages motors. We use polynomial trajectories or spline interpolation to ensure velocity and acceleration change gradually.</p>",
+            "quiz": {
+                "question": "What is the primary reason for smoothing trajectories?",
+                "options": ["To look cool", "To prevent motor damage", "To save memory", "To use less code"],
+                "answer": 1
+            }
+        },
+        "lesson4_2": {
+            "title": "Collision Avoidance",
+            "content": "<p>When planning a motion, the robot must ensure it does not collide with the environment or itself (self-collision).</p><h4>Bounding Boxes</h4><p>We often simplify the robot links and obstacles into geometric shapes like cylinders or bounding boxes to speed up collision detection mathematics during trajectory planning.</p>",
+            "quiz": {
+                "question": "Why do we use bounding boxes for collision detection?",
+                "options": ["They are perfectly accurate", "They are computationally faster", "They look better", "They are required by law"],
+                "answer": 1
+            }
+        },
+        "lesson5_1": {
+            "title": "Camera Calibration",
+            "content": "<p>To use vision, a robot must map pixels to the physical world. Camera calibration estimates the intrinsic parameters (focal length, distortion) and extrinsic parameters (camera's position relative to the arm).</p><h4>Checkerboard Calibration</h4><p>By showing a checkerboard pattern to the camera, the software can calculate a matrix that converts 2D pixel coordinates into 3D rays.</p>",
+            "quiz": {
+                "question": "What pattern is commonly used to calibrate cameras?",
+                "options": ["A circle", "A checkerboard", "A QR code", "A barcode"],
+                "answer": 1
+            }
+        },
+        "lesson5_2": {
+            "title": "YOLOE Object Detection",
+            "content": "<p>YOLOE is a state-of-the-art, real-time object detection model. It allows the robot to draw bounding boxes around objects it needs to interact with.</p><h4>Inference on the Edge</h4><p>The SO-101 runs YOLOE locally on its Jetson Orin Nano, providing high-speed inference without relying on cloud processing, which is critical for low-latency robotics.</p>",
+            "quiz": {
+                "question": "Why is running YOLOE locally important for robotics?",
+                "options": ["Cloud processing is too fast", "It reduces latency", "It saves battery", "It uses more data"],
+                "answer": 1
+            }
+        },
+        "lesson6_1": {
+            "title": "Real-time Control Loops",
+            "content": "<p>A real-time control loop guarantees that code executes at a strict, deterministic interval (e.g., 100 Hz or 10ms). This ensures stable control of the robotic arm.</p><h4>Jitter</h4><p>If the loop timing varies (known as jitter), the arm's motion will become jerky and inaccurate. Real-time operating systems (RTOS) or high-priority threads are used to minimize jitter.</p>",
+            "quiz": {
+                "question": "What happens if a control loop has high jitter?",
+                "options": ["The arm moves smoothly", "The arm becomes jerky", "The arm moves faster", "The arm shuts down"],
+                "answer": 1
+            }
+        },
+        "lesson6_2": {
+            "title": "Final Project: Pick & Place",
+            "content": "<p>In this final challenge, you will combine Vision, Inverse Kinematics, and Trajectory Planning to perform an autonomous pick-and-place task.</p><h4>The Workflow</h4><p>1. Detect the object using YOLOE. <br>2. Calculate its 3D position using the calibrated camera. <br>3. Solve the IK to find joint angles. <br>4. Generate a smooth trajectory. <br>5. Execute the motion and close the gripper.</p>",
+            "quiz": {
+                "question": "What is the first step in an autonomous pick-and-place task?",
+                "options": ["Solve IK", "Generate trajectory", "Detect the object", "Close gripper"],
+                "answer": 2
+            }
+        }
+    },
     "progress_text": "Complete 3 more lessons to unlock the next course",
     "ai_assistant": "AI Tutor",
     "ai_desc": "Ask questions about robotics, kinematics, or any topic in this course.",

@@ -552,26 +552,28 @@ PARC.Toast = {
     show(message, type = 'info', duration = 3000) {
         if (!this.container) this.init();
         
-        const colors = {
-            info: ['#3b82f6', '#111624'],
-            success: ['#10b981', '#111624'],
-            warning: ['#f59e0b', '#111624'],
-            error: ['#ef4444', '#111624']
+        const types = {
+            info: { color: 'var(--blue)', bg: 'var(--glass-bg)' },
+            success: { color: 'var(--green)', bg: 'var(--glass-bg)' },
+            warning: { color: 'var(--amber)', bg: 'var(--glass-bg)' },
+            error: { color: 'var(--red)', bg: 'var(--glass-bg)' }
         };
         
-        const [color, bg] = colors[type] || colors.info;
+        const { color, bg } = types[type] || types.info;
         
         const toast = document.createElement('div');
         toast.style.cssText = `
             background: ${bg};
-            border: 1px solid ${color};
+            backdrop-filter: var(--glass-backdrop);
+            -webkit-backdrop-filter: var(--glass-backdrop);
+            border: 1px solid var(--glass-border);
             border-left: 3px solid ${color};
-            border-radius: 8px;
+            border-radius: var(--r);
             padding: 12px 16px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--mono);
             font-size: 12px;
-            color: #e2e8f0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            color: var(--text);
+            box-shadow: var(--glass-shadow);
             transform: translateX(120%);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-width: 300px;

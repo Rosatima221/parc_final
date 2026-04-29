@@ -4,19 +4,7 @@
 <style>
     /* Premium Styling Overrides */
     :root {
-        --glass-bg: rgba(16, 22, 35, 0.65);
-        --glass-border: rgba(255, 255, 255, 0.08);
-        --glass-highlight: rgba(255, 255, 255, 0.03);
-        --glow-blue: rgba(59, 130, 246, 0.5);
-        --glow-purple: rgba(139, 92, 246, 0.4);
-        --text-bright: #ffffff;
-    }
-
-    [data-theme='light'] {
-        --glass-bg: rgba(255, 255, 255, 0.75);
-        --glass-border: rgba(0, 0, 0, 0.05);
-        --glass-highlight: rgba(255, 255, 255, 0.5);
-        --text-bright: #000000;
+        /* Inheriting from theme.css */
     }
 
     .learn-container {
@@ -62,12 +50,12 @@
         text-align: center;
         padding: 80px 20px;
         margin-bottom: 60px;
-        background: linear-gradient(180deg, var(--glass-highlight) 0%, transparent 100%);
+        background: var(--glass-bg);
         border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        border-radius: 32px;
+        backdrop-filter: var(--glass-backdrop);
+        -webkit-backdrop-filter: var(--glass-backdrop);
+        box-shadow: var(--glass-shadow);
         position: relative;
         overflow: hidden;
     }
@@ -83,7 +71,7 @@
         font-weight: 700;
         margin-bottom: 16px;
         letter-spacing: -0.02em;
-        background: linear-gradient(to right, var(--text-bright), var(--blue));
+        background: linear-gradient(to right, var(--text), var(--blue));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -104,7 +92,8 @@
         padding: 8px;
         border-radius: 999px;
         border: 1px solid var(--glass-border);
-        backdrop-filter: blur(10px);
+        backdrop-filter: var(--glass-backdrop);
+        -webkit-backdrop-filter: var(--glass-backdrop);
         width: fit-content;
         margin-left: auto;
         margin-right: auto;
@@ -123,11 +112,11 @@
         position: relative;
     }
     .course-nav-btn:hover:not(.locked) {
-        color: var(--text-bright);
+        color: var(--text);
     }
     .course-nav-btn.active {
         background: var(--blue);
-        color: #fff;
+        color: var(--text);
         box-shadow: 0 4px 16px var(--glow-blue);
     }
     .course-nav-btn.locked {
@@ -160,9 +149,9 @@
         border: 1px solid var(--glass-border);
         border-radius: 20px;
         overflow: hidden;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        backdrop-filter: var(--glass-backdrop);
+        -webkit-backdrop-filter: var(--glass-backdrop);
+        transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
     }
     .module:hover {
         border-color: rgba(59, 130, 246, 0.3);
@@ -202,7 +191,7 @@
     .module-title h3 {
         font-size: 18px;
         margin-bottom: 4px;
-        color: var(--text-bright);
+        color: var(--text);
     }
     .module-title p {
         font-size: 13px;
@@ -315,7 +304,7 @@
     }
     .lesson-info h4 {
         font-size: 14px;
-        color: var(--text-bright);
+        color: var(--text);
         margin-bottom: 4px;
         display: flex;
         align-items: center;
@@ -381,11 +370,13 @@
     /* Sidebar Progress */
     .learn-sidebar {
         position: sticky;
-        top: calc(var(--hdr-h) + 24px);
+        top: calc(var(--header-height) + 24px);
         height: fit-content;
         display: flex;
         flex-direction: column;
         gap: 20px;
+        animation: slideInRight 0.6s var(--ease-out) both;
+        animation-delay: 0.5s;
     }
     .sidebar-card {
         background: var(--glass-bg);
@@ -420,7 +411,7 @@
     .stat-row span:first-child { color: var(--text-secondary); }
     .stat-row span:last-child {
         font-family: var(--mono);
-        color: var(--text-bright);
+        color: var(--text);
         font-weight: 600;
         background: var(--bg3);
         padding: 4px 8px;
@@ -478,7 +469,7 @@
     .quick-link:hover {
         background: var(--bg3);
         border-color: var(--blue);
-        color: var(--text-bright);
+        color: var(--text);
         transform: translateY(-2px);
     }
     .quick-link svg {
@@ -557,7 +548,7 @@
     }
     .lesson-header h2 {
         font-size: 32px;
-        color: var(--text-bright);
+        color: var(--text);
         margin-bottom: 8px;
         letter-spacing: -0.01em;
     }
@@ -579,7 +570,7 @@
         color: var(--text-secondary);
     }
     .lesson-body h4 {
-        color: var(--text-bright);
+        color: var(--text);
         font-size: 18px;
         margin: 32px 0 16px;
     }
@@ -607,7 +598,7 @@
         margin-bottom: 12px;
         cursor: pointer;
         text-align: left;
-        color: var(--text-bright);
+        color: var(--text);
         font-size: 15px;
         transition: all 0.2s;
         font-family: var(--sans);
@@ -636,14 +627,14 @@
     <div class="blob blob-2"></div>
 </div>
 
-<main style="height: calc(100vh - var(--hdr-h)); overflow-y: auto; position: relative; z-index: 10;">
+<main style="height: calc(100vh - var(--header-height)); overflow-y: auto; position: relative; z-index: 10;">
     <div class="learn-container">
-        <div class="learn-hero">
-            <h1>{{ t('learn.hero_title') }}</h1>
-            <p>{{ t('learn.hero_subtitle') }}</p>
+        <div class="learn-hero animate-fade-up">
+            <h1 class="animate-fade-up stagger-1">{{ t('learn.hero_title') }}</h1>
+            <p class="animate-fade-up stagger-2">{{ t('learn.hero_subtitle') }}</p>
         </div>
 
-        <div class="course-nav">
+        <div class="course-nav animate-fade-up stagger-3">
             <button class="course-nav-btn active" onclick="filterLevel('beginner')">
                 {{ t('learn.nav.beginner') }}
             </button>
@@ -658,7 +649,7 @@
         </div>
 
         <div class="learn-layout">
-            <div class="course-modules">
+            <div class="course-modules animate-slide-in stagger-4">
                 <!-- Module 1: Introduction (Beginner) -->
                 <div class="module open" data-level="beginner">
                     <div class="module-header" onclick="toggleModule(this)">
@@ -969,184 +960,7 @@
     </div>
 
     <script>
-        const LESSON_DATA = {
-            "lesson1_1": {
-                title: "What is a Robot?",
-                content: `
-                    <p>A robot is an autonomous machine that combines sensing, decision-making, and physical action to interact with the real world. It is not just a machine that moves; it perceives its environment, adapts to new situations, and carries out tasks using its body.</p>
-                    <p>On the SO-101, this means the arm can use cameras, joint encoders, and other sensors to understand where it is, then choose the correct motion and execute it smoothly.</p>
-                    <h4>The Sense-Think-Act Loop</h4>
-                    <p>Every robot operates on a fundamental loop that defines its autonomy. The loop repeats continuously so the robot can react to changing conditions.</p>
-                    <ul style="margin-left:20px; margin-top:10px;">
-                        <li><strong>Sense:</strong> The robot collects data with sensors like cameras, encoders, IMUs, or force sensors. This tells it where the arm is, where objects are, and whether the task is proceeding correctly.</li>
-                        <li><strong>Think:</strong> The brain of the robot processes the sensor data. It runs algorithms or AI models to estimate the best next motion, adjust for errors, and plan safe trajectories.</li>
-                        <li><strong>Act:</strong> The robot applies the decision using actuators such as motors, servos, and grippers. It turns electrical signals into motion to move joints.</li>
-                    </ul>
-                `,
-                quiz: {
-                    question: "Which part of the loop involves sensors like cameras collecting data?",
-                    options: ["Sense", "Think", "Act", "Power"],
-                    answer: 0
-                }
-            },
-            "lesson1_2": {
-                title: "Degrees of Freedom (DOF)",
-                content: `
-                    <p>Degrees of Freedom (DOF) describes how many independent motions a robot can make. Each joint gives the SO-101 one more way to position its arm.</p>
-                    <h4>Why 6 DOF Matters</h4>
-                    <p>The SO-101 has <strong>6 DOF</strong>, which means it can place its end effector in most positions and orientations needed for manipulation. The six axes are base rotation, shoulder lift, elbow bend, wrist pitch, wrist roll, and gripper action.</p>
-                `,
-                quiz: {
-                    question: "How many independent parameters define position and orientation in 3D space?",
-                    options: ["3", "4", "6", "9"],
-                    answer: 2
-                }
-            },
-            "lesson1_3": {
-                title: "Coordinate Systems",
-                content: `
-                    <p>Robots need coordinate systems to know where they are and where they should go. The two most useful systems are joint space and Cartesian space.</p>
-                    <h4>Joint Space</h4>
-                    <p>Joint space is defined by servo angles such as [q1, q2, q3, q4, q5, q6]. It is the natural way to command the arm's motors.</p>
-                    <h4>Cartesian Space</h4>
-                    <p>Cartesian space uses [X, Y, Z] plus orientation [Roll, Pitch, Yaw] to describe the end effector relative to the base. It is the easiest way to think about the task.</p>
-                `,
-                quiz: {
-                    question: "Which space uses X, Y, Z coordinates?",
-                    options: ["Joint Space", "Cartesian Space", "Angular Space", "Null Space"],
-                    answer: 1
-                }
-            },
-            "lesson2_1": {
-                title: "Servo Mechanics",
-                content: `
-                    <p>Servos are the robot’s actuators: they move joints and hold them in place. Unlike simple motors, servos are designed to reach and stay at a specified angle.</p>
-                    <h4>Closed-Loop Feedback</h4>
-                    <p>The SO-101 uses servos that report their current position back to the controller. That feedback allows the system to correct errors, improving accuracy and reliability.</p>
-                `,
-                quiz: {
-                    question: "What is a major advantage of Serial Bus Servos?",
-                    options: ["They use more power", "They provide real-time feedback", "They are slower", "They are larger"],
-                    answer: 1
-                }
-            },
-            "lesson2_2": {
-                title: "Serial Protocol",
-                content: `
-                    <p>The Jetson Orin Nano sends commands to the servo controller over a serial bus. Each message carries an ID, instruction code, parameters, and a checksum for safety.</p>
-                    <h4>Why Checksums Matter</h4>
-                    <p>Checksums let the controller detect interference or corrupted data. If a packet is malformed, the system ignores it instead of acting on a bad command.</p>
-                `,
-                quiz: {
-                    question: "What ensures that a serial packet wasn't corrupted?",
-                    options: ["ID", "Checksum", "Length", "Baud rate"],
-                    answer: 1
-                }
-            },
-            "lesson3_1": {
-                title: "Forward Kinematics",
-                content: `
-                    <p>Forward Kinematics (FK) is the mathematical process of calculating the position and orientation of the end effector, given the angles of all the joints.</p>
-                    <h4>Denavit-Hartenberg (DH) Parameters</h4>
-                    <p>In robotics, we typically use DH parameters (link lengths, twists, offsets, and angles) to systematically build transformation matrices from the base to the end effector.</p>
-                `,
-                quiz: {
-                    question: "What does Forward Kinematics calculate?",
-                    options: ["Joint angles", "End effector position", "Motor torque", "Camera position"],
-                    answer: 1
-                }
-            },
-            "lesson3_2": {
-                title: "Inverse Kinematics",
-                content: `
-                    <p>Inverse Kinematics (IK) solves the opposite problem: given a desired target position for the end effector, what joint angles are required to reach it?</p>
-                    <h4>Solving IK</h4>
-                    <p>IK can be solved analytically (using geometry) or numerically (using iterative algorithms like Jacobian-based methods). For a 6-DOF arm like the SO-101, multiple solutions may exist.</p>
-                `,
-                quiz: {
-                    question: "If a 6-DOF arm reaches a point, how many possible solutions might exist?",
-                    options: ["Only one", "Multiple solutions", "Zero solutions", "Always two"],
-                    answer: 1
-                }
-            },
-            "lesson4_1": {
-                title: "Trajectory Generation",
-                content: `
-                    <p>Trajectory generation determines the path a robot arm takes over time to get from point A to point B smoothly.</p>
-                    <h4>Why Smoothness Matters</h4>
-                    <p>Moving instantly between points causes infinite acceleration, which damages motors. We use polynomial trajectories or spline interpolation to ensure velocity and acceleration change gradually.</p>
-                `,
-                quiz: {
-                    question: "What is the primary reason for smoothing trajectories?",
-                    options: ["To look cool", "To prevent motor damage", "To save memory", "To use less code"],
-                    answer: 1
-                }
-            },
-            "lesson4_2": {
-                title: "Collision Avoidance",
-                content: `
-                    <p>When planning a motion, the robot must ensure it does not collide with the environment or itself (self-collision).</p>
-                    <h4>Bounding Boxes</h4>
-                    <p>We often simplify the robot links and obstacles into geometric shapes like cylinders or bounding boxes to speed up collision detection mathematics during trajectory planning.</p>
-                `,
-                quiz: {
-                    question: "Why do we use bounding boxes for collision detection?",
-                    options: ["They are perfectly accurate", "They are computationally faster", "They look better", "They are required by law"],
-                    answer: 1
-                }
-            },
-            "lesson5_1": {
-                title: "Camera Calibration",
-                content: `
-                    <p>To use vision, a robot must map pixels to the physical world. Camera calibration estimates the intrinsic parameters (focal length, distortion) and extrinsic parameters (camera's position relative to the arm).</p>
-                    <h4>Checkerboard Calibration</h4>
-                    <p>By showing a checkerboard pattern to the camera, the software can calculate a matrix that converts 2D pixel coordinates into 3D rays.</p>
-                `,
-                quiz: {
-                    question: "What pattern is commonly used to calibrate cameras?",
-                    options: ["A circle", "A checkerboard", "A QR code", "A barcode"],
-                    answer: 1
-                }
-            },
-            "lesson5_2": {
-                title: "YOLOE Object Detection",
-                content: `
-                    <p>YOLOE is a state-of-the-art, real-time object detection model. It allows the robot to draw bounding boxes around objects it needs to interact with.</p>
-                    <h4>Inference on the Edge</h4>
-                    <p>The SO-101 runs YOLOE locally on its Jetson Orin Nano, providing high-speed inference without relying on cloud processing, which is critical for low-latency robotics.</p>
-                `,
-                quiz: {
-                    question: "Why is running YOLOE locally important for robotics?",
-                    options: ["Cloud processing is too fast", "It reduces latency", "It saves battery", "It uses more data"],
-                    answer: 1
-                }
-            },
-            "lesson6_1": {
-                title: "Real-time Control Loops",
-                content: `
-                    <p>A real-time control loop guarantees that code executes at a strict, deterministic interval (e.g., 100 Hz or 10ms). This ensures stable control of the robotic arm.</p>
-                    <h4>Jitter</h4>
-                    <p>If the loop timing varies (known as jitter), the arm's motion will become jerky and inaccurate. Real-time operating systems (RTOS) or high-priority threads are used to minimize jitter.</p>
-                `,
-                quiz: {
-                    question: "What happens if a control loop has high jitter?",
-                    options: ["The arm moves smoothly", "The arm becomes jerky", "The arm moves faster", "The arm shuts down"],
-                    answer: 1
-                }
-            },
-            "lesson6_2": {
-                title: "Final Project: Pick & Place",
-                content: `
-                    <p>In this final challenge, you will combine Vision, Inverse Kinematics, and Trajectory Planning to perform an autonomous pick-and-place task.</p>
-                    <h4>The Workflow</h4>
-                    <p>1. Detect the object using YOLOE. <br>2. Calculate its 3D position using the calibrated camera. <br>3. Solve the IK to find joint angles. <br>4. Generate a smooth trajectory. <br>5. Execute the motion and close the gripper.</p>
-                `,
-                quiz: {
-                    question: "What is the first step in an autonomous pick-and-place task?",
-                    options: ["Solve IK", "Generate trajectory", "Detect the object", "Close gripper"],
-                    answer: 2
-                }
-        };
+        // LESSON_DATA is now handled dynamically via t('lessons.ID')
 
         const PROGRESS_KEY = 'parc_learning_progress';
         const LESSON_TRACKS = {
@@ -1207,8 +1021,8 @@
         }
 
         function openLesson(id) {
-            const lesson = LESSON_DATA[id];
-            if (!lesson) {
+            const lesson = t('lessons.' + id);
+            if (!lesson || typeof lesson === 'string') {
                 PARC.toast("Lesson content coming soon!", "info");
                 return;
             }
@@ -1226,13 +1040,13 @@
                 const parts = id.replace('lesson', '').split('_');
                 document.getElementById('modal-subtitle').textContent = `Module ${parts[0]} / Lesson ${parts[1]}`;
             } else {
-                document.getElementById('modal-subtitle').textContent = "Reference";
+                document.getElementById('modal-subtitle').textContent = t('learn.reference');
             }
             document.getElementById('lesson-body').innerHTML = lesson.content;
             document.getElementById('lesson-modal').style.display = 'flex';
             document.getElementById('quiz-btn').style.display = 'block';
             document.getElementById('finish-btn').style.display = 'none';
-            document.getElementById('lesson-status').textContent = 'READY';
+            document.getElementById('lesson-status').textContent = t('learn.ready');
         }
 
         function closeLesson() {
@@ -1240,7 +1054,7 @@
         }
 
         function startQuiz() {
-            const lesson = LESSON_DATA[currentLessonId];
+            const lesson = t('lessons.' + currentLessonId);
             if (!lesson || !lesson.quiz) return;
             let html = `<h4>${lesson.quiz.question}</h4><div style="margin-top:24px;">`;
             lesson.quiz.options.forEach((opt, i) => {
@@ -1249,12 +1063,12 @@
             html += `</div>`;
             document.getElementById('lesson-body').innerHTML = html;
             document.getElementById('quiz-btn').style.display = 'none';
-            document.getElementById('lesson-status').textContent = 'QUIZ IN PROGRESS';
+            document.getElementById('lesson-status').textContent = t('learn.quiz_in_progress');
             document.getElementById('lesson-status').style.color = 'var(--blue)';
         }
 
         function checkAnswer(idx) {
-            const lesson = LESSON_DATA[currentLessonId];
+            const lesson = t('lessons.' + currentLessonId);
             const options = document.querySelectorAll('.quiz-option');
 
             options.forEach((btn, i) => {
@@ -1264,12 +1078,12 @@
             });
 
             if (idx === lesson.quiz.answer) {
-                PARC.toast("Correct! Well done.", "ok");
+                PARC.toast(t('learn.quiz_correct'), "ok");
                 document.getElementById('finish-btn').style.display = 'block';
-                document.getElementById('lesson-status').textContent = 'PASSED';
+                document.getElementById('lesson-status').textContent = t('learn.passed');
                 document.getElementById('lesson-status').style.color = 'var(--green)';
             } else {
-                PARC.toast("Not quite. Try again!", "err");
+                PARC.toast(t('learn.quiz_wrong'), "err");
                 setTimeout(() => startQuiz(), 1500);
             }
         }
@@ -1388,43 +1202,40 @@
         }
 
         function showGlossary() {
+            const glossary = t('glossary');
             currentLessonId = 'glossary';
-            document.getElementById('modal-title').textContent = "Robotics Glossary";
-            document.getElementById('modal-subtitle').textContent = "Essential terminology";
-            document.getElementById('lesson-body').innerHTML = `
-                <dl style="display:grid; grid-template-columns: auto 1fr; gap: 24px; align-items: baseline;">
-                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Actuator</dt>
-                    <dd>A component of a machine that is responsible for moving and controlling a mechanism.</dd>
-                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">End Effector</dt>
-                    <dd>The device at the end of a robotic arm, designed to interact with the environment.</dd>
-                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Kinematics</dt>
-                    <dd>The study of the motion of a robot without considering forces.</dd>
-                </dl>
-            `;
+            document.getElementById('modal-title').textContent = glossary.title;
+            document.getElementById('modal-subtitle').textContent = glossary.subtitle;
+            
+            let html = `<dl style="display:grid; grid-template-columns: auto 1fr; gap: 24px; align-items: baseline;">`;
+            for (const key in glossary.terms) {
+                const term = glossary.terms[key];
+                html += `<dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">${term.term}</dt>
+                         <dd>${term.desc}</dd>`;
+            }
+            html += `</dl>`;
+            
+            document.getElementById('lesson-body').innerHTML = html;
             document.getElementById('lesson-modal').style.display = 'flex';
             document.getElementById('quiz-btn').style.display = 'none';
             document.getElementById('finish-btn').style.display = 'none';
-            document.getElementById('lesson-status').textContent = 'REFERENCE';
+            document.getElementById('lesson-status').textContent = t('learn.reference');
         }
 
         function showCheatsheet() {
+            const cheatsheet = t('cheatsheet');
             currentLessonId = 'cheatsheet';
-            document.getElementById('modal-title').textContent = "Python Cheatsheet";
-            document.getElementById('modal-subtitle').textContent = "API commands";
+            document.getElementById('modal-title').textContent = cheatsheet.title;
+            document.getElementById('modal-subtitle').textContent = cheatsheet.subtitle;
             document.getElementById('lesson-body').innerHTML = `
                 <div style="background:var(--bg4); padding:24px; border-radius:12px; font-family:var(--mono); font-size:14px; border:1px solid var(--border);">
-                    <pre><code style="color:var(--text-bright);"># Connect to robot
-from parl_robot import Robot
-arm = Robot('/dev/ttyUSB0')
-
-# Move to angles
-arm.set_angles([0, 45, -45, 0, 90, 0])</code></pre>
+                    <pre><code style="color:var(--text-bright);">${cheatsheet.code}</code></pre>
                 </div>
             `;
             document.getElementById('lesson-modal').style.display = 'flex';
             document.getElementById('quiz-btn').style.display = 'none';
             document.getElementById('finish-btn').style.display = 'none';
-            document.getElementById('lesson-status').textContent = 'REFERENCE';
+            document.getElementById('lesson-status').textContent = t('learn.reference');
         }
 
         // Initialize

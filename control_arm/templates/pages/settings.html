@@ -6,6 +6,7 @@
             max-width: 900px;
             margin: 0 auto;
             padding: 40px 24px;
+            animation: fadeInUp 0.6s var(--ease-out) both;
         }
 
         .settings-header {
@@ -43,11 +44,13 @@
             align-items: center;
             justify-content: space-between;
             padding: 16px 20px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
             border-radius: var(--r);
             margin-bottom: 12px;
-            transition: all 0.2s;
+            transition: all 0.2s var(--ease-out);
+            backdrop-filter: var(--glass-backdrop);
+            -webkit-backdrop-filter: var(--glass-backdrop);
         }
 
         .setting-row:hover {
@@ -63,7 +66,7 @@
 
         .setting-info p {
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
         }
 
         /* Language Selector */
@@ -136,11 +139,14 @@
         }
 
         .workflow-diagram {
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
             overflow-x: auto;
+            backdrop-filter: var(--glass-backdrop);
+            -webkit-backdrop-filter: var(--glass-backdrop);
+            box-shadow: var(--glass-shadow);
         }
 
         .workflow-title {
@@ -190,26 +196,26 @@
 
         .workflow-box.process {
             background: var(--green-dim, rgba(16, 185, 129, 0.1));
-            border-color: var(--green, #10b981);
-            color: var(--green, #10b981);
+            border-color: var(--green);
+            color: var(--green);
         }
 
         .workflow-box.ai {
-            background: rgba(139, 92, 246, 0.1);
-            border-color: var(--purple, #8b5cf6);
-            color: var(--purple, #8b5cf6);
+            background: var(--purple-dim);
+            border-color: var(--purple);
+            color: var(--purple);
         }
 
         .workflow-box.output {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: var(--yellow, #f59e0b);
-            color: var(--yellow, #f59e0b);
+            background: var(--amber-dim);
+            border-color: var(--amber);
+            color: var(--amber);
         }
 
         .workflow-box.data {
-            background: rgba(14, 165, 233, 0.1);
-            border-color: var(--cyan, #0ea5e9);
-            color: var(--cyan, #0ea5e9);
+            background: var(--blue-dim);
+            border-color: var(--blue);
+            color: var(--blue);
         }
 
         .workflow-box .port {
@@ -275,9 +281,9 @@
         }
 
         .flow-label-badge.stt { background: var(--blue-dim); color: var(--blue); }
-        .flow-label-badge.tts { background: rgba(245, 158, 11, 0.2); color: var(--yellow, #f59e0b); }
-        .flow-label-badge.vision { background: rgba(16, 185, 129, 0.2); color: var(--green, #10b981); }
-        .flow-label-badge.chat { background: rgba(139, 92, 246, 0.2); color: var(--purple, #8b5cf6); }
+        .flow-label-badge.tts { background: var(--amber-dim); color: var(--amber); }
+        .flow-label-badge.vision { background: var(--green-dim); color: var(--green); }
+        .flow-label-badge.chat { background: var(--purple-dim); color: var(--purple); }
 
         /* Port List */
         .port-list {
@@ -402,7 +408,7 @@
             width: 100%;
             padding: 10px;
             background: var(--blue);
-            color: #fff;
+            color: var(--text);
             border: none;
             border-radius: 6px;
             font-family: var(--mono);
@@ -510,7 +516,7 @@
             right: 24px;
             padding: 12px 24px;
             background: var(--blue);
-            color: #fff;
+            color: var(--text);
             border: none;
             border-radius: var(--r);
             font-family: var(--mono);
@@ -599,7 +605,7 @@
     </script>
 {% endblock %}
 {% block content %}
-    <main style="height: calc(100vh - var(--hdr-h)); overflow-y: auto; padding: 40px;">
+    <main style="height: calc(100vh - var(--header-height)); overflow-y: auto; padding: 40px;">
         <div class="settings-container">
             <div class="settings-header">
                 <h1>{{ t('settings.title') }}</h1>

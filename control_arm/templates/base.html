@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ lang }}">
+<html lang="{{ lang }}" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,16 +12,9 @@
     <style>
         /* ── PRL Design System ─────────────────────────────────────────────── */
         :root {
-            --amber:      #F5A623;
-            --amber-dim:  rgba(245,166,35,0.08);
-            --amber-mid:  rgba(245,166,35,0.18);
-            --amber-bdr:  rgba(245,166,35,0.35);
-            --dm-mono:    'DM Mono', 'JetBrains Mono', monospace;
-            --ibm:        'IBM Plex Sans', 'DM Sans', system-ui, sans-serif;
-            --nav-w:      60px;
-            --nav-exp:    224px;
-            --hdr-h:      48px;
-            --hdr-border: #252A35;
+            /* Inherited from theme.css, here we only keep overrides or base-specific layout shortcuts */
+            --nav-w:      var(--sidebar-collapsed);
+            --hdr-h:      var(--header-height);
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -32,7 +24,7 @@
             }
         }
 
-        body { font-family: var(--ibm); background: var(--bg); }
+        body { font-family: var(--sans); background: var(--bg); }
 
         /* ── Scrollbar ─────────────────────────────────────────────────────── */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -49,17 +41,17 @@
             align-items: center;
             padding: 0 16px;
             background: var(--bg2);
-            border-bottom: 1px solid var(--hdr-border);
+            border-bottom: 1px solid var(--border);
             z-index: 200;
             gap: 16px;
         }
 
         .parc-logo {
-            font-family: var(--dm-mono);
+            font-family: var(--mono);
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--amber);
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
             padding: 0;
             line-height: 1;
             user-select: none;
@@ -70,9 +62,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-family: var(--dm-mono);
+            font-family: var(--mono);
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             white-space: nowrap;
         }
 
@@ -80,7 +72,7 @@
             position: relative;
             width: 8px; height: 8px;
             border-radius: 50%;
-            background: #334155;
+            background: var(--bg4);
             flex-shrink: 0;
             transition: background 0.4s;
         }
@@ -109,7 +101,7 @@
         #parc-label { color: var(--text-secondary); }
 
         #parc-port {
-            font-family: var(--dm-mono);
+            font-family: var(--mono);
             font-size: 11px;
             padding: 2px 7px;
             background: var(--bg3);
@@ -138,37 +130,38 @@
             cursor: pointer;
             transition: all 0.15s;
             text-decoration: none;
-            font-family: var(--dm-mono);
+            font-family: var(--mono);
             font-size: 10px;
-            font-weight: 500;
+            font-weight: 600;
             padding: 0;
         }
 
         .parc-ibtn:hover {
-            background: var(--bg3);
-            border-color: var(--border);
+            background: var(--glass-hover);
+            border-color: var(--border2);
             color: var(--text);
+            transform: translateY(-1px);
         }
 
         .parc-ibtn svg {
-            width: 15px; height: 15px;
+            width: 16px; height: 16px;
             stroke: currentColor; fill: none;
-            stroke-width: 1.75;
+            stroke-width: 2;
             stroke-linecap: round; stroke-linejoin: round;
         }
 
         .parc-ibtn.spinning svg { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .parc-sep { width: 1px; height: 18px; background: var(--border); }
+        .parc-sep { width: 1px; height: 16px; background: var(--border); margin: 0 4px; }
 
         /* ── Sidebar Nav ───────────────────────────────────────────────────── */
         .parc-nav {
             position: fixed;
             left: 0; top: var(--hdr-h); bottom: 0;
-            width: var(--nav-w);
+            width: var(--sidebar-collapsed);
             background: var(--bg2);
-            border-right: 1px solid var(--hdr-border);
+            border-right: 1px solid var(--border);
             z-index: 150;
             overflow: hidden;
             transition: width 0.22s cubic-bezier(0.16,1,0.3,1);
@@ -176,43 +169,56 @@
             flex-direction: column;
         }
 
-        .parc-nav:hover, .parc-nav:focus-within { width: var(--nav-exp); }
+        .parc-nav:hover, .parc-nav:focus-within { 
+            width: var(--sidebar-width, 260px);
+            background: var(--bg2);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+        }
 
-        .parc-nav ul { list-style: none; padding: 10px 0; flex: 1; }
+        .parc-nav ul { list-style: none; padding: 12px 0; flex: 1; }
 
         .parc-nlink {
             display: flex;
             align-items: center;
-            height: 42px;
+            height: 48px;
             text-decoration: none;
-            color: var(--text-muted);
-            font-family: var(--ibm);
-            font-size: 13px;
-            font-weight: 400;
+            color: var(--text-secondary);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
             white-space: nowrap;
             border-left: 3px solid transparent;
-            transition: color 0.15s, background 0.15s, border-color 0.15s;
+            transition: all 0.2s var(--ease-out);
             cursor: pointer;
             background: none;
             width: 100%;
             border-top: none; border-right: none; border-bottom: none;
             padding: 0;
+            margin-bottom: 2px;
         }
 
-        .parc-nlink:hover { background: rgba(255,255,255,0.03); color: var(--text-secondary); }
+        .parc-nlink:hover { 
+            background: var(--glass-hover); 
+            color: var(--text); 
+            padding-left: 2px;
+        }
 
         .parc-nlink.active {
-            color: var(--amber);
-            border-left-color: var(--amber);
-            background: var(--amber-dim);
-            font-weight: 500;
+            color: var(--blue);
+            border-left-color: var(--blue);
+            background: var(--blue-dim);
+            font-weight: 600;
+            box-shadow: inset 5px 0 10px -5px var(--blue-glow);
         }
 
-        .parc-nlink.active .parc-nico svg { stroke: var(--amber); }
+        .parc-nlink.active .parc-nico svg { 
+            stroke: var(--blue);
+            filter: drop-shadow(0 0 5px var(--blue-glow));
+        }
 
         .parc-nico {
-            width: var(--nav-w);
-            height: 42px;
+            width: var(--sidebar-collapsed, 68px);
+            height: 48px;
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
         }
@@ -239,9 +245,9 @@
         }
 
         .parc-nkbd {
-            font-family: var(--dm-mono);
+            font-family: var(--mono);
             font-size: 9px;
-            color: var(--text-dim);
+            color: var(--text-muted);
             background: var(--bg4);
             border: 1px solid var(--border);
             padding: 1px 5px;
@@ -259,7 +265,7 @@
             display: inline-block;
             width: 6px; height: 6px;
             border-radius: 50%;
-            background: #334155;
+            background: var(--bg4);
             margin-left: 6px;
             vertical-align: middle;
             flex-shrink: 0;
@@ -288,10 +294,10 @@
         }
 
         .parc-toast {
-            font-family: var(--dm-mono);
+            font-family: var(--mono);
             font-size: 11px;
             color: var(--text);
-            background: #151A24;
+            background: var(--bg3);
             border: 1px solid var(--border2);
             border-left: 3px solid var(--border2);
             padding: 9px 14px;
@@ -329,25 +335,18 @@
 
         <div class="parc-hdr-right">
             <a href="/settings" class="parc-ibtn"
-               aria-label="Settings"
-               title="Settings (S)">
+               aria-label="{{ t('nav.settings') }}"
+               title="{{ t('nav.settings') }} (S)">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </a>
-            <div class="parc-sep" aria-hidden="true"></div>
-            <button class="parc-ibtn"
-                    onclick="prlToggleTheme()"
-                    id="parc-theme-btn"
-                    aria-label="Switch theme"
-                    title="Toggle Light/Dark Theme (T)">
-                <svg viewBox="0 0 24 24" id="theme-icon-sun" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-                <svg viewBox="0 0 24 24" id="theme-icon-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            </button>
             <div class="parc-sep" aria-hidden="true"></div>
             <button class="parc-ibtn"
                     onclick="prlToggleLang()"
                     id="parc-lang-btn"
                     aria-label="Switch language"
-                    style="width:auto;padding:0 8px;letter-spacing:0.05em;">{{ lang|upper }}</button>
+                    style="width:auto;padding:0 12px;letter-spacing:0.05em;font-size:11px;background:var(--bg3);border-color:var(--border);">
+                {{ lang|upper }}
+            </button>
         </div>
     </header>
 
@@ -357,43 +356,43 @@
         <ul role="list">
             <li>
                 <a href="/" class="parc-nlink {% if _path == '/' %}active{% endif %}"
-                   aria-label="Dashboard" aria-current="{{ 'page' if _path == '/' else 'false' }}">
+                   aria-label="{{ t('nav.dashboard') }}" aria-current="{{ 'page' if _path == '/' else 'false' }}">
                     <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
                     </span>
-                    <span class="parc-nlabel">Dashboard</span>
+                    <span class="parc-nlabel">{{ t('nav.dashboard') }}</span>
                     <span class="parc-nkbd" aria-hidden="true">H</span>
                 </a>
             </li>
             <li>
                 <a href="/learn" class="parc-nlink {% if _path == '/learn' %}active{% endif %}"
-                   aria-label="Learn" aria-current="{{ 'page' if _path == '/learn' else 'false' }}">
+                   aria-label="{{ t('nav.learn') }}" aria-current="{{ 'page' if _path == '/learn' else 'false' }}">
                     <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                     </span>
-                    <span class="parc-nlabel">Learn</span>
+                    <span class="parc-nlabel">{{ t('nav.learn') }}</span>
                     <span class="parc-nkbd" aria-hidden="true">L</span>
                 </a>
             </li>
 
             <li>
                 <a href="/play" class="parc-nlink {% if _path == '/play' %}active{% endif %}"
-                   aria-label="Play" aria-current="{{ 'page' if _path == '/play' else 'false' }}">
+                   aria-label="{{ t('nav.play') }}" aria-current="{{ 'page' if _path == '/play' else 'false' }}">
                     <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01M17 12h.01"/><path d="M5 10v4M7 12H3"/></svg>
                     </span>
-                    <span class="parc-nlabel">Play</span>
+                    <span class="parc-nlabel">{{ t('nav.play') }}</span>
                     <span class="parc-nkbd" aria-hidden="true">X</span>
                 </a>
             </li>
             <li>
                 <button class="parc-nlink" id="parc-nav-mujoco"
                         onclick="prlLaunchViewer(event)"
-                        aria-label="Launch MuJoCo viewer">
+                        aria-label="{{ t('nav.mujoco') }}">
                     <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
                     </span>
-                    <span class="parc-nlabel">MuJoCo <span class="parc-nbadge" id="parc-vdot"></span></span>
+                    <span class="parc-nlabel">{{ t('nav.mujoco') }} <span class="parc-nbadge" id="parc-vdot"></span></span>
                     <span class="parc-nkbd" aria-hidden="true">M</span>
                 </button>
             </li>
@@ -424,26 +423,6 @@
             setLang(_prl_lang === 'en' ? 'fr' : 'en');
         }
 
-        /* ── Theme ─────────────────────────────────────────────────────────── */
-        window.prlToggleTheme = function() {
-            const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            updateThemeIcons();
-        };
-
-        function updateThemeIcons() {
-            const theme = document.documentElement.getAttribute('data-theme');
-            document.getElementById('theme-icon-sun').style.display = theme === 'light' ? 'none' : 'block';
-            document.getElementById('theme-icon-moon').style.display = theme === 'light' ? 'block' : 'none';
-        }
-
-        // Initialize theme
-        (function() {
-            const saved = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', saved);
-            setTimeout(updateThemeIcons, 100);
-        })();
 
         /* ── Toast ─────────────────────────────────────────────────────────── */
         const PARC = {

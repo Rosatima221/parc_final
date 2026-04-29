@@ -7,19 +7,7 @@
 <style>
         /* Premium Styling Overrides */
         :root {
-            --glass-bg: rgba(16, 22, 35, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.03);
-            --glow-blue: rgba(59, 130, 246, 0.5);
-            --glow-purple: rgba(139, 92, 246, 0.4);
-            --text-bright: #ffffff;
-        }
-
-        [data-theme='light'] {
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(0, 0, 0, 0.05);
-            --glass-highlight: rgba(255, 255, 255, 0.5);
-            --text-bright: #000000;
+            /* Inheriting from theme.css */
         }
 
         /* Animated Background Elements */
@@ -63,17 +51,19 @@
 
         .sidebar {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: var(--glass-backdrop);
+            -webkit-backdrop-filter: var(--glass-backdrop);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--glass-border);
+            animation: slideInLeft 0.5s var(--ease-out) both;
         }
 
         .sidebar.right {
             border-right: none;
             border-left: 1px solid var(--glass-border);
+            animation: slideInRight 0.5s var(--ease-out) both;
         }
 
         .sidebar-section {
@@ -109,7 +99,7 @@
         .joint-name {
             font-family: var(--mono);
             font-size: 11px;
-            color: var(--text-bright);
+            color: var(--text);
         }
 
         .joint-value {
@@ -161,6 +151,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 12px;
+            box-shadow: var(--glass-shadow);
         }
 
         .tracking-controls {
@@ -175,7 +167,7 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 6px;
-            color: var(--text-bright);
+            color: var(--text);
             font-size: 11px;
             font-family: var(--mono);
             cursor: pointer;
@@ -207,7 +199,7 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 4px;
-            color: var(--text-bright);
+            color: var(--text);
             font-size: 10px;
             font-family: var(--mono);
             cursor: pointer;
@@ -287,7 +279,7 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: var(--r);
-            color: var(--text-bright);
+            color: var(--text);
             font-family: var(--mono);
             font-size: 10px;
             font-weight: 600;
@@ -298,7 +290,7 @@
 
         .quick-btn:hover {
             background: var(--glass-highlight);
-            color: var(--text-bright);
+            color: var(--text);
             border-color: var(--blue);
         }
 
@@ -377,7 +369,7 @@
         .form-input {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            color: var(--text-bright);
+            color: var(--text);
         }
         .form-input:focus {
             border-color: var(--blue);
@@ -411,7 +403,7 @@
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
 </div>
-    <div class="play-layout" style="height:calc(100vh - var(--hdr-h));">
+    <div class="play-layout" style="height:calc(100vh - var(--header-height));">
         <!-- Left Sidebar -->
         <div class="sidebar">
             <!-- Connection -->
@@ -431,7 +423,7 @@
                     <label class="form-label">{{ t('connection.port') }}</label>
                     <div style="display:flex;gap:8px;">
                         <input type="text" class="form-input" id="port-input" placeholder="/dev/ttyACM0" style="flex:1;">
-                        <button onclick="refreshPorts()" style="padding:0 12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-bright);border-radius:4px;cursor:pointer;">⟳</button>
+                        <button onclick="refreshPorts()" style="padding:0 12px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text);border-radius:4px;cursor:pointer;">⟳</button>
                     </div>
                     <select class="form-input" id="port-select" style="margin-top:8px;">
                         <option value="">-- Detected ports --</option>
@@ -562,7 +554,7 @@
                     <button class="tracking-btn" id="btn-hand" onclick="startTracking('hand')">{{ t('tracking.hand') }}</button>
                     <button class="tracking-btn" id="btn-pose" onclick="startTracking('pose')">{{ t('tracking.pose') }}</button>
                     <button class="tracking-btn" id="btn-body" onclick="startTracking('body')">{{ t('tracking.body') }}</button>
-                    <button class="tracking-btn" id="btn-pose-yolo" onclick="startTracking('pose_yolo')" style="background:#ff8800;border-color:#ff8800;color:white;">YOLO-Pose GPU</button>
+                    <button class="tracking-btn" id="btn-pose-yolo" onclick="startTracking('pose_yolo')" style="background:var(--amber);border-color:var(--amber);color:white;">YOLO-Pose GPU</button>
                     <button class="tracking-btn" id="btn-stop" onclick="stopTracking()">{{ t('tracking.stop') }}</button>
                 </div>
                 <div id="tracking-status" style="margin-top:12px;font-size:10px;color:var(--text-muted);">
@@ -651,10 +643,10 @@
                 if (ts.fps !== undefined && ts.fps > 0) {
                     const detected = ts.detected ? '✓' : '✗';
                     statusEl.textContent = `${currentTracking.toUpperCase()}: ${ts.fps.toFixed(1)} FPS | ${detected} | Pan:${ts.pan?.toFixed(0)}° Tilt:${ts.tilt?.toFixed(0)}°`;
-                    statusEl.style.color = ts.detected ? '#00ff88' : '#ff8800';
+                    statusEl.style.color = ts.detected ? 'var(--green)' : 'var(--amber)';
                 } else if (ts.fps === 0) {
                     statusEl.textContent = `${currentTracking.toUpperCase()}: Camera issue - check connection`;
-                    statusEl.style.color = '#ff4444';
+                    statusEl.style.color = 'var(--red)';
                 }
             } catch (e) {
                 // Ignore polling errors
@@ -804,11 +796,11 @@
                     update3DFromJoints();
                 }).catch(e => {
                     console.error('RobotArm3D init error:', e);
-                    container.innerHTML = '<div style="color:#ff4444;padding:20px;">Error: ' + e.message + '</div>';
+                    container.innerHTML = '<div style="color:var(--red);padding:20px;">Error: ' + e.message + '</div>';
                 });
             } catch (e) {
                 console.error('RobotArm3D error:', e);
-                container.innerHTML = '<div style="color:#ff4444;padding:20px;">WebGL Error: ' + e.message + '</div>';
+                container.innerHTML = '<div style="color:var(--red);padding:20px;">WebGL Error: ' + e.message + '</div>';
             }
         }
 

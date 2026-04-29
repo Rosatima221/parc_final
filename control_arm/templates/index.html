@@ -9,10 +9,33 @@
         display: grid;
         grid-template-rows: 1fr;
         background: var(--bg);
-        /* Subtle dot grid */
-        background-image: radial-gradient(circle, #1c2540 1px, transparent 1px);
-        background-size: 28px 28px;
-        background-position: center center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Animated background blobs */
+    .bg-blobs {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.6;
+    }
+    .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.5;
+        animation: float 20s infinite ease-in-out alternate;
+    }
+    .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(59, 130, 246, 0.15); animation-delay: 0s; }
+    .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: rgba(139, 92, 246, 0.12); animation-delay: -5s; }
+    .blob-3 { top: 40%; left: 60%; width: 40vw; height: 40vw; background: rgba(16, 185, 129, 0.1); animation-delay: -10s; }
+
+    @keyframes float {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(5%, 10%) scale(1.1); }
     }
 
     .dash-inner {
@@ -20,6 +43,8 @@
         max-width: 1200px;
         width: 100%;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
     }
 
     /* ── Section header ────────────────────────────────────────────────────── */
@@ -28,19 +53,19 @@
     }
 
     .dash-eyebrow {
-        font-family: var(--dm-mono);
+        font-family: var(--mono);
         font-size: 10px;
-        font-weight: 400;
+        font-weight: 500;
         letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: var(--text-dim);
+        color: var(--text-muted);
         margin-bottom: 6px;
     }
 
     .dash-title {
-        font-family: var(--ibm);
+        font-family: var(--sans);
         font-size: 22px;
-        font-weight: 600;
+        font-weight: 700;
         color: var(--text);
         letter-spacing: -0.02em;
         line-height: 1.2;
@@ -59,9 +84,11 @@
     /* ── Module card ───────────────────────────────────────────────────────── */
     .mcard {
         position: relative;
-        background: var(--bg2);
-        border: 1px solid #1e2535;
-        border-radius: 8px;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-backdrop);
+        -webkit-backdrop-filter: var(--glass-backdrop);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
         padding: 26px 26px 22px;
         display: block;
         text-decoration: none;
@@ -83,10 +110,10 @@
     }
 
     .mcard:hover {
-        background: var(--bg3);
-        border-color: #2a3347;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        background: var(--glass-highlight);
+        border-color: var(--mc-accent);
+        transform: translateY(-4px);
+        box-shadow: var(--glass-shadow);
     }
 
     .mcard:hover::after { transform: scaleX(1); }
@@ -107,10 +134,10 @@
 
     .mc-icon svg,
     .mc-icon i {
-        width: 17px; height: 17px;
+        width: 18px; height: 18px;
         stroke: var(--mc-accent, var(--amber));
         fill: none;
-        stroke-width: 1.75;
+        stroke-width: 2;
         stroke-linecap: round; stroke-linejoin: round;
     }
 
@@ -123,18 +150,18 @@
     }
 
     .mc-title {
-        font-family: var(--ibm);
+        font-family: var(--sans);
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
         color: var(--text);
         letter-spacing: -0.01em;
         line-height: 1.2;
     }
 
     .mc-tag {
-        font-family: var(--dm-mono);
+        font-family: var(--mono);
         font-size: 9px;
-        font-weight: 400;
+        font-weight: 600;
         letter-spacing: 0.06em;
         text-transform: uppercase;
         padding: 2px 7px;
@@ -146,13 +173,13 @@
 
     .mc-tag.avail  { color: var(--green);  border-color: rgba(16,185,129,0.3);  background: rgba(16,185,129,0.05); }
     .mc-tag.run    { color: var(--green);  border-color: rgba(16,185,129,0.4);  background: rgba(16,185,129,0.1); }
-    .mc-tag.idle   { color: var(--text-dim); border-color: var(--border); background: transparent; }
+    .mc-tag.idle   { color: var(--text-dim); border-color: var(--border); background: var(--bg4); }
     .mc-tag.unavail{ color: var(--red);    border-color: rgba(239,68,68,0.3);   background: rgba(239,68,68,0.05); }
 
     .mc-desc {
-        font-family: var(--ibm);
+        font-family: var(--sans);
         font-size: 12px;
-        color: var(--text-muted);
+        color: var(--text-secondary);
         line-height: 1.65;
         margin-bottom: 22px;
     }
@@ -167,9 +194,9 @@
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        font-family: var(--dm-mono);
+        font-family: var(--mono);
         font-size: 10px;
-        font-weight: 400;
+        font-weight: 500;
         letter-spacing: 0.06em;
         text-transform: uppercase;
         color: var(--mc-accent, var(--amber));
@@ -189,9 +216,9 @@
     .mcard:hover .mc-action svg { transform: translateX(3px); }
 
     .mc-kbd {
-        font-family: var(--dm-mono);
+        font-family: var(--mono);
         font-size: 9px;
-        color: var(--text-dim);
+        color: var(--text-muted);
         background: var(--bg4);
         border: 1px solid var(--border);
         padding: 2px 6px;
@@ -203,16 +230,16 @@
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        font-family: var(--dm-mono);
+        font-family: var(--mono);
         font-size: 10px;
-        color: var(--text-dim);
+        color: var(--text-muted);
         transition: color 0.3s;
     }
 
     .mc-proc-dot {
         width: 5px; height: 5px;
         border-radius: 50%;
-        background: #334155;
+        background: var(--bg4);
         flex-shrink: 0;
         transition: background 0.3s, box-shadow 0.3s;
     }
@@ -224,11 +251,11 @@
     }
 
     /* Color map */
-    .mcard[data-c="amber"]  { --mc-accent: #F5A623; --mc-dim: rgba(245,166,35,0.07); }
-    .mcard[data-c="blue"]   { --mc-accent: #4f8ef7; --mc-dim: rgba(79,142,247,0.07); }
-    .mcard[data-c="green"]  { --mc-accent: #22d07a; --mc-dim: rgba(34,208,122,0.07); }
-    .mcard[data-c="violet"] { --mc-accent: #9b79f8; --mc-dim: rgba(155,121,248,0.07); }
-    .mcard[data-c="slate"]  { --mc-accent: #7c8fa8; --mc-dim: rgba(124,143,168,0.07); }
+    .mcard[data-c="amber"]  { --mc-accent: var(--amber); --mc-dim: var(--amber-dim); }
+    .mcard[data-c="blue"]   { --mc-accent: var(--blue);  --mc-dim: var(--blue-dim);  }
+    .mcard[data-c="green"]  { --mc-accent: var(--green); --mc-dim: var(--green-dim); }
+    .mcard[data-c="violet"] { --mc-accent: var(--purple);--mc-dim: var(--purple-dim);}
+    .mcard[data-c="slate"]  { --mc-accent: var(--text-muted); --mc-dim: var(--bg4); }
 
     .dash-hero {
         display: grid;
@@ -259,72 +286,115 @@
     }
 
     .dash-hero-card {
-        padding: 24px;
-        background: linear-gradient(180deg, rgba(59,130,246,0.14), transparent 100%);
-        border: 1px solid rgba(59,130,246,0.22);
-        border-radius: 18px;
-        box-shadow: 0 18px 60px rgba(17, 25, 45, 0.18);
+        padding: 32px;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-backdrop);
+        -webkit-backdrop-filter: var(--glass-backdrop);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        box-shadow: var(--glass-shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .fi-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .fi-icon i {
+        width: 20px;
+        height: 20px;
+    }
+
+    .fi-content {
+        flex: 1;
+    }
+
+    .fi-title {
+        font-family: var(--sans);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 2px;
+    }
+
+    .fi-desc {
+        font-family: var(--sans);
+        font-size: 12px;
+        color: var(--text-secondary);
+        line-height: 1.4;
     }
 
     .mcard {
-        animation: cardEntrance 0.55s ease both;
-    }
-
-    .mcard:nth-child(1)  { animation-delay: 0.04s; }
-    .mcard:nth-child(2)  { animation-delay: 0.08s; }
-    .mcard:nth-child(3)  { animation-delay: 0.12s; }
-    .mcard:nth-child(4)  { animation-delay: 0.16s; }
-
-    @keyframes cardEntrance {
-        from { opacity: 0; transform: translateY(14px); }
-        to   { opacity: 1; transform: translateY(0); }
+        animation: none; /* Handled by animation classes */
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="dash">
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
     <div class="dash-inner">
-        <div class="dash-header">
-            <div class="dash-eyebrow">PARC Robotics Lab / SO-101 Controller</div>
-            <div class="dash-title">Launch your next robotics session</div>
+        <div class="dash-header animate-fade-up">
+            <div class="dash-eyebrow">{{ t('home.hero_eyebrow') }}</div>
+            <div class="dash-title">{{ t('home.hero_title') }}</div>
         </div>
 
         <div class="dash-hero">
-            <div>
-                <h1>One platform for learning, testing, and controlling the SO-101.</h1>
-                <p class="dash-copy">Explore guided lessons, drive the arm in play mode, and monitor AI systems from a single polished dashboard. Everything is built for fast hands-on progress.</p>
+            <div class="animate-fade-up stagger-1">
+                <h1>{{ t('home.hero_h1') }}</h1>
+                <p class="dash-copy">{{ t('home.hero_desc') }}</p>
                 <div class="dash-hero-actions">
-                    <a href="/learn" class="btn btn-primary">Start learning</a>
-                    <a href="/play" class="btn btn-secondary">Open play mode</a>
+                    <a href="/learn" class="btn btn-primary">{{ t('home.btn_learn') }}</a>
+                    <a href="/play" class="btn btn-secondary" style="background: var(--glass-bg); backdrop-filter: blur(4px); border: 1px solid var(--glass-border); color: var(--text);">{{ t('home.btn_play') }}</a>
                 </div>
             </div>
-            <div class="dash-hero-card">
-                <div class="mc-head" style="margin-bottom: 18px; gap: 12px;">
-                    <div class="mc-icon" style="background: rgba(59, 130, 246, 0.12);">
+            
+            <div class="dash-hero-card animate-scale-in stagger-2">
+                <div class="feature-item">
+                    <div class="fi-icon" style="background: var(--blue-dim); color: var(--blue); box-shadow: 0 0 15px var(--blue-glow);">
                         <i data-lucide="sparkles"></i>
                     </div>
-                    <div>
-                        <div class="mc-title" style="font-size: 14px;">AI-powered learning</div>
-                        <div class="mc-desc" style="margin: 6px 0 0;">Structured lessons with longer content, quizzes, and real robotics examples.</div>
+                    <div class="fi-content">
+                        <div class="fi-title">{{ t('home.feat1_title') }}</div>
+                        <div class="fi-desc">{{ t('home.feat1_desc') }}</div>
                     </div>
                 </div>
-                <div class="mc-head" style="margin-bottom: 18px; gap: 12px;">
-                    <div class="mc-icon" style="background: rgba(16, 185, 129, 0.12);">
+                
+                <div class="feature-item">
+                    <div class="fi-icon" style="background: var(--green-dim); color: var(--green); box-shadow: 0 0 15px var(--green-glow);">
                         <i data-lucide="cpu"></i>
                     </div>
-                    <div>
-                        <div class="mc-title" style="font-size: 14px;">Live hardware control</div>
-                        <div class="mc-desc" style="margin: 6px 0 0;">Switch from learning to playing with seamless robot and viewer control.</div>
+                    <div class="fi-content">
+                        <div class="fi-title">{{ t('home.feat2_title') }}</div>
+                        <div class="fi-desc">{{ t('home.feat2_desc') }}</div>
                     </div>
                 </div>
-                <div class="mc-head" style="gap: 12px;">
-                    <div class="mc-icon" style="background: rgba(245, 158, 11, 0.12);">
+                
+                <div class="feature-item">
+                    <div class="fi-icon" style="background: var(--amber-dim); color: var(--amber); box-shadow: 0 0 15px var(--amber-glow);">
                         <i data-lucide="shield"></i>
                     </div>
-                    <div>
-                        <div class="mc-title" style="font-size: 14px;">Safe and confident</div>
-                        <div class="mc-desc" style="margin: 6px 0 0;">Locked advanced tracks keep progression clear until beginner topics are completed.</div>
+                    <div class="fi-content">
+                        <div class="fi-title">{{ t('home.feat3_title') }}</div>
+                        <div class="fi-desc">{{ t('home.feat3_desc') }}</div>
                     </div>
                 </div>
             </div>
@@ -333,18 +403,18 @@
         <div class="mod-grid">
 
             <!-- Learn -->
-            <a href="/learn" class="mcard" data-c="blue" aria-label="Open Learn module">
+            <a href="/learn" class="mcard animate-fade-up stagger-2" data-c="blue" aria-label="Open Learn module">
                 <div class="mc-icon" aria-hidden="true">
                     <i data-lucide="book-open"></i>
                 </div>
                 <div class="mc-head">
                     <span class="mc-title">{{ t('cards.learn.title') }}</span>
-                    <span class="mc-tag avail">Available</span>
+                    <span class="mc-tag avail">{{ t('common.available') }}</span>
                 </div>
                 <p class="mc-desc">{{ t('cards.learn.desc') }}</p>
                 <div class="mc-footer">
                     <span class="mc-action">
-                        Open
+                        {{ t('common.open') }}
                         <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
                     </span>
                     <span class="mc-kbd" title="Keyboard shortcut">L</span>
@@ -353,18 +423,18 @@
 
 
             <!-- Play -->
-            <a href="/play" class="mcard" data-c="amber" aria-label="Open Play module">
+            <a href="/play" class="mcard animate-fade-up stagger-3" data-c="amber" aria-label="Open Play module">
                 <div class="mc-icon" aria-hidden="true">
                     <i data-lucide="gamepad2"></i>
                 </div>
                 <div class="mc-head">
                     <span class="mc-title">{{ t('cards.play.title') }}</span>
-                    <span class="mc-tag idle" id="play-tag">Idle</span>
+                    <span class="mc-tag idle" id="play-tag">{{ t('common.idle') }}</span>
                 </div>
                 <p class="mc-desc">{{ t('cards.play.desc') }}</p>
                 <div class="mc-footer">
                     <span class="mc-action">
-                        Control
+                        {{ t('common.control') }}
                         <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
                     </span>
                     <span class="mc-kbd" title="Keyboard shortcut">X</span>
@@ -372,22 +442,22 @@
             </a>
 
             <!-- MuJoCo Viewer -->
-            <div class="mcard" data-c="violet"
+            <div class="mcard animate-fade-up stagger-4" data-c="violet"
                  onclick="dashLaunchViewer(event)"
                  role="button" tabindex="0"
-                 aria-label="Launch MuJoCo Viewer"
+                 aria-label="{{ t('nav.mujoco') }}"
                  onkeydown="if(event.key==='Enter'||event.key===' ')dashLaunchViewer(event)">
                 <div class="mc-icon" aria-hidden="true">
                     <i data-lucide="layers"></i>
                 </div>
                 <div class="mc-head">
-                    <span class="mc-title">MuJoCo Viewer</span>
-                    <span class="mc-tag idle" id="viewer-tag">Stopped</span>
+                    <span class="mc-title">{{ t('cards.mujoco.title') }}</span>
+                    <span class="mc-tag idle" id="viewer-tag">{{ t('common.stopped') }}</span>
                 </div>
-                <p class="mc-desc">Native desktop physics viewer for the SO-101. Drag joints to drive the real arm in real time.</p>
+                <p class="mc-desc">{{ t('cards.mujoco.desc') }}</p>
                 <div class="mc-footer">
                     <span class="mc-action" id="viewer-action">
-                        Launch
+                        {{ t('common.launch') }}
                         <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
                     </span>
                     <span class="mc-kbd" title="Keyboard shortcut">M</span>
@@ -395,18 +465,18 @@
             </div>
 
             <!-- Settings -->
-            <a href="/settings" class="mcard" data-c="slate" aria-label="Open Settings">
+            <a href="/settings" class="mcard animate-fade-up stagger-5" data-c="slate" aria-label="Open Settings">
                 <div class="mc-icon" aria-hidden="true">
-                    <i data-lucide="settings"></i>
+                    <i data-lucide="sliders"></i>
                 </div>
                 <div class="mc-head">
                     <span class="mc-title">{{ t('cards.settings.title') }}</span>
-                    <span class="mc-tag avail">Available</span>
+                    <span class="mc-tag avail">{{ t('common.available') }}</span>
                 </div>
                 <p class="mc-desc">{{ t('cards.settings.desc') }}</p>
                 <div class="mc-footer">
                     <span class="mc-action">
-                        Configure
+                        {{ t('common.configure') }}
                         <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
                     </span>
                     <span class="mc-kbd" title="Keyboard shortcut">S</span>
