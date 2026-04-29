@@ -490,7 +490,7 @@
                                     </div>
                                     <span class="lesson-duration">20 min</span>
                                 </div>
-                                <div class="lesson">
+                                <div class="lesson" onclick="openLesson('lesson1_3')">
                                     <div class="lesson-icon">03</div>
                                     <div class="lesson-info">
                                         <h4>{{ t('learn.lesson1_3.title') }}</h4>
@@ -520,7 +520,7 @@
                         </div>
                         <div class="module-content">
                             <div class="lesson-list">
-                                <div class="lesson">
+                                <div class="lesson" onclick="openLesson('lesson2_1')">
                                     <div class="lesson-icon">01</div>
                                     <div class="lesson-info">
                                         <h4>{{ t('learn.lesson2_1.title') }}</h4>
@@ -528,7 +528,7 @@
                                     </div>
                                     <span class="lesson-duration">30 min</span>
                                 </div>
-                                <div class="lesson">
+                                <div class="lesson" onclick="openLesson('lesson2_2')">
                                     <div class="lesson-icon">02</div>
                                     <div class="lesson-info">
                                         <h4>{{ t('learn.lesson2_2.title') }}</h4>
@@ -558,7 +558,7 @@
                         </div>
                         <div class="module-content">
                             <div class="lesson-list">
-                                <div class="lesson">
+                                <div class="lesson" onclick="openLesson('lesson3_1')">
                                     <div class="lesson-icon">01</div>
                                     <div class="lesson-info">
                                         <h4>{{ t('learn.lesson3_1.title') }}</h4>
@@ -681,39 +681,108 @@
                 content: `
                     <p>A robot is an autonomous machine capable of sensing its environment, processing information to make decisions, and acting upon the physical world.</p>
                     <h4 style="margin:20px 0 10px; color:var(--text);">The Sense-Think-Act Loop</h4>
-                    <p>Every robot operates on a fundamental loop:</p>
+                    <p>Every robot operates on a fundamental loop that defines its autonomy:</p>
                     <ul style="margin-left:20px; margin-top:10px;">
-                        <li><strong>Sense:</strong> Cameras, ultrasonic sensors, or encoders collect data.</li>
-                        <li><strong>Think:</strong> A controller (like a Jetson Nano or Arduino) processes data.</li>
-                        <li><strong>Act:</strong> Motors or servos move the robot to complete a task.</li>
+                        <li><strong>Sense:</strong> The robot uses sensors (cameras, encoders, IMUs) to gather data about its own state and the world around it.</li>
+                        <li><strong>Think:</strong> A computational unit (like the Jetson Orin Nano on the SO-101) processes this data using algorithms or AI models to decide the next action.</li>
+                        <li><strong>Act:</strong> The robot executes the decision via actuators (motors, servos, grippers).</li>
                     </ul>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">Classification of Robots</h4>
+                    <p>Robots can be categorized by their locomotion (wheeled, bipedal, aquatic) or their application. The SO-101 is an <strong>Industrial Manipulator</strong>, a type of stationary robot designed to interact with objects in a fixed workspace.</p>
                 `,
                 quiz: {
-                    question: "Which part of the loop involves motors moving the robot?",
-                    options: ["Sense", "Think", "Act", "Listen"],
-                    answer: 2
+                    question: "Which part of the loop involves sensors like cameras collecting data?",
+                    options: ["Sense", "Think", "Act", "Power"],
+                    answer: 0
                 }
             },
             "lesson1_2": {
                 title: "Degrees of Freedom (DOF)",
                 content: `
-                    <p>Degrees of Freedom (DOF) refer to the number of independent parameters that define the configuration of a robotic system.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">SO-101 Configuration</h4>
-                    <p>The SO-101 is a 6-DOF robotic arm. This means it has 6 independent joints:</p>
+                    <p>Degrees of Freedom (DOF) refer to the number of independent parameters that define the configuration of a robotic system. In mechanics, an object in 3D space has 6 DOF: 3 for position (X, Y, Z) and 3 for orientation (Roll, Pitch, Yaw).</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">The SO-101 6-DOF Configuration</h4>
+                    <p>The SO-101 is specifically designed as a 6-DOF arm to match human-like dexterity. Its joints are:</p>
                     <ol style="margin-left:20px; margin-top:10px;">
-                        <li>Base Rotation (Yaw)</li>
-                        <li>Shoulder Pitch</li>
-                        <li>Elbow Pitch</li>
-                        <li>Wrist Pitch</li>
-                        <li>Wrist Roll</li>
-                        <li>Gripper (Jaw)</li>
+                        <li><strong>Base (Yaw):</strong> Allows the arm to rotate left and right.</li>
+                        <li><strong>Shoulder (Pitch):</strong> Controls the primary reach of the arm.</li>
+                        <li><strong>Elbow (Pitch):</strong> Extends the vertical and horizontal range.</li>
+                        <li><strong>Wrist Pitch:</strong> Tilts the end-effector up and down.</li>
+                        <li><strong>Wrist Roll:</strong> Rotates the gripper for precise orientation.</li>
+                        <li><strong>Gripper:</strong> Technically the 6th active parameter for interaction.</li>
                     </ol>
-                    <p>With 6 degrees of freedom, the arm can reach any position in its workspace with a specific orientation.</p>
+                    <p>With 6 DOF, the arm can reach any point in its workspace at any angle, which is critical for complex tasks like assembly or picking.</p>
                 `,
                 quiz: {
-                    question: "How many independent joints does a 6-DOF arm have?",
-                    options: ["3", "4", "6", "12"],
+                    question: "How many independent parameters are needed to define a position and orientation in 3D space?",
+                    options: ["3", "4", "6", "9"],
                     answer: 2
+                }
+            },
+            "lesson1_3": {
+                title: "Actuators & Servos",
+                content: `
+                    <p>Actuators are the 'muscles' of the robot. In the SO-101, we use <strong>Serial Bus Servos</strong>, which are significantly more advanced than standard PWM servos.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">PWM vs. Serial Bus Servos</h4>
+                    <ul style="margin-left:20px; margin-top:10px;">
+                        <li><strong>Standard PWM:</strong> One-way communication. You tell it to move, but you don't know if it actually did.</li>
+                        <li><strong>Serial Bus (SCServo):</strong> Two-way communication. The controller sends a command, and the servo can report back its <strong>Position, Temperature, Load, and Voltage</strong>.</li>
+                    </ul>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">Why it matters?</h4>
+                    <p>This feedback loop allows for 'compliant' control. If the robot hits an obstacle, the 'Load' value spikes, and the software can immediately stop the movement to prevent damage.</p>
+                `,
+                quiz: {
+                    question: "What is a major advantage of Serial Bus Servos over standard PWM servos?",
+                    options: ["They are cheaper", "They use more wires", "They provide real-time feedback", "They are slower"],
+                    answer: 2
+                }
+            },
+            "lesson2_1": {
+                title: "Forward Kinematics",
+                content: `
+                    <p>Forward Kinematics (FK) is the mathematical process of calculating the <strong>position and orientation</strong> of the robot's end-effector (gripper) based on its <strong>joint angles</strong>.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">The Math Behind FK</h4>
+                    <p>FK uses matrices and trigonometry (specifically sine and cosine) to transform coordinates from the base joint all the way to the tip of the arm. In robotics, we often use the <strong>Denavit-Hartenberg (DH) parameters</strong> to simplify this model.</p>
+                    <p style="background:var(--bg4); padding:10px; border-radius:8px; font-family:var(--mono);">Input: [θ1, θ2, θ3, θ4, θ5, θ6] -> Output: [X, Y, Z, R, P, Y]</p>
+                    <p>FK is 'easy' because for any set of angles, there is only one possible position for the gripper.</p>
+                `,
+                quiz: {
+                    question: "What does Forward Kinematics calculate?",
+                    options: ["Joint angles from position", "Position from joint angles", "Speed of the robot", "Battery life"],
+                    answer: 1
+                }
+            },
+            "lesson2_2": {
+                title: "Inverse Kinematics",
+                content: `
+                    <p>Inverse Kinematics (IK) is the opposite of FK. It calculates the <strong>joint angles</strong> required to reach a specific <strong>target position (X, Y, Z)</strong>.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">The Challenge of IK</h4>
+                    <p>Unlike FK, IK is computationally difficult because:</p>
+                    <ul style="margin-left:20px; margin-top:10px;">
+                        <li><strong>Multiple Solutions:</strong> There might be several ways for the arm to reach a point (e.g., 'elbow up' or 'elbow down').</li>
+                        <li><strong>No Solution:</strong> The target might be outside the robot's reach.</li>
+                        <li><strong>Singularities:</strong> Mathematical configurations where the arm 'locks up'.</li>
+                    </ul>
+                    <p>The SO-101 software uses a numerical solver to find the best IK solution in real-time, allowing you to drag the robot in 3D space.</p>
+                `,
+                quiz: {
+                    question: "Why is Inverse Kinematics harder than Forward Kinematics?",
+                    options: ["It requires less math", "There are always 0 solutions", "Multiple joint configurations can reach the same point", "It only works on 3-DOF robots"],
+                    answer: 2
+                }
+            },
+            "lesson3_1": {
+                title: "Computer Vision & AI",
+                content: `
+                    <p>Modern robotics relies heavily on vision to perceive the world. The SO-101 integrates with <strong>MediaPipe</strong> and <strong>YOLO</strong> for object and gesture detection.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">Hand Tracking Control</h4>
+                    <p>By detecting 21 landmarks on a human hand, the system can map your hand's X, Y, Z coordinates to the robot's end-effector. This allows you to control the arm just by moving your hand in front of a camera.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">AI Reasoning</h4>
+                    <p>Using Large Language Models (LLMs) like Llama 3, the robot can understand natural language commands. Instead of 'Move to X:100', you can say 'Pick up the blue block', and the AI will determine the sequence of actions needed.</p>
+                `,
+                quiz: {
+                    question: "Which technology is used for hand landmark detection in this system?",
+                    options: ["Llama", "MediaPipe", "MuJoCo", "Docker"],
+                    answer: 1
                 }
             }
         };

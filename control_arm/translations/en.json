@@ -127,32 +127,32 @@
       "subtitle": "Integrating AI for autonomous control"
     },
     "lesson1_1": {
-      "title": "What is a Robot?",
-      "desc": "Learn about the fundamental definition of a robot: Sense, Think, Act."
+      "title": "Robotics Foundations",
+      "desc": "Master the Sense-Think-Act loop and the core definition of autonomous systems."
     },
     "lesson1_2": {
-      "title": "Degrees of Freedom (DOF)",
-      "desc": "Understanding the 6-DOF configuration of the SO-101 arm."
+      "title": "Kinematic Chains & DOF",
+      "desc": "Explore how the SO-101 uses 6 Degrees of Freedom to achieve complex dexterity."
     },
     "lesson1_3": {
-      "title": "Actuators & Servos",
-      "desc": "How serial bus servos differ from standard PWM servos."
+      "title": "Servo Bus Communication",
+      "desc": "Understand the difference between PWM and Serial Bus communication in modern actuators."
     },
     "lesson2_1": {
-      "title": "Forward Kinematics",
-      "desc": "Calculating joint positions from angles"
+      "title": "Forward Kinematics Theory",
+      "desc": "Use matrices and trigonometry to calculate gripper position from joint angles."
     },
     "lesson2_2": {
-      "title": "Inverse Kinematics",
-      "desc": "Finding joint angles from target positions"
+      "title": "Inverse Kinematics Solvers",
+      "desc": "Learn how to find joint angles for any target position using numerical solvers."
     },
     "lesson3_1": {
-      "title": "Computer Vision Basics",
-      "desc": "Introduction to image processing"
+      "title": "AI Perception & Vision",
+      "desc": "Integrate MediaPipe and YOLO for real-time object tracking and hand control."
     },
     "lesson3_2": {
-      "title": "MediaPipe Integration",
-      "desc": "Using AI for hand and pose detection"
+      "title": "Advanced Motion Planning",
+      "desc": "Implement autonomous trajectories and pathfinding for complex tasks."
     },
     "progress": "Your Progress",
     "courses_completed": "Courses Completed",
