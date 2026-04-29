@@ -739,7 +739,7 @@
         </div>
 
         <!-- Lesson Viewer Modal -->
-        <div id="lesson-modal" class="lesson-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
+        <div id="lesson-modal" class="lesson-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
             <div class="modal-content" style="background:var(--bg2); width:90%; max-width:800px; max-height:90vh; border-radius:16px; border:1px solid var(--border); overflow:hidden; display:flex; flex-direction:column; position:relative;">
                 <button onclick="closeLesson()" style="position:absolute; top:20px; right:20px; background:var(--bg4); border:none; color:var(--text); width:32px; height:32px; border-radius:50%; cursor:pointer; z-index:10;">&times;</button>
                 
@@ -960,6 +960,12 @@
             }
             currentLessonId = id;
             document.getElementById('modal-title').textContent = lesson.title;
+            if (id.includes('_')) {
+                const parts = id.replace('lesson', '').split('_');
+                document.getElementById('modal-subtitle').textContent = `Module ${parts[0]} / Lesson ${parts[1]}`;
+            } else {
+                document.getElementById('modal-subtitle').textContent = "Reference";
+            }
             document.getElementById('lesson-body').innerHTML = lesson.content;
             document.getElementById('lesson-modal').style.display = 'flex';
             document.getElementById('quiz-btn').style.display = 'block';
