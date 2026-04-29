@@ -15,7 +15,7 @@
   },
   "gallery": {
     "label": "Modules",
-    "hint": "Select a module to begin. Each module contains interactive tutorials and practical exercises."
+    "hint": "Select a module to begin. Each module contains interactive tutorials and hands-on exercises."
   },
   "cards": {
     "learn": {

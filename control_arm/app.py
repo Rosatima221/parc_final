@@ -68,6 +68,15 @@ def t(key: str, lang: str = None) -> str:
 
 load_translations()
 
+@app.before_request
+def before_request():
+    global _current_lang
+    # Read language from cookie, default to "en"
+    lang = request.cookies.get('lang', 'en')
+    if lang in _translations:
+        _current_lang = lang
+
+
 # ── servo IDs ─────────────────────────────────────────────────────────────────
 DEGREE_TO_UNIT = 4095 / 360
 SERVO_IDS: dict = {}
@@ -1623,12 +1632,6 @@ def learn():
                            en_json=_translations.get("en", {}),
                            fr_json=_translations.get("fr", {}))
 
-@app.route('/practical')
-def practical():
-    return render_template('pages/practical.html',
-                           lang=_current_lang,
-                           en_json=_translations.get("en", {}),
-                           fr_json=_translations.get("fr", {}))
 
 @app.route('/play')
 def play():
@@ -2594,16 +2597,6 @@ from llama_integration import (
 setup_ai_routes(app)
 
 # ── Practical Code Runner ──────────────────────────────────────────────────────
-@app.route('/api/practical/run', methods=['POST'])
-def api_practical_run():
-    data = request.json or {}
-    code = data.get('code', '')
-    # Note: Code execution should be done in a sandboxed environment
-    # For now, return success as placeholder
-    return jsonify({
-        'success': True,
-        'output': 'Code execution placeholder - implement sandboxed execution for production.'
-    })
 
 # ── Simulation server process ─────────────────────────────────────────────────
 _SIM_SERVER = Path(__file__).parent.parent / "simulation" / "server.py"

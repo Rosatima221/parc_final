@@ -566,7 +566,7 @@
                                     </div>
                                     <span class="lesson-duration">35 min</span>
                                 </div>
-                                <div class="lesson">
+                                <div class="lesson" onclick="openLesson('lesson3_2')">
                                     <div class="lesson-icon">02</div>
                                     <div class="lesson-info">
                                         <h4>{{ t('learn.lesson3_2.title') }}</h4>
@@ -703,14 +703,15 @@
                     <h4 style="margin:20px 0 10px; color:var(--text);">The SO-101 6-DOF Configuration</h4>
                     <p>The SO-101 is specifically designed as a 6-DOF arm to match human-like dexterity. Its joints are:</p>
                     <ol style="margin-left:20px; margin-top:10px;">
-                        <li><strong>Base (Yaw):</strong> Allows the arm to rotate left and right.</li>
-                        <li><strong>Shoulder (Pitch):</strong> Controls the primary reach of the arm.</li>
-                        <li><strong>Elbow (Pitch):</strong> Extends the vertical and horizontal range.</li>
-                        <li><strong>Wrist Pitch:</strong> Tilts the end-effector up and down.</li>
-                        <li><strong>Wrist Roll:</strong> Rotates the gripper for precise orientation.</li>
-                        <li><strong>Gripper:</strong> Technically the 6th active parameter for interaction.</li>
+                        <li><strong>Base (Yaw):</strong> Allows the arm to rotate left and right (Pan).</li>
+                        <li><strong>Shoulder (Pitch):</strong> Controls the primary reach and height (Lift).</li>
+                        <li><strong>Elbow (Pitch):</strong> Extends the vertical and horizontal range (Flex).</li>
+                        <li><strong>Wrist Pitch:</strong> Tilts the end-effector up and down for orientation.</li>
+                        <li><strong>Wrist Roll:</strong> Rotates the gripper for precise alignment.</li>
+                        <li><strong>Gripper:</strong> The 6th active parameter for physical interaction.</li>
                     </ol>
-                    <p>With 6 DOF, the arm can reach any point in its workspace at any angle, which is critical for complex tasks like assembly or picking.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">Why 6-DOF?</h4>
+                    <p>In robotics, 6-DOF is considered the 'sweet spot' for general-purpose manipulation. With fewer than 6, the robot cannot reach every orientation at every point (it's 'under-actuated'). With 6-DOF, the SO-101 can pick up a screwdriver and align it perfectly with a screw at any angle.</p>
                 `,
                 quiz: {
                     question: "How many independent parameters are needed to define a position and orientation in 3D space?",
@@ -775,13 +776,32 @@
                 content: `
                     <p>Modern robotics relies heavily on vision to perceive the world. The SO-101 integrates with <strong>MediaPipe</strong> and <strong>YOLO</strong> for object and gesture detection.</p>
                     <h4 style="margin:20px 0 10px; color:var(--text);">Hand Tracking Control</h4>
-                    <p>By detecting 21 landmarks on a human hand, the system can map your hand's X, Y, Z coordinates to the robot's end-effector. This allows you to control the arm just by moving your hand in front of a camera.</p>
+                    <p>By detecting 21 landmarks on a human hand using MediaPipe, the system can map your hand's X, Y, Z coordinates to the robot's end-effector. This creates a natural teleoperation interface where the robot mimics your hand movements.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">Object Detection (YOLO)</h4>
+                    <p>YOLO (You Only Look Once) is used for real-time object classification. The robot can identify 'red_cube', 'blue_cube', etc., with high confidence, allowing for autonomous pick-and-place routines based on visual input.</p>
                     <h4 style="margin:20px 0 10px; color:var(--text);">AI Reasoning</h4>
                     <p>Using Large Language Models (LLMs) like Llama 3, the robot can understand natural language commands. Instead of 'Move to X:100', you can say 'Pick up the blue block', and the AI will determine the sequence of actions needed.</p>
                 `,
                 quiz: {
                     question: "Which technology is used for hand landmark detection in this system?",
                     options: ["Llama", "MediaPipe", "MuJoCo", "Docker"],
+                    answer: 1
+                }
+            },
+            "lesson3_2": {
+                title: "Advanced Motion Planning",
+                content: `
+                    <p>Advanced motion planning involves moving from simple point-to-point movement to smooth, collision-free trajectories.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">Trajectory Generation</h4>
+                    <p>To avoid jerky movements, we use <strong>Cubic Splines</strong>. Instead of jumping from Position A to Position B, the software calculates a smooth path that considers velocity and acceleration limits of the servos.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">Collision Avoidance</h4>
+                    <p>In a complex environment, the robot must plan a path that doesn't hit obstacles or itself. This is often handled using algorithms like <strong>RRT* (Rapidly-exploring Random Trees)</strong> which can find a valid path in high-dimensional joint space.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">Task Space Control</h4>
+                    <p>By combining AI reasoning with motion planning, the SO-101 can perform 'Task Space' commands. You give it a high-level goal, and it autonomously handles the IK, trajectory planning, and gripper actions to achieve it.</p>
+                `,
+                quiz: {
+                    question: "What is used to ensure smooth movement between two points?",
+                    options: ["Random jumps", "Cubic Splines", "Higher voltage", "Heavier weights"],
                     answer: 1
                 }
             }

@@ -318,7 +318,7 @@
     <!-- ── Header ──────────────────────────────────────────────────────────── -->
     <header class="parc-hdr" role="banner">
         <div class="parc-logo" aria-label="Parc Robotics">
-            <img src="/static/img/parc-logo.png" alt="Parc Robotics Logo" style="height: 32px; filter: drop-shadow(0 0 8px rgba(0,255,255,0.3)); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+            <img src="/static/img/parc-logo.png" alt="Parc Robotics Logo" style="height: 32px; transition: all 0.3s var(--ease-out);">
         </div>
 
         <div class="parc-conn" role="status" aria-live="polite" aria-atomic="true">
@@ -403,16 +403,6 @@
                     <span class="parc-nlabel">MuJoCo <span class="parc-nbadge" id="parc-vdot"></span></span>
                     <span class="parc-nkbd" aria-hidden="true">M</span>
                 </button>
-            </li>
-            <li>
-                <a href="/settings" class="parc-nlink {% if _path == '/settings' %}active{% endif %}"
-                   aria-label="Settings" aria-current="{{ 'page' if _path == '/settings' else 'false' }}">
-                    <span class="parc-nico" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                    </span>
-                    <span class="parc-nlabel">Settings</span>
-                    <span class="parc-nkbd" aria-hidden="true">S</span>
-                </a>
             </li>
         </ul>
     </nav>
