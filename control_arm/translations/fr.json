@@ -24,12 +24,7 @@
       "tag1": "Cours",
       "tag2": "Tutoriels"
     },
-    "practical": {
-      "title": "Pratique",
-      "desc": "Environnement de programmation pratique avec scripts Python, blocs de code visuel, visualisation 3D en temps reel, flux camera du robot et assistant IA equipe de Llama pour vous guider.",
-      "tag1": "Programmation",
-      "tag2": "Assistant IA"
-    },
+
     "play": {
       "title": "Jouer",
       "desc": "Interface de controle direct du robot avec curseurs articulaires, poses predefinies, actions rapides et visualisation 3D en temps reel. Surveillez la position de l'effecteur et executez des modes de mouvement pre-integres.",

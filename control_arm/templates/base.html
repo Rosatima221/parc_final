@@ -60,8 +60,7 @@
             font-weight: 500;
             color: var(--amber);
             letter-spacing: 0.04em;
-            border: 1px solid var(--amber-bdr);
-            padding: 5px 9px;
+            padding: 0;
             line-height: 1;
             user-select: none;
             width: fit-content;
@@ -374,16 +373,7 @@
                     <span class="parc-nkbd" aria-hidden="true">L</span>
                 </a>
             </li>
-            <li>
-                <a href="/practical" class="parc-nlink {% if _path == '/practical' %}active{% endif %}"
-                   aria-label="Practical" aria-current="{{ 'page' if _path == '/practical' else 'false' }}">
-                    <span class="parc-nico" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                    </span>
-                    <span class="parc-nlabel">Practical</span>
-                    <span class="parc-nkbd" aria-hidden="true">P</span>
-                </a>
-            </li>
+
             <li>
                 <a href="/play" class="parc-nlink {% if _path == '/play' %}active{% endif %}"
                    aria-label="Play" aria-current="{{ 'page' if _path == '/play' else 'false' }}">
@@ -529,7 +519,7 @@
         document.addEventListener('keydown', ev => {
             if (ev.target.matches('input,textarea,select,[contenteditable]')) return;
             if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
-            const map = { h:'/', l:'/learn', p:'/practical', x:'/play', s:'/settings' };
+            const map = { h:'/', l:'/learn', x:'/play', s:'/settings' };
             const dest = map[ev.key.toLowerCase()];
             if (dest && dest !== window.location.pathname) { window.location.href = dest; return; }
             if (ev.key.toLowerCase() === 'm') prlLaunchViewer(ev);
