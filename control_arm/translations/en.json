@@ -128,15 +128,15 @@
     },
     "lesson1_1": {
       "title": "What is a Robot?",
-      "desc": "Definition, history, and types of robots"
+      "desc": "Learn about the fundamental definition of a robot: Sense, Think, Act."
     },
     "lesson1_2": {
-      "title": "Parc Robotics Anatomy",
-      "desc": "Understanding the 6-DOF arm structure"
+      "title": "Degrees of Freedom (DOF)",
+      "desc": "Understanding the 6-DOF configuration of the SO-101 arm."
     },
     "lesson1_3": {
-      "title": "Control Systems",
-      "desc": "How motors and servos work together"
+      "title": "Actuators & Servos",
+      "desc": "How serial bus servos differ from standard PWM servos."
     },
     "lesson2_1": {
       "title": "Forward Kinematics",

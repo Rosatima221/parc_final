@@ -85,6 +85,34 @@
     --sidebar-width: 320px;
 }
 
+/* Colors - Light Theme */
+[data-theme='light'] {
+    --bg: #f8fafc;
+    --bg2: #ffffff;
+    --bg3: #f1f5f9;
+    --bg4: #e2e8f0;
+    --bg5: #cbd5e1;
+    
+    --border: #e2e8f0;
+    --border2: #cbd5e1;
+    --border3: #94a3b8;
+    
+    --text: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+
+    --blue-dim: rgba(59, 130, 246, 0.1);
+    --green-dim: rgba(16, 185, 129, 0.1);
+    --red-dim: rgba(239, 68, 68, 0.1);
+    --orange-dim: rgba(249, 115, 22, 0.1);
+    
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+
 /* --------------------------------------------------------------------------
    CSS Reset & Base
    -------------------------------------------------------------------------- */
