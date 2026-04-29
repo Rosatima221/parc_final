@@ -19,7 +19,7 @@ def seed_kinematics_docs(rag_system):
             "text": """# Forward Kinematics
 
 Forward kinematics calculates the position and orientation of the robot's end-effector
-given the joint angles. For a 6-DOF robot arm like SO-101:
+given the joint angles. For a 6-DOF robot arm like Parc Robotics Arm:
 
 ## Formula
 
@@ -46,7 +46,7 @@ def forward_kinematics(joint_angles):
     joint_angles: [pan, lift, elbow, wrist_flex, wrist_roll, gripper]
     Returns: [x, y, z, roll, pitch, yaw]
     '''
-    # DH parameters for SO-101 (example values)
+    # DH parameters for Parc Robotics Arm (example values)
     dh_params = [
         {'theta': joint_angles[0], 'd': 50, 'a': 0, 'alpha': 90},      # Base rotation
         {'theta': joint_angles[1], 'd': 0, 'a': 100, 'alpha': 0},     # Shoulder
@@ -138,7 +138,7 @@ def seed_programming_docs(rag_system):
         {
             "text": """# SCServo SDK for Python
 
-The SO-101 robot arm uses SCServo motors controlled via the SCServo SDK.
+The Parc Robotics Arm robot arm uses SCServo motors controlled via the SCServo SDK.
 
 ## Installation
 
@@ -185,7 +185,7 @@ port.closePort()
         {
             "text": """# Robot Modes and Presets
 
-The SO-101 robot has predefined modes for common operations.
+The Parc Robotics Arm robot has predefined modes for common operations.
 
 ## Available Modes
 
@@ -344,9 +344,9 @@ def seed_concepts_docs(rag_system):
 
     docs = [
         {
-            "text": """# SO-101 Robot Arm Anatomy
+            "text": """# Parc Robotics Arm Robot Arm Anatomy
 
-The PARC Robotics SO-101 is a 6-DOF (Degrees of Freedom) robot arm.
+The PARC Robotics Parc Robotics Arm is a 6-DOF (Degrees of Freedom) robot arm.
 
 ## Joint Structure
 
@@ -373,7 +373,7 @@ Gripper span: 0-60mm""",
         {
             "text": """# Vision Tracking Modes
 
-The SO-101 supports multiple vision-based tracking modes.
+The Parc Robotics Arm supports multiple vision-based tracking modes.
 
 ## Face Tracking
 Tracks human face position. Robot tilts to follow the face.

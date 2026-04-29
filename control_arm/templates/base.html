@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}PRL — SO-101{% endblock %}</title>
+    <title>{% block title %}Parc Robotics{% endblock %}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +40,7 @@
         ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
         /* ── Header ────────────────────────────────────────────────────────── */
-        .prl-hdr {
+        .parc-hdr {
             position: fixed;
             top: 0; left: 0; right: 0;
             height: var(--hdr-h);
@@ -54,7 +54,7 @@
             gap: 16px;
         }
 
-        .prl-logo {
+        .parc-logo {
             font-family: var(--dm-mono);
             font-size: 12px;
             font-weight: 500;
@@ -67,7 +67,7 @@
             width: fit-content;
         }
 
-        .prl-conn {
+        .parc-conn {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -77,7 +77,7 @@
             white-space: nowrap;
         }
 
-        .prl-dot {
+        .parc-dot {
             position: relative;
             width: 8px; height: 8px;
             border-radius: 50%;
@@ -86,7 +86,7 @@
             transition: background 0.4s;
         }
 
-        .prl-dot::after {
+        .parc-dot::after {
             content: '';
             position: absolute;
             inset: -3px;
@@ -96,20 +96,20 @@
             transition: opacity 0.4s;
         }
 
-        .prl-dot.live { background: var(--green); }
-        .prl-dot.live::after {
+        .parc-dot.live { background: var(--green); }
+        .parc-dot.live::after {
             opacity: 0.2;
-            animation: prl-ring 2.4s ease-in-out infinite;
+            animation: parc-ring 2.4s ease-in-out infinite;
         }
 
-        @keyframes prl-ring {
+        @keyframes parc-ring {
             0%, 100% { transform: scale(1); opacity: 0.2; }
             60%       { transform: scale(2.2); opacity: 0; }
         }
 
-        #prl-label { color: var(--text-secondary); }
+        #parc-label { color: var(--text-secondary); }
 
-        #prl-port {
+        #parc-port {
             font-family: var(--dm-mono);
             font-size: 11px;
             padding: 2px 7px;
@@ -120,16 +120,16 @@
             transition: color 0.3s, border-color 0.3s;
         }
 
-        #prl-port.live { color: var(--green); border-color: rgba(16,185,129,0.25); }
+        #parc-port.live { color: var(--green); border-color: rgba(16,185,129,0.25); }
 
-        .prl-hdr-right {
+        .parc-hdr-right {
             display: flex;
             justify-content: flex-end;
             align-items: center;
             gap: 6px;
         }
 
-        .prl-ibtn {
+        .parc-ibtn {
             width: 30px; height: 30px;
             display: flex; align-items: center; justify-content: center;
             background: transparent;
@@ -145,26 +145,26 @@
             padding: 0;
         }
 
-        .prl-ibtn:hover {
+        .parc-ibtn:hover {
             background: var(--bg3);
             border-color: var(--border);
             color: var(--text);
         }
 
-        .prl-ibtn svg {
+        .parc-ibtn svg {
             width: 15px; height: 15px;
             stroke: currentColor; fill: none;
             stroke-width: 1.75;
             stroke-linecap: round; stroke-linejoin: round;
         }
 
-        .prl-ibtn.spinning svg { animation: spin 1s linear infinite; }
+        .parc-ibtn.spinning svg { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .prl-sep { width: 1px; height: 18px; background: var(--border); }
+        .parc-sep { width: 1px; height: 18px; background: var(--border); }
 
         /* ── Sidebar Nav ───────────────────────────────────────────────────── */
-        .prl-nav {
+        .parc-nav {
             position: fixed;
             left: 0; top: var(--hdr-h); bottom: 0;
             width: var(--nav-w);
@@ -177,11 +177,11 @@
             flex-direction: column;
         }
 
-        .prl-nav:hover, .prl-nav:focus-within { width: var(--nav-exp); }
+        .parc-nav:hover, .parc-nav:focus-within { width: var(--nav-exp); }
 
-        .prl-nav ul { list-style: none; padding: 10px 0; flex: 1; }
+        .parc-nav ul { list-style: none; padding: 10px 0; flex: 1; }
 
-        .prl-nlink {
+        .parc-nlink {
             display: flex;
             align-items: center;
             height: 42px;
@@ -200,32 +200,32 @@
             padding: 0;
         }
 
-        .prl-nlink:hover { background: rgba(255,255,255,0.03); color: var(--text-secondary); }
+        .parc-nlink:hover { background: rgba(255,255,255,0.03); color: var(--text-secondary); }
 
-        .prl-nlink.active {
+        .parc-nlink.active {
             color: var(--amber);
             border-left-color: var(--amber);
             background: var(--amber-dim);
             font-weight: 500;
         }
 
-        .prl-nlink.active .prl-nico svg { stroke: var(--amber); }
+        .parc-nlink.active .parc-nico svg { stroke: var(--amber); }
 
-        .prl-nico {
+        .parc-nico {
             width: var(--nav-w);
             height: 42px;
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
         }
 
-        .prl-nico svg {
+        .parc-nico svg {
             width: 17px; height: 17px;
             stroke: currentColor; fill: none;
             stroke-width: 1.75;
             stroke-linecap: round; stroke-linejoin: round;
         }
 
-        .prl-nlabel {
+        .parc-nlabel {
             opacity: 0;
             transform: translateX(-6px);
             transition: opacity 0.16s 0.04s, transform 0.16s 0.04s;
@@ -233,13 +233,13 @@
             overflow: hidden;
         }
 
-        .prl-nav:hover .prl-nlabel,
-        .prl-nav:focus-within .prl-nlabel {
+        .parc-nav:hover .parc-nlabel,
+        .parc-nav:focus-within .parc-nlabel {
             opacity: 1;
             transform: translateX(0);
         }
 
-        .prl-nkbd {
+        .parc-nkbd {
             font-family: var(--dm-mono);
             font-size: 9px;
             color: var(--text-dim);
@@ -253,10 +253,10 @@
             transition: opacity 0.16s 0.04s;
         }
 
-        .prl-nav:hover .prl-nkbd,
-        .prl-nav:focus-within .prl-nkbd { opacity: 1; }
+        .parc-nav:hover .parc-nkbd,
+        .parc-nav:focus-within .parc-nkbd { opacity: 1; }
 
-        .prl-nbadge {
+        .parc-nbadge {
             display: inline-block;
             width: 6px; height: 6px;
             border-radius: 50%;
@@ -267,20 +267,20 @@
             transition: background 0.3s, box-shadow 0.3s;
         }
 
-        .prl-nbadge.live {
+        .parc-nbadge.live {
             background: var(--green);
             box-shadow: 0 0 5px rgba(16,185,129,0.6);
         }
 
         /* ── Shell ─────────────────────────────────────────────────────────── */
-        .prl-shell {
+        .parc-shell {
             padding-top: var(--hdr-h);
             padding-left: var(--nav-w);
             min-height: 100vh;
         }
 
         /* ── Toasts ────────────────────────────────────────────────────────── */
-        #prl-toasts {
+        #parc-toasts {
             position: fixed;
             bottom: 20px; right: 20px;
             z-index: 9999;
@@ -288,7 +288,7 @@
             pointer-events: none;
         }
 
-        .prl-toast {
+        .parc-toast {
             font-family: var(--dm-mono);
             font-size: 11px;
             color: var(--text);
@@ -298,15 +298,15 @@
             padding: 9px 14px;
             border-radius: 3px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.7);
-            animation: prl-tin 0.18s ease;
+            animation: parc-tin 0.18s ease;
             max-width: 300px;
         }
 
-        .prl-toast.ok   { border-left-color: var(--green); }
-        .prl-toast.err  { border-left-color: var(--red); }
-        .prl-toast.info { border-left-color: var(--amber); }
+        .parc-toast.ok   { border-left-color: var(--green); }
+        .parc-toast.err  { border-left-color: var(--red); }
+        .parc-toast.info { border-left-color: var(--amber); }
 
-        @keyframes prl-tin {
+        @keyframes parc-tin {
             from { transform: translateY(6px); opacity: 0; }
             to   { transform: translateY(0);   opacity: 1; }
         }
@@ -317,32 +317,34 @@
     <a href="/" class="skip-link">Skip to content</a>
 
     <!-- ── Header ──────────────────────────────────────────────────────────── -->
-    <header class="prl-hdr" role="banner">
-        <div class="prl-logo" aria-label="PARC Robotics Lab">[PRL]</div>
-
-        <div class="prl-conn" role="status" aria-live="polite" aria-atomic="true">
-            <span class="prl-dot" id="prl-dot" aria-hidden="true"></span>
-            <span id="prl-label">SO-101</span>
-            <span id="prl-port" aria-label="Serial port">no device</span>
+    <header class="parc-hdr" role="banner">
+        <div class="parc-logo" aria-label="Parc Robotics">
+            <img src="/static/img/parc-logo.png" alt="Parc Robotics Logo" style="height: 32px; filter: drop-shadow(0 0 8px rgba(0,255,255,0.3)); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
         </div>
 
-        <div class="prl-hdr-right">
-            <button class="prl-ibtn" id="prl-disc-btn"
+        <div class="parc-conn" role="status" aria-live="polite" aria-atomic="true">
+            <span class="parc-dot" id="parc-dot" aria-hidden="true"></span>
+            <span id="parc-label">Parc Robotics</span>
+            <span id="parc-port" aria-label="Serial port">no device</span>
+        </div>
+
+        <div class="parc-hdr-right">
+            <button class="parc-ibtn" id="parc-disc-btn"
                     onclick="prlDiscover()"
                     aria-label="Discover and connect robot"
-                    title="Discover SO-101 (D)">
+                    title="Discover Parc Robotics (D)">
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
             </button>
-            <div class="prl-sep" aria-hidden="true"></div>
-            <a href="/settings" class="prl-ibtn"
+            <div class="parc-sep" aria-hidden="true"></div>
+            <a href="/settings" class="parc-ibtn"
                aria-label="Settings"
                title="Settings (S)">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </a>
-            <div class="prl-sep" aria-hidden="true"></div>
-            <button class="prl-ibtn"
+            <div class="parc-sep" aria-hidden="true"></div>
+            <button class="parc-ibtn"
                     onclick="prlToggleLang()"
-                    id="prl-lang-btn"
+                    id="parc-lang-btn"
                     aria-label="Switch language"
                     style="width:auto;padding:0 8px;letter-spacing:0.05em;">{{ lang|upper }}</button>
         </div>
@@ -350,78 +352,78 @@
 
     <!-- ── Sidebar nav ─────────────────────────────────────────────────────── -->
     {% set _path = request.path %}
-    <nav class="prl-nav" aria-label="Main navigation">
+    <nav class="parc-nav" aria-label="Main navigation">
         <ul role="list">
             <li>
-                <a href="/" class="prl-nlink {% if _path == '/' %}active{% endif %}"
+                <a href="/" class="parc-nlink {% if _path == '/' %}active{% endif %}"
                    aria-label="Dashboard" aria-current="{{ 'page' if _path == '/' else 'false' }}">
-                    <span class="prl-nico" aria-hidden="true">
+                    <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
                     </span>
-                    <span class="prl-nlabel">Dashboard</span>
-                    <span class="prl-nkbd" aria-hidden="true">H</span>
+                    <span class="parc-nlabel">Dashboard</span>
+                    <span class="parc-nkbd" aria-hidden="true">H</span>
                 </a>
             </li>
             <li>
-                <a href="/learn" class="prl-nlink {% if _path == '/learn' %}active{% endif %}"
+                <a href="/learn" class="parc-nlink {% if _path == '/learn' %}active{% endif %}"
                    aria-label="Learn" aria-current="{{ 'page' if _path == '/learn' else 'false' }}">
-                    <span class="prl-nico" aria-hidden="true">
+                    <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                     </span>
-                    <span class="prl-nlabel">Learn</span>
-                    <span class="prl-nkbd" aria-hidden="true">L</span>
+                    <span class="parc-nlabel">Learn</span>
+                    <span class="parc-nkbd" aria-hidden="true">L</span>
                 </a>
             </li>
             <li>
-                <a href="/practical" class="prl-nlink {% if _path == '/practical' %}active{% endif %}"
+                <a href="/practical" class="parc-nlink {% if _path == '/practical' %}active{% endif %}"
                    aria-label="Practical" aria-current="{{ 'page' if _path == '/practical' else 'false' }}">
-                    <span class="prl-nico" aria-hidden="true">
+                    <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                     </span>
-                    <span class="prl-nlabel">Practical</span>
-                    <span class="prl-nkbd" aria-hidden="true">P</span>
+                    <span class="parc-nlabel">Practical</span>
+                    <span class="parc-nkbd" aria-hidden="true">P</span>
                 </a>
             </li>
             <li>
-                <a href="/play" class="prl-nlink {% if _path == '/play' %}active{% endif %}"
+                <a href="/play" class="parc-nlink {% if _path == '/play' %}active{% endif %}"
                    aria-label="Play" aria-current="{{ 'page' if _path == '/play' else 'false' }}">
-                    <span class="prl-nico" aria-hidden="true">
+                    <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01M17 12h.01"/><path d="M5 10v4M7 12H3"/></svg>
                     </span>
-                    <span class="prl-nlabel">Play</span>
-                    <span class="prl-nkbd" aria-hidden="true">X</span>
+                    <span class="parc-nlabel">Play</span>
+                    <span class="parc-nkbd" aria-hidden="true">X</span>
                 </a>
             </li>
             <li>
-                <button class="prl-nlink" id="prl-nav-mujoco"
+                <button class="parc-nlink" id="parc-nav-mujoco"
                         onclick="prlLaunchViewer(event)"
                         aria-label="Launch MuJoCo viewer">
-                    <span class="prl-nico" aria-hidden="true">
+                    <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
                     </span>
-                    <span class="prl-nlabel">MuJoCo <span class="prl-nbadge" id="prl-vdot"></span></span>
-                    <span class="prl-nkbd" aria-hidden="true">M</span>
+                    <span class="parc-nlabel">MuJoCo <span class="parc-nbadge" id="parc-vdot"></span></span>
+                    <span class="parc-nkbd" aria-hidden="true">M</span>
                 </button>
             </li>
             <li>
-                <a href="/settings" class="prl-nlink {% if _path == '/settings' %}active{% endif %}"
+                <a href="/settings" class="parc-nlink {% if _path == '/settings' %}active{% endif %}"
                    aria-label="Settings" aria-current="{{ 'page' if _path == '/settings' else 'false' }}">
-                    <span class="prl-nico" aria-hidden="true">
+                    <span class="parc-nico" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                     </span>
-                    <span class="prl-nlabel">Settings</span>
-                    <span class="prl-nkbd" aria-hidden="true">S</span>
+                    <span class="parc-nlabel">Settings</span>
+                    <span class="parc-nkbd" aria-hidden="true">S</span>
                 </a>
             </li>
         </ul>
     </nav>
 
     <!-- ── Page content ────────────────────────────────────────────────────── -->
-    <div class="prl-shell">
+    <div class="parc-shell">
         {% block content %}{% endblock %}
     </div>
 
-    <div id="prl-toasts" role="status" aria-live="polite" aria-atomic="false"></div>
+    <div id="parc-toasts" role="status" aria-live="polite" aria-atomic="false"></div>
 
     <script>
         /* ── i18n ──────────────────────────────────────────────────────────── */
@@ -436,27 +438,27 @@
             document.cookie = `lang=${l};path=/;max-age=${60*60*24*365}`;
             window.location.reload();
         };
-        function prlToggleLang() {
-            setLang(_prl_lang === 'en' ? 'fr' : 'en');
+        function parcToggleLang() {
+            setLang(_parc_lang === 'en' ? 'fr' : 'en');
         }
 
         /* ── Toast ─────────────────────────────────────────────────────────── */
-        const PRL = {
+        const PARC = {
             toast(msg, type='info', ms=3500) {
                 const el = document.createElement('div');
-                el.className = `prl-toast ${type}`;
+                el.className = `parc-toast ${type}`;
                 el.textContent = msg;
-                document.getElementById('prl-toasts').appendChild(el);
+                document.getElementById('parc-toasts').appendChild(el);
                 setTimeout(() => el.remove(), ms);
             }
         };
-        window.PARC = { Toast: { show: (m, t) => PRL.toast(m, t === 'success' ? 'ok' : t === 'error' ? 'err' : 'info') } };
+        window.PARC = PARC;
 
         /* ── Robot status ──────────────────────────────────────────────────── */
-        const _dot   = document.getElementById('prl-dot');
-        const _port  = document.getElementById('prl-port');
+        const _dot   = document.getElementById('parc-dot');
+        const _port  = document.getElementById('parc-port');
 
-        window.prlSetConnected = function(port) {
+        window.parcSetConnected = function(port) {
             _dot.classList.add('live');
             _port.classList.add('live');
             _port.textContent = port || 'connected';
@@ -465,19 +467,19 @@
         (async () => {
             try {
                 const d = await (await fetch('/api/status')).json();
-                if (d.connected) prlSetConnected(d.settings?.port);
+                if (d.connected) parcSetConnected(d.settings?.port);
             } catch {}
         })();
 
         /* ── Discover ──────────────────────────────────────────────────────── */
-        window.prlDiscover = async function() {
-            const btn = document.getElementById('prl-disc-btn');
+        window.parcDiscover = async function() {
+            const btn = document.getElementById('parc-disc-btn');
             btn.classList.add('spinning');
             btn.disabled = true;
-            PRL.toast('Scanning for SO-101…', 'info');
+            PARC.toast('Scanning for Parc Robotics…', 'info');
             try {
                 const { ports = [] } = await (await fetch('/api/ports')).json();
-                if (!ports.length) { PRL.toast('No robot ports found', 'err'); }
+                if (!ports.length) { PARC.toast('No robot ports found', 'err'); }
                 else {
                     let ok = false;
                     for (const port of ports) {
@@ -487,18 +489,18 @@
                                 headers: {'Content-Type':'application/json'},
                                 body: JSON.stringify({port, baudrate:1000000})
                             })).json();
-                            if (d.ok) { prlSetConnected(port); PRL.toast('Connected — '+port, 'ok'); ok=true; break; }
+                            if (d.ok) { parcSetConnected(port); PARC.toast('Connected — '+port, 'ok'); ok=true; break; }
                         } catch { continue; }
                     }
-                    if (!ok) PRL.toast('Ports found, connection failed', 'err');
+                    if (!ok) PARC.toast('Ports found, connection failed', 'err');
                 }
-            } catch(e) { PRL.toast('Error: '+e.message, 'err'); }
+            } catch(e) { PARC.toast('Error: '+e.message, 'err'); }
             btn.classList.remove('spinning');
             btn.disabled = false;
         };
 
         /* ── MuJoCo viewer ─────────────────────────────────────────────────── */
-        const _vdot = document.getElementById('prl-vdot');
+        const _vdot = document.getElementById('parc-vdot');
         let _vrun = false;
 
         async function prlCheckViewer() {

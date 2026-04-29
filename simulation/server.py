@@ -1,5 +1,5 @@
 """
-SO101 Robot Arm Server with GLB conversion
+Parc Robotics Arm Server with GLB conversion
 """
 
 import asyncio
@@ -17,9 +17,9 @@ import numpy as np
 import mujoco
 import websockets
 
-SO101_DIR = os.environ.get("SO101_DIR", r"C:\Users\abdou\Documents\parc_final\InverseKinematics\so101-inverse-kinematics-main\so101")
+PARC_ROBOTICS_DIR = os.environ.get("PARC_ROBOTICS_DIR", r"C:\Users\abdou\Documents\parc_final\InverseKinematics\so101-inverse-kinematics-main\so101")
 WEB_DIR   = os.environ.get("WEB_DIR",   os.path.join(os.path.dirname(os.path.abspath(__file__)), "web"))
-STL_DIR   = os.path.join(SO101_DIR, "assets")
+STL_DIR   = os.path.join(PARC_ROBOTICS_DIR, "assets")
 PORT      = int(os.environ.get("HTTP_PORT", 38000))
 WS_PORT   = int(os.environ.get("WS_PORT",  38001))
 BIND_HOST = os.environ.get("BIND_HOST", "127.0.0.1")
@@ -90,7 +90,7 @@ class RobotState:
         self.running = True
         self.connected = set()
         
-        os.chdir(SO101_DIR)
+        os.chdir(PARC_ROBOTICS_DIR)
         self.model = mujoco.MjModel.from_xml_path("so_101.xml")
         self.data = mujoco.MjData(self.model)
         

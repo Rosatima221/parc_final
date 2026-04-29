@@ -12,7 +12,7 @@ import mujoco.viewer
 import numpy as np
 
 ASSETS_DIR = os.environ.get(
-    "SO101_DIR",
+    "PARC_ROBOTICS_DIR",
     r"C:\Users\abdou\Documents\parc_final\InverseKinematics\so101-inverse-kinematics-main\so101",
 )
 XML_FILE = os.path.join(ASSETS_DIR, "so_101.xml")

@@ -1,5 +1,5 @@
 """
-SO101 Robot Arm Server with GLB conversion
+Parc Robotics Arm Server with GLB conversion
 """
 
 import asyncio
@@ -17,9 +17,9 @@ import numpy as np
 import mujoco
 import websockets
 
-SO101_DIR = r"C:\Users\abdou\Documents\parc_final\InverseKinematics\so101-inverse-kinematics-main\so101"
-WEB_DIR = r"C:\Users\abdou\Documents\parc_final\InverseKinematics\web"
-STL_DIR = SO101_DIR + "/assets"
+PARC_ROBOTICS_DIR = os.environ.get("PARC_ROBOTICS_DIR", r"C:\Users\abdou\Documents\parc_final\InverseKinematics\so101-inverse-kinematics-main\so101")
+WEB_DIR = os.environ.get("WEB_DIR", r"C:\Users\abdou\Documents\parc_final\InverseKinematics\web")
+STL_DIR = os.path.join(PARC_ROBOTICS_DIR, "assets")
 PORT = 38000
 WS_PORT = 38001
 
@@ -89,7 +89,7 @@ class RobotState:
         self.running = True
         self.connected = set()
         
-        os.chdir(SO101_DIR)
+        os.chdir(PARC_ROBOTICS_DIR)
         self.model = mujoco.MjModel.from_xml_path("so_101.xml")
         self.data = mujoco.MjData(self.model)
         
@@ -147,7 +147,7 @@ class Handler(SimpleHTTPRequestHandler):
             if glb_cache:
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/octet-stream')
-                self.send_header('Content-Disposition', 'attachment; filename=so101.glb')
+                self.send_header('Content-Disposition', 'attachment; filename=parc_robotics.glb')
                 self.end_headers()
                 self.wfile.write(glb_cache)
             else:
@@ -209,7 +209,7 @@ async def broadcast():
         await asyncio.sleep(1/60)
 
 async def main():
-    print(f"SO101 Server on port {PORT}")
+    print(f"Parc Robotics Server on port {PORT}")
     print(f"Bodies: {robot.body_names}")
     print(f"Joints: {robot.joint_names}")
     

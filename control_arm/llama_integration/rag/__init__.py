@@ -1,5 +1,5 @@
 """
-RAG System for PARC Robotics SO-101
+RAG System for Parc Robotics Arm
 ===================================
 Lightweight Retrieval-Augmented Generation using ChromaDB + Sentence Transformers
 Optimized for Jetson Nano Orin

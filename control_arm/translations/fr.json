@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "PARC ROBOTICS - Controleur SO-101"
+    "title": "Parc Robotics - Contrôleur"
   },
   "nav": {
     "back": "Retour",
@@ -8,7 +8,7 @@
   },
   "landing": {
     "hero": {
-      "title": "Controleur Robot SO-101",
+      "title": "Contrôleur Parc Robotics",
       "subtitle": "Un systeme de controle de bras robotique 6-DDL puissant avec cinematique en temps reel, programmation assistee par IA et modules d'apprentissage interactifs.",
       "cta": "Commencer a Apprendre"
     }
@@ -136,7 +136,7 @@
       "desc": "Definition, histoire et types de robots"
     },
     "lesson1_2": {
-      "title": "Anatomie du SO-101",
+      "title": "Anatomie de Parc Robotics",
       "desc": "Comprendre la structure du bras 6-DDL"
     },
     "lesson1_3": {
@@ -171,7 +171,7 @@
     "ai_assistant": "Tuteur IA",
     "ai_desc": "Posez vos questions sur la robotique, la cinematique ou tout sujet de ce cours.",
     "ai_tutor": "Tuteur IA",
-    "ai_tutor_greeting": "Bonjour! Je suis votre tuteur IA. Posez-moi vos questions sur la robotique, la cinematique, la programmation ou le bras SO-101.",
+    "ai_tutor_greeting": "Bonjour! Je suis votre tuteur IA. Posez-moi vos questions sur la robotique, la cinematique, la programmation ou le bras Parc Robotics.",
     "ai_tutor_placeholder": "Posez une question au tuteur IA..."
   },
 "practical": {
@@ -185,7 +185,7 @@
     "disconnect_camera": "Deconnecter",
     "analyze_scene": "Analyser la Scene",
     "detect_objects": "Detecter Objets",
-    "ai_greeting": "Bonjour! Je suis votre assistant IA ejcu par LFM2.5 sur votre Jetson Orin Nano. Posez-moi vos questions sur la robotique, la programmation Python ou le bras SO-101.",
+    "ai_greeting": "Bonjour! Je suis votre assistant IA ejcu par LFM2.5 sur votre Jetson Orin Nano. Posez-moi vos questions sur la robotique, la programmation Python ou le bras Parc Robotics.",
     "ai_placeholder": "Interrogez l'assistant IA...",
     "ai_connecting": "Connexion au serveur IA...",
     "ai_offline": "Serveur IA hors ligne",
@@ -348,9 +348,9 @@
   },
   "modal": {
     "licenses_title": "Licence Logicielle",
-    "licenses_text": "Ce logiciel est proprietaire de PARC ROBOTICS. Tous droits reserves. La copie, distribution ou modification non autorisee de ce logiciel est strictement interdite."
+    "licenses_text": "Ce logiciel est proprietaire de Parc Robotics. Tous droits reserves. La copie, distribution ou modification non autorisee de ce logiciel est strictement interdite."
   },
   "footer": {
-    "copyright": "PARC ROBOTICS. Tous droits reserves. &copy; {year}"
+    "copyright": "Parc Robotics. Tous droits reserves. &copy; {year}"
   }
 }

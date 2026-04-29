@@ -26,7 +26,7 @@ class RetrievalResult:
 
 class RAGSystem:
     """
-    Complete RAG system for PARC Robotics SO-101.
+    Complete RAG system for PARC Robotics.
     Provides retrieval-augmented generation with robot knowledge base.
     """
 
@@ -269,7 +269,7 @@ class RAGSystem:
         Returns:
             Dict with answer, sources, and context
         """
-        default_system = """You are an AI assistant for PARC Robotics SO-101 robot arm.
+        default_system = """You are an AI assistant for Parc Robotics.
 Answer questions based on the provided context. If the context doesn't contain
 relevant information, say so. Be technical and precise, especially when discussing
 robotics concepts, kinematics, or code."""

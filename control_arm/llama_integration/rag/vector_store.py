@@ -68,7 +68,7 @@ class VectorStore:
                 # Collection doesn't exist, create new
                 self._collection = client.create_collection(
                     name=self.collection_name,
-                    metadata={"description": "PARC Robotics SO-101 knowledge base"},
+                    metadata={"description": "Parc Robotics Arm knowledge base"},
                     embedding_function=None
                 )
                 logger.info(f"Created new collection: {self.collection_name}")

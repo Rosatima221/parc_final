@@ -89,7 +89,7 @@ def print_banner():
 ║   ██║     ╚██████╔╝██║  ██║   ██║   ╚██████╔╝╚██████╔╝██║  ██║  ║
 ║   ╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝  ║
 ║                                                              ║
-║   {Colors.ENDC}ROBOTICS - SO-101 Robot Arm Controller{Colors.CYAN}                   ║
+║   {Colors.ENDC}PARC ROBOTICS - Robotic Platform{Colors.CYAN}                         ║
 ║                                                              ║
 ╚══════════════════════════════════════════════════════════════╝
 {Colors.ENDC}""")

@@ -1,11 +1,11 @@
-# SO-101 Robot Arm — Simulation & Control
+# Parc Robotics — Simulation & Control
 
-Control a real **SO-101 robot arm** from a MuJoCo simulation. Move the simulated arm and the physical arm follows in real time.
+Control a real **Parc Robotics arm** from a MuJoCo simulation. Move the simulated arm and the physical arm follows in real time.
 
 ```
 ┌─────────────────────┐        ┌─────────────────────┐
 │   MuJoCo Viewer     │  qpos  │   Bridge / Server   │  joints  ┌──────────────┐
-│   (viewer.py)       │───────>│   (bridge.py or     │─────────>│  Real SO-101 │
+│   (viewer.py)       │───────>│   (bridge.py or     │─────────>│  Real Arm    │
 │                     │        │    server.py)        │          │  (app.py)    │
 └─────────────────────┘        └─────────────────────┘          └──────────────┘
 ```
@@ -26,7 +26,7 @@ simulation/
 │   └── web/           # Browser-based 3D viewer (Three.js)
 └── control_arm/
     ├── Dockerfile
-    └── app.py         # Flask app — controls the physical SO-101 via servo SDK
+    └── app.py         # Flask app — controls the physical Parc Robotics via servo SDK
 ```
 
 ---
@@ -50,7 +50,7 @@ Edit `.env` at the project root — the defaults work out of the box if your set
 | Variable | Default | Description |
 |---|---|---|
 | `COMPOSE_PROFILES` | _(empty)_ | Set to `sync` to enable simulation→arm bridge |
-| `SERIAL_PORT` | `/dev/ttyACM0` | Serial port the SO-101 is on |
+| `SERIAL_PORT` | `/dev/ttyACM0` | Serial port the Parc Robotics is on |
 | `SO101_DIR` | `/home/parc/Desktop/...` | Path to the MuJoCo model directory |
 | `RATE_HZ` | `20` | Bridge command rate (Hz) |
 | `CONTROLLER_PORT` | `5000` | Exposed port for the controller UI |

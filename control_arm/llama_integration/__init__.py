@@ -127,7 +127,7 @@ class LlamaAssistant:
         self._session_history: List[Dict[str, str]] = []
 
     def _default_system_prompt(self) -> str:
-        return """You are an AI assistant for PARC ROBOTICS SO-101 robot arm controller.
+        return """You are an AI assistant for PARC ROBOTICS Parc Robotics Arm robot arm controller.
 You help users learn about robotics, write Python code for robot control, and explain kinematics concepts.
 Be concise, technical, and helpful. When writing code, include comments explaining the logic."""
 
@@ -650,12 +650,12 @@ def get_audio_assistant() -> AudioAssistant:
 
 
 # -----------------------------------------------------------------------------
-# SO-101 Forward Kinematics (from Georgia Tech ECE 4560 Tucker Course)
+# Parc Robotics Arm Forward Kinematics (from Georgia Tech ECE 4560 Tucker Course)
 # -----------------------------------------------------------------------------
 
-class SO101ForwardKinematics:
+class ParcRoboticsForwardKinematics:
     """
-    Forward kinematics for SO-101 robot arm.
+    Forward kinematics for Parc Robotics Arm robot arm.
     Based on Georgia Tech ECE 4560 Tucker Course Assignment 6.
 
     Reference: https://maegantucker.com/ECE4560/assignment6-so101/
@@ -810,7 +810,7 @@ class CodeValidator:
     """
 
     def __init__(self):
-        self.fk = SO101ForwardKinematics()
+        self.fk = ParcRoboticsForwardKinematics()
 
     def validate(self, code: str, initial_joints: Dict[str, float] = None) -> Dict[str, Any]:
         """
@@ -1274,14 +1274,14 @@ def setup_ai_routes(app):
     @ai_bp.route('/api/sim/fk', methods=['POST'])
     def sim_forward_kinematics():
         """
-        Compute forward kinematics for SO-101 robot arm.
+        Compute forward kinematics for Parc Robotics Arm robot arm.
         Takes joint angles in DEGREES, returns end-effector position in mm.
         """
         data = request.json or {}
         joints = data.get('joints', {})
 
         try:
-            fk = SO101ForwardKinematics()
+            fk = ParcRoboticsForwardKinematics()
             position, rotation = fk.compute(joints)
             return jsonify({
                 'success': True,
@@ -1505,7 +1505,7 @@ class SimpleRAG:
                 "id": "kinematics_basics",
                 "title": "Kinematics Basics",
                 "content": """Forward kinematics calculates the position of the robot's end-effector 
-                given joint angles. For SO-101: J1 (pan) rotates base, J2 (lift) raises arm, 
+                given joint angles. For Parc Robotics Arm: J1 (pan) rotates base, J2 (lift) raises arm, 
                 J3 (elbow) bends elbow, J4 (wrist flex) tilts wrist, J5 (wrist roll) rotates gripper."""
             },
             {

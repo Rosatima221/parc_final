@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "PARC ROBOTICS - SO-101 Controller"
+    "title": "Parc Robotics Controller"
   },
   "nav": {
     "back": "Back",
@@ -8,7 +8,7 @@
   },
   "landing": {
     "hero": {
-      "title": "SO-101 Robot Controller",
+      "title": "Parc Robotics Controller",
       "subtitle": "A powerful 6-DOF robot arm control system with real-time kinematics, AI-assisted programming, and interactive learning modules.",
       "cta": "Start Learning"
     }
@@ -136,7 +136,7 @@
       "desc": "Definition, history, and types of robots"
     },
     "lesson1_2": {
-      "title": "SO-101 Anatomy",
+      "title": "Parc Robotics Anatomy",
       "desc": "Understanding the 6-DOF arm structure"
     },
     "lesson1_3": {
@@ -171,7 +171,7 @@
     "ai_assistant": "AI Tutor",
     "ai_desc": "Ask questions about robotics, kinematics, or any topic in this course.",
     "ai_tutor": "AI Tutor",
-    "ai_tutor_greeting": "Hello! I'm your AI tutor. Ask me anything about robotics, kinematics, programming, or the SO-101 arm.",
+    "ai_tutor_greeting": "Hello! I'm your AI tutor. Ask me anything about robotics, kinematics, programming, or the Parc Robotics arm.",
     "ai_tutor_placeholder": "Ask the AI tutor..."
   },
   "practical": {
@@ -185,7 +185,7 @@
     "disconnect_camera": "Disconnect",
     "analyze_scene": "Analyze Scene",
     "detect_objects": "Detect Objects",
-    "ai_greeting": "Hello! I am your AI assistant powered by LFM2.5 on your Jetson Orin Nano. Ask me about robotics, Python programming, or the SO-101 arm.",
+    "ai_greeting": "Hello! I am your AI assistant powered by LFM2.5 on your Jetson Orin Nano. Ask me about robotics, Python programming, or the Parc Robotics arm.",
     "ai_placeholder": "Ask the AI assistant...",
     "ai_connecting": "Connecting to AI server...",
     "ai_offline": "AI server offline",
@@ -348,9 +348,9 @@
   },
   "modal": {
     "licenses_title": "Software License",
-    "licenses_text": "This software is proprietary to PARC ROBOTICS. All rights reserved. Unauthorized copying, distribution, or modification of this software is strictly prohibited."
+    "licenses_text": "This software is proprietary to Parc Robotics. All rights reserved. Unauthorized copying, distribution, or modification of this software is strictly prohibited."
   },
   "footer": {
-    "copyright": "PARC ROBOTICS. All rights reserved. &copy; {year}"
+    "copyright": "Parc Robotics. All rights reserved. &copy; {year}"
   }
 }

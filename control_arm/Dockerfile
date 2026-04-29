@@ -13,7 +13,8 @@ RUN pip install --no-cache-dir \
     "numpy>=1.24.0" \
     "pyserial>=3.5" \
     "requests>=2.31.0" \
-    "Pillow>=10.0.0"
+    "Pillow>=10.0.0" \
+    "feetech-servo-sdk"
 
 COPY . .
 

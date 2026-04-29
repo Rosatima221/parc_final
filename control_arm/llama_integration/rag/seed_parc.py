@@ -1,5 +1,5 @@
 """
-Seed script with CORRECT SO-101 DH parameters from Georgia Tech ECE 4560
+Seed script with CORRECT Parc Robotics Arm DH parameters from Georgia Tech ECE 4560
 =======================================================================
 Reference: https://maegantucker.com/ECE4560/assignment6-so101/
 
@@ -111,7 +111,7 @@ def get_g5t():
 
 def get_forward_kinematics(position_dict):
     """
-    Compute complete forward kinematics for SO-101.
+    Compute complete forward kinematics for Parc Robotics Arm.
 
     Args:
         position_dict: Dictionary with keys:
@@ -144,7 +144,7 @@ def seed_kinematics_docs_correct(rag_system):
 
     docs = [
         {
-            "text": """# SO-101 Forward Kinematics - CORRECT DH Parameters
+            "text": """# Parc Robotics Arm Forward Kinematics - CORRECT DH Parameters
 
 Based on Georgia Tech ECE 4560 Tucker Course - Assignment 6
 
@@ -222,7 +222,7 @@ def Rz(thetadeg):
             "category": "kinematics"
         },
         {
-            "text": """# SO-101 Pick and Place Configuration
+            "text": """# Parc Robotics Arm Pick and Place Configuration
 
 From Georgia Tech ECE 4560 Tucker Course
 
@@ -279,7 +279,7 @@ gripper_open = {
             "category": "kinematics"
         },
         {
-            "text": """# SO-101 Joint Limits and Specs
+            "text": """# Parc Robotics Arm Joint Limits and Specs
 
 ## Joint Limits (from URDF)
 
@@ -305,7 +305,7 @@ gripper_open = {
             "category": "specifications"
         },
         {
-            "text": """# SO-101 Robot Arm - Complete Technical Reference
+            "text": """# Parc Robotics Arm Robot Arm - Complete Technical Reference
 
 Based on Georgia Tech ECE 4560 Course Materials
 
@@ -360,7 +360,7 @@ def seed_programming_docs_correct(rag_system):
 
     docs = [
         {
-            "text": """# SO-101 SDK Correct Usage
+            "text": """# Parc Robotics Arm SDK Correct Usage
 
 ## Servo IDs (from URDF)
 - ID 1: shoulder_pan (base rotation)
@@ -429,10 +429,10 @@ servo.WritePosEx(6, int(2048 + 5 * 11.375), 500, 50)
             "category": "programming"
         },
         {
-            "text": """# SO-101 Robot - Complete Hardware Specifications
+            "text": """# Parc Robotics Arm Robot - Complete Hardware Specifications
 
 ## Robot Overview
-The SO-101 is a 6-DOF robot arm used in Georgia Tech ECE 4560 courses.
+The Parc Robotics Arm is a 6-DOF robot arm used in Georgia Tech ECE 4560 courses.
 It uses serial bus servos for precise position control.
 
 ## Communication Hardware
@@ -475,7 +475,7 @@ UART Mode (for Raspberry Pi, ESP32):
 - **Baudrate**: 1,000,000 bps (default)
 - **Response**: Can read position, load, voltage, temperature
 
-## SO-101 Servo IDs and Functions
+## Parc Robotics Arm Servo IDs and Functions
 
 | Servo ID | Joint Name      | Function              | Typical Center |
 |----------|-----------------|----------------------|----------------|
@@ -549,7 +549,7 @@ servo.WriteSGByte(servo_id, torque_percent)  # 0-1000 = 0-100%
             "category": "hardware"
         },
         {
-            "text": """# SO-101 Common Issues and Fixes
+            "text": """# Parc Robotics Arm Common Issues and Fixes
 
 ## Problem: Robot moves to wrong position
 - Cause: Incorrect angle conversion (deg vs rad)

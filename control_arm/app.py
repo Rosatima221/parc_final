@@ -10,7 +10,17 @@ sys.path.insert(0, str(SDK_PATH))
 import numpy as np
 import cv2
 from flask import Flask, Response, render_template, request, jsonify, stream_with_context
-from scservo_sdk import PortHandler, sms_sts, COMM_SUCCESS
+try:
+    from scservo_sdk import PortHandler, sms_sts, COMM_SUCCESS
+except ImportError:
+    print("Warning: scservo_sdk not found or incomplete, using dummy classes")
+    class PortHandler:
+        def __init__(self, *args, **kwargs): pass
+        def openPort(self): return False
+        def setBaudRate(self, *args): return False
+        def closePort(self): pass
+    def sms_sts(*args): return None
+    COMM_SUCCESS = 0
 
 # ── logging (SSE broadcast) ───────────────────────────────────────────────────
 _log_entries: list[str] = []

@@ -2,14 +2,14 @@ import numpy as np
 import mujoco.viewer
 import sys
 
-ASSETS_DIR = r"C:\Users\abdou\Documents\parc_final\InverseKinematics\so101-inverse-kinematics-main\so101"
-XML_FILE = ASSETS_DIR + "/so_101.xml"
+import os
+PARC_ROBOTICS_DIR = os.environ.get("PARC_ROBOTICS_DIR", r"C:\Users\abdou\Documents\parc_final\InverseKinematics\so101-inverse-kinematics-main\so101")
+XML_FILE = os.path.join(PARC_ROBOTICS_DIR, "so_101.xml")
 
 
-class SO101Viewer:
-    def __init__(self, xml_path: str = None, title: str = "SO101 Arm"):
-        import os
-        os.chdir(ASSETS_DIR)
+class ParcRoboticsViewer:
+    def __init__(self, xml_path: str = None, title: str = "Parc Robotics Arm"):
+        os.chdir(PARC_ROBOTICS_DIR)
         self.model = mujoco.MjModel.from_xml_path(xml_path or XML_FILE)
         self.data = mujoco.MjData(self.model)
         self.data.qpos[:] = [0, -1.57, 1.57, 0, 0, 0]
@@ -42,8 +42,8 @@ class SO101Viewer:
         self.viewer.close()
 
 
-class SO101RobotController:
-    def __init__(self, viewer: SO101Viewer, robot_instance=None):
+class ParcRoboticsController:
+    def __init__(self, viewer: ParcRoboticsViewer, robot_instance=None):
         self.viewer = viewer
         self.robot = robot_instance
         self.current_qpos = np.zeros(6)
@@ -64,7 +64,7 @@ class SO101RobotController:
 
 
 if __name__ == "__main__":
-    print("Starting SO101Viewer...", file=sys.stderr)
-    viewer = SO101Viewer()
+    print("Starting ParcRoboticsViewer...", file=sys.stderr)
+    viewer = ParcRoboticsViewer()
     print("Viewer initialized", file=sys.stderr)
     viewer.show()
