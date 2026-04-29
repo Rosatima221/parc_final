@@ -449,15 +449,15 @@
             </div>
 
             <div class="course-nav">
-                <button class="course-nav-btn active">{{ t('learn.nav.beginner') }}</button>
-                <button class="course-nav-btn">{{ t('learn.nav.intermediate') }}</button>
-                <button class="course-nav-btn">{{ t('learn.nav.advanced') }}</button>
+                <button class="course-nav-btn active" onclick="filterLevel('beginner')">{{ t('learn.nav.beginner') }}</button>
+                <button class="course-nav-btn" onclick="filterLevel('intermediate')">{{ t('learn.nav.intermediate') }}</button>
+                <button class="course-nav-btn" onclick="filterLevel('advanced')">{{ t('learn.nav.advanced') }}</button>
             </div>
 
             <div class="learn-layout">
                 <div class="course-modules">
-                    <!-- Module 1 -->
-                    <div class="module open">
+                    <!-- Module 1: Introduction (Beginner) -->
+                    <div class="module open" data-level="beginner">
                         <div class="module-header" onclick="toggleModule(this)">
                             <div class="module-info">
                                 <div class="module-num">1</div>
@@ -502,14 +502,14 @@
                         </div>
                     </div>
 
-                    <!-- Module 2 -->
-                    <div class="module">
+                    <!-- Module 2: Mechanics (Beginner) -->
+                    <div class="module" data-level="beginner">
                         <div class="module-header" onclick="toggleModule(this)">
                             <div class="module-info">
                                 <div class="module-num">2</div>
                                 <div class="module-title">
-                                    <h3>{{ t('learn.module2.title') }}</h3>
-                                    <p>{{ t('learn.module2.subtitle') }}</p>
+                                    <h3>Hardware & Control</h3>
+                                    <p>Understanding servos and serial communication</p>
                                 </div>
                             </div>
                             <div class="module-toggle">
@@ -523,16 +523,16 @@
                                 <div class="lesson" onclick="openLesson('lesson2_1')">
                                     <div class="lesson-icon">01</div>
                                     <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson2_1.title') }}</h4>
-                                        <p>{{ t('learn.lesson2_1.desc') }}</p>
+                                        <h4>Servo Mechanics</h4>
+                                        <p>How PWM and position control work</p>
                                     </div>
                                     <span class="lesson-duration">30 min</span>
                                 </div>
                                 <div class="lesson" onclick="openLesson('lesson2_2')">
                                     <div class="lesson-icon">02</div>
                                     <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson2_2.title') }}</h4>
-                                        <p>{{ t('learn.lesson2_2.desc') }}</p>
+                                        <h4>Serial Protocol</h4>
+                                        <p>Communicating with the robot via USB</p>
                                     </div>
                                     <span class="lesson-duration">25 min</span>
                                 </div>
@@ -540,14 +540,14 @@
                         </div>
                     </div>
 
-                    <!-- Module 3 -->
-                    <div class="module">
+                    <!-- Module 3: Kinematics (Intermediate) -->
+                    <div class="module" data-level="intermediate">
                         <div class="module-header" onclick="toggleModule(this)">
                             <div class="module-info">
                                 <div class="module-num">3</div>
                                 <div class="module-title">
-                                    <h3>{{ t('learn.module3.title') }}</h3>
-                                    <p>{{ t('learn.module3.subtitle') }}</p>
+                                    <h3>{{ t('learn.module2.title') }}</h3>
+                                    <p>{{ t('learn.module2.subtitle') }}</p>
                                 </div>
                             </div>
                             <div class="module-toggle">
@@ -561,18 +561,132 @@
                                 <div class="lesson" onclick="openLesson('lesson3_1')">
                                     <div class="lesson-icon">01</div>
                                     <div class="lesson-info">
-                                        <h4>{{ t('learn.lesson3_1.title') }}</h4>
-                                        <p>{{ t('learn.lesson3_1.desc') }}</p>
+                                        <h4>{{ t('learn.lesson2_1.title') }}</h4>
+                                        <p>{{ t('learn.lesson2_1.desc') }}</p>
                                     </div>
                                     <span class="lesson-duration">35 min</span>
                                 </div>
                                 <div class="lesson" onclick="openLesson('lesson3_2')">
                                     <div class="lesson-icon">02</div>
                                     <div class="lesson-info">
+                                        <h4>{{ t('learn.lesson2_2.title') }}</h4>
+                                        <p>{{ t('learn.lesson2_2.desc') }}</p>
+                                    </div>
+                                    <span class="lesson-duration">40 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module 4: Motion Planning (Intermediate) -->
+                    <div class="module" data-level="intermediate">
+                        <div class="module-header" onclick="toggleModule(this)">
+                            <div class="module-info">
+                                <div class="module-num">4</div>
+                                <div class="module-title">
+                                    <h3>{{ t('learn.module3.title') }}</h3>
+                                    <p>{{ t('learn.module3.subtitle') }}</p>
+                                </div>
+                            </div>
+                            <div class="module-toggle">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="module-content">
+                            <div class="lesson-list">
+                                <div class="lesson" onclick="openLesson('lesson4_1')">
+                                    <div class="lesson-icon">01</div>
+                                    <div class="lesson-info">
+                                        <h4>{{ t('learn.lesson3_1.title') }}</h4>
+                                        <p>{{ t('learn.lesson3_1.desc') }}</p>
+                                    </div>
+                                    <span class="lesson-duration">45 min</span>
+                                </div>
+                                <div class="lesson" onclick="openLesson('lesson4_2')">
+                                    <div class="lesson-icon">02</div>
+                                    <div class="lesson-info">
                                         <h4>{{ t('learn.lesson3_2.title') }}</h4>
                                         <p>{{ t('learn.lesson3_2.desc') }}</p>
                                     </div>
-                                    <span class="lesson-duration">40 min</span>
+                                    <span class="lesson-duration">50 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module 5: AI & Vision (Advanced) -->
+                    <div class="module" data-level="advanced">
+                        <div class="module-header" onclick="toggleModule(this)">
+                            <div class="module-info">
+                                <div class="module-num">5</div>
+                                <div class="module-title">
+                                    <h3>AI Vision & Perception</h3>
+                                    <p>Integrating cameras and deep learning</p>
+                                </div>
+                            </div>
+                            <div class="module-toggle">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="module-content">
+                            <div class="lesson-list">
+                                <div class="lesson" onclick="openLesson('lesson5_1')">
+                                    <div class="lesson-icon">01</div>
+                                    <div class="lesson-info">
+                                        <h4>YOLOE Object Detection</h4>
+                                        <p>Training and deploying vision models on Jetson</p>
+                                    </div>
+                                    <span class="lesson-duration">60 min</span>
+                                </div>
+                                <div class="lesson" onclick="openLesson('lesson5_2')">
+                                    <div class="lesson-icon">02</div>
+                                    <div class="lesson-info">
+                                        <h4>Visual Servoing</h4>
+                                        <p>Closing the loop with camera feedback</p>
+                                    </div>
+                                    <span class="lesson-duration">55 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module 6: Advanced Autonomy (Advanced) -->
+                    <div class="module" data-level="advanced">
+                        <div class="module-header" onclick="toggleModule(this)">
+                            <div class="module-info">
+                                <div class="module-num">6</div>
+                                <div class="module-title">
+                                    <h3>LLM Task Planning</h3>
+                                    <p>Giving natural language commands to robots</p>
+                                </div>
+                            </div>
+                            <div class="module-toggle">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="module-content">
+                            <div class="lesson-list">
+                                <div class="lesson" onclick="openLesson('lesson6_1')">
+                                    <div class="lesson-icon">01</div>
+                                    <div class="lesson-info">
+                                        <h4>Reasoning with LFM</h4>
+                                        <p>Decomposing complex tasks into actions</p>
+                                    </div>
+                                    <span class="lesson-duration">75 min</span>
+                                </div>
+                                <div class="lesson" onclick="openLesson('lesson6_2')">
+                                    <div class="lesson-icon">02</div>
+                                    <div class="lesson-info">
+                                        <h4>Multi-Modal Interaction</h4>
+                                        <p>Combining voice, vision, and touch</p>
+                                    </div>
+                                    <span class="lesson-duration">90 min</span>
                                 </div>
                             </div>
                         </div>
@@ -599,17 +713,17 @@
 
                     <div class="sidebar-card">
                         <h4>{{ t('learn.quick_links') }}</h4>
-                        <div class="lesson" style="margin-bottom: 8px;">
+                        <div class="lesson" style="margin-bottom: 8px;" onclick="showGlossary()">
                             <div class="lesson-info">
                                 <h4>{{ t('learn.glossary') }}</h4>
                             </div>
                         </div>
-                        <div class="lesson" style="margin-bottom: 8px;">
+                        <div class="lesson" style="margin-bottom: 8px;" onclick="showCheatsheet()">
                             <div class="lesson-info">
                                 <h4>{{ t('learn.cheatsheet') }}</h4>
                             </div>
                         </div>
-                        <div class="lesson">
+                        <div class="lesson" onclick="window.open('https://github.com/utachicodes/parc_final', '_blank')">
                             <div class="lesson-info">
                                 <h4>{{ t('learn.documentation') }}</h4>
                             </div>
@@ -687,8 +801,6 @@
                         <li><strong>Think:</strong> A computational unit (like the Jetson Orin Nano on the SO-101) processes this data using algorithms or AI models to decide the next action.</li>
                         <li><strong>Act:</strong> The robot executes the decision via actuators (motors, servos, grippers).</li>
                     </ul>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Classification of Robots</h4>
-                    <p>Robots can be categorized by their locomotion (wheeled, bipedal, aquatic) or their application. The SO-101 is an <strong>Industrial Manipulator</strong>, a type of stationary robot designed to interact with objects in a fixed workspace.</p>
                 `,
                 quiz: {
                     question: "Which part of the loop involves sensors like cameras collecting data?",
@@ -699,109 +811,140 @@
             "lesson1_2": {
                 title: "Degrees of Freedom (DOF)",
                 content: `
-                    <p>Degrees of Freedom (DOF) refer to the number of independent parameters that define the configuration of a robotic system. In mechanics, an object in 3D space has 6 DOF: 3 for position (X, Y, Z) and 3 for orientation (Roll, Pitch, Yaw).</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">The SO-101 6-DOF Configuration</h4>
-                    <p>The SO-101 is specifically designed as a 6-DOF arm to match human-like dexterity. Its joints are:</p>
-                    <ol style="margin-left:20px; margin-top:10px;">
-                        <li><strong>Base (Yaw):</strong> Allows the arm to rotate left and right (Pan).</li>
-                        <li><strong>Shoulder (Pitch):</strong> Controls the primary reach and height (Lift).</li>
-                        <li><strong>Elbow (Pitch):</strong> Extends the vertical and horizontal range (Flex).</li>
-                        <li><strong>Wrist Pitch:</strong> Tilts the end-effector up and down for orientation.</li>
-                        <li><strong>Wrist Roll:</strong> Rotates the gripper for precise alignment.</li>
-                        <li><strong>Gripper:</strong> The 6th active parameter for physical interaction.</li>
-                    </ol>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Why 6-DOF?</h4>
-                    <p>In robotics, 6-DOF is considered the 'sweet spot' for general-purpose manipulation. With fewer than 6, the robot cannot reach every orientation at every point (it's 'under-actuated'). With 6-DOF, the SO-101 can pick up a screwdriver and align it perfectly with a screw at any angle.</p>
+                    <p>Degrees of Freedom (DOF) refers to the number of independent parameters that define a robot's configuration. In a robotic arm, this usually corresponds to the number of joints.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">The SO-101 Configuration</h4>
+                    <p>The SO-101 is a <strong>6-DOF</strong> manipulator, consisting of Base Pan, Shoulder Lift, Elbow Flex, Wrist Pitch, Wrist Roll, and the Gripper.</p>
                 `,
                 quiz: {
-                    question: "How many independent parameters are needed to define a position and orientation in 3D space?",
+                    question: "How many independent parameters define position and orientation in 3D space?",
                     options: ["3", "4", "6", "9"],
                     answer: 2
                 }
             },
             "lesson1_3": {
-                title: "Actuators & Servos",
+                title: "Coordinate Systems",
                 content: `
-                    <p>Actuators are the 'muscles' of the robot. In the SO-101, we use <strong>Serial Bus Servos</strong>, which are significantly more advanced than standard PWM servos.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">PWM vs. Serial Bus Servos</h4>
-                    <ul style="margin-left:20px; margin-top:10px;">
-                        <li><strong>Standard PWM:</strong> One-way communication. You tell it to move, but you don't know if it actually did.</li>
-                        <li><strong>Serial Bus (SCServo):</strong> Two-way communication. The controller sends a command, and the servo can report back its <strong>Position, Temperature, Load, and Voltage</strong>.</li>
-                    </ul>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Why it matters?</h4>
-                    <p>This feedback loop allows for 'compliant' control. If the robot hits an obstacle, the 'Load' value spikes, and the software can immediately stop the movement to prevent damage.</p>
+                    <p>To control a robot, we must define where it is in space. We use two primary coordinate systems:</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">1. Joint Space</h4>
+                    <p>Defined by the angles of each servo (e.g., [q1, q2, q3, q4, q5, q6]).</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">2. Cartesian Space</h4>
+                    <p>Defined by [X, Y, Z] coordinates relative to the base, along with orientation [Roll, Pitch, Yaw].</p>
                 `,
                 quiz: {
-                    question: "What is a major advantage of Serial Bus Servos over standard PWM servos?",
-                    options: ["They are cheaper", "They use more wires", "They provide real-time feedback", "They are slower"],
-                    answer: 2
+                    question: "Which space uses X, Y, Z coordinates?",
+                    options: ["Joint Space", "Cartesian Space", "Angular Space", "Null Space"],
+                    answer: 1
                 }
             },
             "lesson2_1": {
-                title: "Forward Kinematics",
+                title: "Servo Mechanics",
                 content: `
-                    <p>Forward Kinematics (FK) is the mathematical process of calculating the <strong>position and orientation</strong> of the robot's end-effector (gripper) based on its <strong>joint angles</strong>.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">The Math Behind FK</h4>
-                    <p>FK uses matrices and trigonometry (specifically sine and cosine) to transform coordinates from the base joint all the way to the tip of the arm. In robotics, we often use the <strong>Denavit-Hartenberg (DH) parameters</strong> to simplify this model.</p>
-                    <p style="background:var(--bg4); padding:10px; border-radius:8px; font-family:var(--mono);">Input: [θ1, θ2, θ3, θ4, θ5, θ6] -> Output: [X, Y, Z, R, P, Y]</p>
-                    <p>FK is 'easy' because for any set of angles, there is only one possible position for the gripper.</p>
+                    <p>Servos are the 'muscles' of the robot. Unlike standard motors, they are designed to maintain a specific position.</p>
+                    <h4 style="margin:20px 0 10px; color:var(--text);">PWM vs Serial Bus</h4>
+                    <p>While PWM is common, the SO-101 uses <strong>Serial Bus Servos</strong>. These allow for two-way communication, letting the robot report its current temperature and position back to the controller.</p>
                 `,
                 quiz: {
-                    question: "What does Forward Kinematics calculate?",
-                    options: ["Joint angles from position", "Position from joint angles", "Speed of the robot", "Battery life"],
+                    question: "What is a major advantage of Serial Bus Servos?",
+                    options: ["They use more power", "They provide real-time feedback", "They are slower", "They are larger"],
                     answer: 1
                 }
             },
             "lesson2_2": {
-                title: "Inverse Kinematics",
+                title: "Serial Protocol",
                 content: `
-                    <p>Inverse Kinematics (IK) is the opposite of FK. It calculates the <strong>joint angles</strong> required to reach a specific <strong>target position (X, Y, Z)</strong>.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">The Challenge of IK</h4>
-                    <p>Unlike FK, IK is computationally difficult because:</p>
-                    <ul style="margin-left:20px; margin-top:10px;">
-                        <li><strong>Multiple Solutions:</strong> There might be several ways for the arm to reach a point (e.g., 'elbow up' or 'elbow down').</li>
-                        <li><strong>No Solution:</strong> The target might be outside the robot's reach.</li>
-                        <li><strong>Singularities:</strong> Mathematical configurations where the arm 'locks up'.</li>
-                    </ul>
-                    <p>The SO-101 software uses a numerical solver to find the best IK solution in real-time, allowing you to drag the robot in 3D space.</p>
+                    <p>The Jetson Orin Nano communicates with the servo controller via high-speed serial bus (UART). Commands are sent as packets containing ID, instruction, and checksum.</p>
                 `,
                 quiz: {
-                    question: "Why is Inverse Kinematics harder than Forward Kinematics?",
-                    options: ["It requires less math", "There are always 0 solutions", "Multiple joint configurations can reach the same point", "It only works on 3-DOF robots"],
-                    answer: 2
-                }
-            },
-            "lesson3_1": {
-                title: "Computer Vision & AI",
-                content: `
-                    <p>Modern robotics relies heavily on vision to perceive the world. The SO-101 integrates with <strong>MediaPipe</strong> and <strong>YOLO</strong> for object and gesture detection.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Hand Tracking Control</h4>
-                    <p>By detecting 21 landmarks on a human hand using MediaPipe, the system can map your hand's X, Y, Z coordinates to the robot's end-effector. This creates a natural teleoperation interface where the robot mimics your hand movements.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Object Detection (YOLO)</h4>
-                    <p>YOLO (You Only Look Once) is used for real-time object classification. The robot can identify 'red_cube', 'blue_cube', etc., with high confidence, allowing for autonomous pick-and-place routines based on visual input.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">AI Reasoning</h4>
-                    <p>Using Large Language Models (LLMs) like Llama 3, the robot can understand natural language commands. Instead of 'Move to X:100', you can say 'Pick up the blue block', and the AI will determine the sequence of actions needed.</p>
-                `,
-                quiz: {
-                    question: "Which technology is used for hand landmark detection in this system?",
-                    options: ["Llama", "MediaPipe", "MuJoCo", "Docker"],
+                    question: "What ensures that a serial packet wasn't corrupted?",
+                    options: ["ID", "Checksum", "Length", "Baud rate"],
                     answer: 1
                 }
             },
-            "lesson3_2": {
-                title: "Advanced Motion Planning",
+            "lesson3_1": {
+                title: "Forward Kinematics",
                 content: `
-                    <p>Advanced motion planning involves moving from simple point-to-point movement to smooth, collision-free trajectories.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Trajectory Generation</h4>
-                    <p>To avoid jerky movements, we use <strong>Cubic Splines</strong>. Instead of jumping from Position A to Position B, the software calculates a smooth path that considers velocity and acceleration limits of the servos.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Collision Avoidance</h4>
-                    <p>In a complex environment, the robot must plan a path that doesn't hit obstacles or itself. This is often handled using algorithms like <strong>RRT* (Rapidly-exploring Random Trees)</strong> which can find a valid path in high-dimensional joint space.</p>
-                    <h4 style="margin:20px 0 10px; color:var(--text);">Task Space Control</h4>
-                    <p>By combining AI reasoning with motion planning, the SO-101 can perform 'Task Space' commands. You give it a high-level goal, and it autonomously handles the IK, trajectory planning, and gripper actions to achieve it.</p>
+                    <p>Forward Kinematics (FK) is the process of calculating the end-effector position based on joint angles. It's unique and direct for any given set of angles.</p>
                 `,
                 quiz: {
-                    question: "What is used to ensure smooth movement between two points?",
-                    options: ["Random jumps", "Cubic Splines", "Higher voltage", "Heavier weights"],
+                    question: "FK calculates ___ from joint angles.",
+                    options: ["Weight", "Torque", "Cartesian position", "Battery level"],
+                    answer: 2
+                }
+            },
+            "lesson3_2": {
+                title: "Inverse Kinematics",
+                content: `
+                    <p>Inverse Kinematics (IK) calculates the joint angles required to reach a specific target position. It's harder because multiple configurations might reach the same point.</p>
+                `,
+                quiz: {
+                    question: "Why is IK harder than FK?",
+                    options: ["It requires less math", "Multiple configurations can reach the same point", "It only works on 3-DOF", "It's slower"],
+                    answer: 1
+                }
+            },
+            "lesson4_1": {
+                title: "Path vs Trajectory",
+                content: `
+                    <p>A path is geometric (points in space). A trajectory is a path with timing (velocity/acceleration). Trajectories ensure the robot moves smoothly without jerking.</p>
+                `,
+                quiz: {
+                    question: "What does a Trajectory add to a Path?",
+                    options: ["Color", "Timing and Velocity", "Weight", "Length"],
+                    answer: 1
+                }
+            },
+            "lesson4_2": {
+                title: "Cubic Splines",
+                content: `
+                    <p>Cubic Splines are mathematical curves used to ensure continuous velocity between points, preventing sudden jumps in motor speed.</p>
+                `,
+                quiz: {
+                    question: "What is the main benefit of Cubic Splines?",
+                    options: ["Lower power usage", "Smooth velocity transitions", "Higher speed", "Easier math"],
+                    answer: 1
+                }
+            },
+            "lesson5_1": {
+                title: "YOLOE Vision",
+                content: `
+                    <p>YOLOE is a real-time object detection model optimized for the Jetson Orin Nano. It allows the robot to 'see' and identify objects like cubes or tools in its workspace.</p>
+                `,
+                quiz: {
+                    question: "What is YOLOE used for?",
+                    options: ["Power management", "Object detection", "Speech synthesis", "Cooling"],
+                    answer: 1
+                }
+            },
+            "lesson5_2": {
+                title: "Visual Servoing",
+                content: `
+                    <p>Visual Servoing uses camera feedback to control motion in real-time. If an object moves, the robot adjusts its path automatically to track it.</p>
+                `,
+                quiz: {
+                    question: "Which sensor provides feedback for Visual Servoing?",
+                    options: ["Microphone", "Camera", "Thermal sensor", "Battery sensor"],
+                    answer: 1
+                }
+            },
+            "lesson6_1": {
+                title: "LLM Reasoning",
+                content: `
+                    <p>Large Foundation Models (LFM) allow the robot to translate high-level natural language intent into a sequence of executable physical actions.</p>
+                `,
+                quiz: {
+                    question: "What does the 'Thinking' model do?",
+                    options: ["Charges the robot", "Translates intent into actions", "Saves logs", "Cleans the arm"],
+                    answer: 1
+                }
+            },
+            "lesson6_2": {
+                title: "Task Space Control",
+                content: `
+                    <p>Task Space control allows for goal-oriented commands like 'Move to the red box' where the robot handles all the underlying kinematics and planning autonomously.</p>
+                `,
+                quiz: {
+                    question: "Task Space control is ___.",
+                    options: ["Manual joint control", "Goal-oriented", "Power-saving", "Offline"],
                     answer: 1
                 }
             }
@@ -869,12 +1012,82 @@
             module.classList.toggle('open');
         }
 
-        document.querySelectorAll('.course-nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.course-nav-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        function filterLevel(level) {
+            document.querySelectorAll('.course-nav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.toLowerCase().includes(level));
             });
-        });
+            
+            document.querySelectorAll('.module').forEach(mod => {
+                const modLevel = mod.getAttribute('data-level');
+                if (modLevel === level) {
+                    mod.style.display = 'block';
+                } else {
+                    mod.style.display = 'none';
+                }
+            });
+        }
+
+        function showGlossary() {
+            currentLessonId = 'glossary';
+            document.getElementById('modal-title').textContent = "Robotics Glossary";
+            document.getElementById('modal-subtitle').textContent = "Essential terminology";
+            document.getElementById('lesson-body').innerHTML = `
+                <dl style="display:grid; grid-template-columns: auto 1fr; gap: 16px 24px; align-items: baseline;">
+                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Actuator</dt>
+                    <dd>A component of a machine that is responsible for moving and controlling a mechanism or system (e.g., a motor).</dd>
+                    
+                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">End Effector</dt>
+                    <dd>The device at the end of a robotic arm, designed to interact with the environment (e.g., a gripper, welder, or sprayer).</dd>
+                    
+                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Kinematics</dt>
+                    <dd>The study of the motion of a robot without considering the forces that cause the motion.</dd>
+                    
+                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Pose</dt>
+                    <dd>The combined position (x, y, z) and orientation (roll, pitch, yaw) of a robot component in space.</dd>
+                    
+                    <dt style="font-family:var(--mono); color:var(--blue); font-weight:700;">Workspace</dt>
+                    <dd>The set of all points that a robot's end effector can reach.</dd>
+                </dl>
+            `;
+            document.getElementById('lesson-modal').style.display = 'flex';
+            document.getElementById('quiz-btn').style.display = 'none';
+            document.getElementById('finish-btn').style.display = 'none';
+            document.getElementById('lesson-status').textContent = 'REFERENCE';
+        }
+
+        function showCheatsheet() {
+            currentLessonId = 'cheatsheet';
+            document.getElementById('modal-title').textContent = "Python Control Cheatsheet";
+            document.getElementById('modal-subtitle').textContent = "Common API commands";
+            document.getElementById('lesson-body').innerHTML = `
+                <div style="background:var(--bg4); padding:20px; border-radius:8px; font-family:var(--mono); font-size:13px;">
+                    <pre><code style="color:var(--text-dim);"># Connect to robot
+from parl_robot import Robot
+arm = Robot('/dev/ttyUSB0')
+
+# Move to angles (degrees)
+arm.set_angles([0, 45, -45, 0, 90, 0])
+
+# Move to Cartesian coordinates (mm)
+arm.set_pose(x=150, y=0, z=200, pitch=-90)
+
+# Control Gripper
+arm.open_gripper()
+arm.close_gripper(force=50)
+
+# Get current state
+pos = arm.get_pose()
+print(f"Current X: {pos.x}")</code></pre>
+                </div>
+            `;
+            document.getElementById('lesson-modal').style.display = 'flex';
+            document.getElementById('quiz-btn').style.display = 'none';
+            document.getElementById('finish-btn').style.display = 'none';
+            document.getElementById('lesson-status').textContent = 'REFERENCE';
+        }
+
+        // Initialize view
+        filterLevel('beginner');
 
         function toggleAITutor() {
             const panel = document.getElementById('ai-tutor-panel');

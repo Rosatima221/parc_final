@@ -68,13 +68,6 @@ def t(key: str, lang: str = None) -> str:
 
 load_translations()
 
-@app.before_request
-def before_request():
-    global _current_lang
-    # Read language from cookie, default to "en"
-    lang = request.cookies.get('lang', 'en')
-    if lang in _translations:
-        _current_lang = lang
 
 
 # ── servo IDs ─────────────────────────────────────────────────────────────────
@@ -1450,6 +1443,14 @@ def t_filter(key, lang=None):
     return t(key, lang)
 
 app.jinja_env.globals.update(t=t)
+
+@app.before_request
+def before_request():
+    global _current_lang
+    # Read language from cookie, default to "en"
+    lang = request.cookies.get('lang', 'en')
+    if lang in _translations:
+        _current_lang = lang
 
 # ── MJPEG stream ──────────────────────────────────────────────────────────────
 _PLACEHOLDER: bytes | None = None

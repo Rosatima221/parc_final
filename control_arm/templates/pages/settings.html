@@ -682,20 +682,6 @@
                     </div>
                 </div>
 
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>{{ t('settings.accent_title') }}</h4>
-                        <p>{{ t('settings.accent_desc') }}</p>
-                    </div>
-                    <div class="theme-options">
-                        <div class="theme-option active" style="background: #3b82f6;" data-accent="blue" onclick="setAccent('blue')"></div>
-                        <div class="theme-option" style="background: #10b981;" data-accent="green" onclick="setAccent('green')"></div>
-                        <div class="theme-option" style="background: #f59e0b;" data-accent="yellow" onclick="setAccent('yellow')"></div>
-                        <div class="theme-option" style="background: #f97316;" data-accent="orange" onclick="setAccent('orange')"></div>
-                        <div class="theme-option" style="background: #8b5cf6;" data-accent="purple" onclick="setAccent('purple')"></div>
-                        <div class="theme-option" style="background: #ef4444;" data-accent="red" onclick="setAccent('red')"></div>
-                    </div>
-                </div>
             </div>
 
             <!-- Notifications Section -->
@@ -818,28 +804,6 @@
                 <div class="settings-section-title">{{ t('settings.workflow_title') }}</div>
                 
                 <div class="workflow-diagram">
-                    <div class="workflow-title">{{ t('settings.workflow.voice_command') }}</div>
-                    <div class="workflow-flow">
-                        <div class="workflow-node">
-                            <div class="workflow-box input">{{ t('settings.workflow.microphone') }}</div>
-                            <span class="port">{{ t('settings.workflow.audio_input') }}</span>
-                        </div>
-                        <span class="workflow-arrow">-&gt;</span>
-                        <div class="workflow-node">
-                            <div class="workflow-box process">{{ t('settings.workflow.whisper_cpp') }}</div>
-                            <span class="port">:8084 {{ t('settings.workflow.stt') }}</span>
-                        </div>
-                        <span class="workflow-arrow">-&gt;</span>
-                        <div class="workflow-node">
-                            <div class="workflow-box ai">{{ t('settings.workflow.lfm_thinking') }}</div>
-                            <span class="port">:8080 {{ t('settings.workflow.chat_rag') }}</span>
-                        </div>
-                        <span class="workflow-arrow">-&gt;</span>
-                        <div class="workflow-node">
-                            <div class="workflow-box output">{{ t('settings.workflow.robot_command') }}</div>
-                            <span class="port">{{ t('settings.workflow.action') }}</span>
-                        </div>
-                    </div>
 
                     <div class="workflow-vertical-arrow">|</div>
 
@@ -868,33 +832,7 @@
 
                     <div class="workflow-vertical-arrow">|</div>
 
-                    <div class="workflow-title">{{ t('settings.workflow.response_flow') }}</div>
-                    <div class="workflow-flow">
-                        <div class="workflow-node">
-                            <div class="workflow-box ai">{{ t('settings.workflow.lfm_thinking') }}</div>
-                            <span class="port">:8080 Generate</span>
-                        </div>
-                        <span class="workflow-arrow">-&gt;</span>
-                        <div class="workflow-node">
-                            <div class="workflow-box process">{{ t('settings.workflow.piper') }}</div>
-                            <span class="port">:8085 TTS</span>
-                        </div>
-                        <span class="workflow-arrow">-&gt;</span>
-                        <div class="workflow-node">
-                            <div class="workflow-box output">{{ t('settings.workflow.speaker') }}</div>
-                            <span class="port">{{ t('settings.workflow.audio_out') }}</span>
-                        </div>
-                    </div>
 
-                    <div class="flow-labels">
-                        <div class="flow-label">
-                            <span class="flow-label-badge stt">STT</span>
-                            <span>{{ t('settings.workflow.stt_label') }}</span>
-                        </div>
-                        <div class="flow-label">
-                            <span class="flow-label-badge tts">TTS</span>
-                            <span>{{ t('settings.workflow.tts_label') }}</span>
-                        </div>
                         <div class="flow-label">
                             <span class="flow-label-badge vision">DET</span>
                             <span>{{ t('settings.workflow.det_label') }}</span>
@@ -903,7 +841,6 @@
                             <span class="flow-label-badge chat">RAG</span>
                             <span>{{ t('settings.workflow.rag_label') }}</span>
                         </div>
-                    </div>
 
                     <div class="workflow-title" style="margin-top: 24px;">{{ t('settings.workflow.server_ports') }}</div>
                     <div class="port-list">
@@ -921,20 +858,6 @@
                                 <p>{{ t('settings.workflow.scene_analysis') }}</p>
                             </div>
                         </div>
-                        <div class="port-item">
-                            <div class="port-number">8084</div>
-                            <div class="port-info">
-                                <h5>Whisper.cpp</h5>
-                                <p>{{ t('settings.workflow.stt_label') }}</p>
-                            </div>
-                        </div>
-                        <div class="port-item">
-                            <div class="port-number">8085</div>
-                            <div class="port-info">
-                                <h5>Piper TTS</h5>
-                                <p>{{ t('settings.workflow.tts_label') }}</p>
-                            </div>
-                        </div>
                         <div class="port-item" style="border-color: var(--green);">
                             <div class="port-number" style="background: rgba(16, 185, 129, 0.2); color: var(--green);">FLASK</div>
                             <div class="port-info">
@@ -946,82 +869,6 @@
                 </div>
             </div>
 
-            <!-- Voice Settings Section -->
-            <div class="settings-section voice-section">
-                <div class="settings-section-title">{{ t('settings.voice_title') }}</div>
-                
-                <div class="voice-grid" id="voice-grid">
-                    <div class="voice-card selected" data-voice="en_US-lessac-medium" onclick="selectVoice(this)">
-                        <h5>{{ t('settings.voices.en_US-lessac-medium.name') }}</h5>
-                        <p>{{ t('settings.voices.en_US-lessac-medium.desc') }}</p>
-                        <span class="voice-lang">{{ t('settings.voices.en_US-lessac-medium.lang') }}</span>
-                    </div>
-                    <div class="voice-card" data-voice="en_US-lessac-low" onclick="selectVoice(this)">
-                        <h5>{{ t('settings.voices.en_US-lessac-low.name') }}</h5>
-                        <p>{{ t('settings.voices.en_US-lessac-low.desc') }}</p>
-                        <span class="voice-lang">{{ t('settings.voices.en_US-lessac-low.lang') }}</span>
-                    </div>
-                    <div class="voice-card" data-voice="en_GB-alan-medium" onclick="selectVoice(this)">
-                        <h5>{{ t('settings.voices.en_GB-alan-medium.name') }}</h5>
-                        <p>{{ t('settings.voices.en_GB-alan-medium.desc') }}</p>
-                        <span class="voice-lang">{{ t('settings.voices.en_GB-alan-medium.lang') }}</span>
-                    </div>
-                    <div class="voice-card" data-voice="fr_FR-siwis-medium" onclick="selectVoice(this)">
-                        <h5>{{ t('settings.voices.fr_FR-siwis-medium.name') }}</h5>
-                        <p>{{ t('settings.voices.fr_FR-siwis-medium.desc') }}</p>
-                        <span class="voice-lang">{{ t('settings.voices.fr_FR-siwis-medium.lang') }}</span>
-                    </div>
-                    <div class="voice-card" data-voice="de_DE-karlsson-medium" onclick="selectVoice(this)">
-                        <h5>{{ t('settings.voices.de_DE-karlsson-medium.name') }}</h5>
-                        <p>{{ t('settings.voices.de_DE-karlsson-medium.desc') }}</p>
-                        <span class="voice-lang">{{ t('settings.voices.de_DE-karlsson-medium.lang') }}</span>
-                    </div>
-                    <div class="voice-card" data-voice="es_ES-sharvard-medium" onclick="selectVoice(this)">
-                        <h5>{{ t('settings.voices.es_ES-sharvard-medium.name') }}</h5>
-                        <p>{{ t('settings.voices.es_ES-sharvard-medium.desc') }}</p>
-                        <span class="voice-lang">{{ t('settings.voices.es_ES-sharvard-medium.lang') }}</span>
-                    </div>
-                    <div class="voice-card" data-voice="it_IT-palia-medium" onclick="selectVoice(this)">
-                        <h5>{{ t('settings.voices.it_IT-palia-medium.name') }}</h5>
-                        <p>{{ t('settings.voices.it_IT-palia-medium.desc') }}</p>
-                        <span class="voice-lang">{{ t('settings.voices.it_IT-palia-medium.lang') }}</span>
-                    </div>
-                </div>
-
-                <div class="voice-download-progress" id="voice-download-progress">
-                    <div class="voice-download-progress-bar" id="voice-download-bar"></div>
-                </div>
-
-                <div class="voice-preview">
-                    <div class="voice-preview-label">{{ t('settings.voice_preview') }}</div>
-                    <button class="voice-preview-btn" id="preview-btn" onclick="previewVoice()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                            <path d="M15.54 8.46a5 5 0 010 7.07"/>
-                        </svg>
-                        {{ t('settings.voice_test') }}
-                    </button>
-                </div>
-
-                <div class="voice-tuning">
-                    <div class="voice-tuning-title">{{ t('settings.voice_tuning') }}</div>
-                    <div class="tuning-row">
-                        <span class="tuning-label">{{ t('settings.speed') }}</span>
-                        <input type="range" class="tuning-slider" id="speed-slider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateTuning('speed', this.value)">
-                        <span class="tuning-value" id="speed-value">1.0x</span>
-                    </div>
-                    <div class="tuning-row">
-                        <span class="tuning-label">{{ t('settings.pitch') }}</span>
-                        <input type="range" class="tuning-slider" id="pitch-slider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateTuning('pitch', this.value)">
-                        <span class="tuning-value" id="pitch-value">1.0x</span>
-                    </div>
-                    <div class="tuning-row">
-                        <span class="tuning-label">{{ t('settings.volume') }}</span>
-                        <input type="range" class="tuning-slider" id="volume-slider" min="0.0" max="1.0" step="0.1" value="1.0" oninput="updateTuning('volume', this.value)">
-                        <span class="tuning-value" id="volume-value">100%</span>
-                    </div>
-                </div>
-            </div>
         </div>
     </main>
 
@@ -1044,16 +891,6 @@
                         html += '<span class="badge b-green">{{ t('settings.ai_status.vision_on') }}</span>';
                     } else {
                         html += '<span class="badge b-red">{{ t('settings.ai_status.vision_off') }}</span>';
-                    }
-                    if (data.stt && data.stt.connected) {
-                        html += '<span class="badge b-green">{{ t('settings.ai_status.stt_on') }}</span>';
-                    } else {
-                        html += '<span class="badge b-red">{{ t('settings.ai_status.stt_off') }}</span>';
-                    }
-                    if (data.tts && data.tts.connected) {
-                        html += '<span class="badge b-green">{{ t('settings.ai_status.tts_on') }}</span>';
-                    } else {
-                        html += '<span class="badge b-red">{{ t('settings.ai_status.tts_off') }}</span>';
                     }
                     if (data.yoloe && data.yoloe.available) {
                         html += '<span class="badge b-green">{{ t('settings.ai_status.yoloe') }}</span>';
@@ -1113,127 +950,6 @@
             return typeof val === 'string' ? val : key;
         }
 
-        // Voice Settings
-        let currentVoice = 'en_US-lessac-medium';
-        let voiceSettings = {
-            speed: 1.0,
-            pitch: 1.0,
-            volume: 1.0
-        };
-
-        function selectVoice(card) {
-            document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            currentVoice = card.dataset.voice;
-            document.cookie = `voice=${currentVoice};path=/;max-age=${60*60*24*365}`;
-            
-            // Show download button if voice not downloaded
-            const voiceGrid = document.getElementById('voice-grid');
-            // Voice selection saved
-        }
-
-        async function previewVoice() {
-            const btn = document.getElementById('preview-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<span>{{ t('settings.voice_generating') }}</span>';
-
-            try {
-                const resp = await fetch('/api/audio/speak', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        text: 'Hello from PARC ROBOTICS. This is a test of the text to speech system.',
-                        voice: currentVoice
-                    })
-                });
-
-                if (resp.ok) {
-                    const blob = await resp.blob();
-                    const url = URL.createObjectURL(blob);
-                    const audio = new Audio(url);
-                    audio.play();
-                    audio.onended = () => {
-                        btn.disabled = false;
-                        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg> Test Voice';
-                    };
-                } else {
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg> Test Voice';
-                    PARC?.Toast?.show(t('settings.errors.tts_unavailable'), 'error');
-                }
-            } catch (e) {
-                btn.disabled = false;
-                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg> Test Voice';
-                PARC?.Toast?.show(t('settings.errors.failed_to_preview_voice'), 'error');
-            }
-        }
-
-        async function downloadVoice(voiceId) {
-            const progress = document.getElementById('voice-download-progress');
-            const bar = document.getElementById('voice-download-bar');
-            progress.classList.add('active');
-            bar.style.width = '0%';
-
-            try {
-                const resp = await fetch('/api/voice/download', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ voice: voiceId })
-                });
-
-                // Simulate progress for demo
-                for (let i = 0; i <= 100; i += 10) {
-                    await new Promise(r => setTimeout(r, 200));
-                    bar.style.width = i + '%';
-                }
-
-                progress.classList.remove('active');
-                PARC?.Toast?.show(t('settings.voice_downloaded_successfully'), 'success');
-            } catch (e) {
-                progress.classList.remove('active');
-                PARC?.Toast?.show(t('settings.errors.failed_to_download_voice'), 'error');
-            }
-        }
-
-        function updateTuning(param, value) {
-            voiceSettings[param] = parseFloat(value);
-            
-            if (param === 'speed') {
-                document.getElementById('speed-value').textContent = value + 'x';
-            } else if (param === 'pitch') {
-                document.getElementById('pitch-value').textContent = value + 'x';
-            } else if (param === 'volume') {
-                document.getElementById('volume-value').textContent = Math.round(value * 100) + '%';
-            }
-
-            document.cookie = `voice_${param}=${value};path=/;max-age=${60*60*24*365}`;
-        }
-
-        // Load saved voice settings
-        function loadVoiceSettings() {
-            const cookies = document.cookie.split(';');
-            cookies.forEach(cookie => {
-                const [name, val] = cookie.trim().split('=');
-                if (name === 'voice') {
-                    currentVoice = val;
-                    document.querySelectorAll('.voice-card').forEach(c => {
-                        c.classList.toggle('selected', c.dataset.voice === val);
-                    });
-                } else if (name.startsWith('voice_')) {
-                    const param = name.replace('voice_', '');
-                    if (voiceSettings.hasOwnProperty(param)) {
-                        voiceSettings[param] = parseFloat(val);
-                        const slider = document.getElementById(param + '-slider');
-                        if (slider) {
-                            slider.value = val;
-                            updateTuning(param, val);
-                        }
-                    }
-                }
-            });
-        }
-
-loadVoiceSettings();
 
         // Calibration Functions
         let calibrationActive = false;
