@@ -25,7 +25,8 @@
     "open": "Ouvrir",
     "control": "Contrôler",
     "launch": "Lancer",
-    "configure": "Configurer"
+    "configure": "Configurer",
+    "no_device": "aucun appareil"
   },
   "home": {
     "hero_eyebrow": "Laboratoire de Robotique PARC / Contrôleur SO-101",
@@ -99,10 +100,15 @@
     "status": "Statut"
   },
   "status": {
-    "connected": "Connecte",
-    "not_connected": "Non Connecte",
-    "calibrated": "Etalonne",
-    "not_calibrated": "Non Etalonne",
+    "connected": "Connecté",
+    "not_connected": "Non Connecté",
+    "calibrated": "Calibré",
+    "not_calibrated": "Non Calibré",
+    "ready": "Prêt",
+    "viewer_launched": "Visionneur MuJoCo lancé",
+    "viewer_already_running": "Le visionneur est déjà en cours d'exécution",
+    "launch_failed": "Échec du lancement",
+    "error": "Erreur",
     "tracking": "Suivi",
     "no_mode": "Aucun mode selectionne"
   },

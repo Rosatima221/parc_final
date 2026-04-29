@@ -3,6 +3,11 @@
     "title": "Parc Robotics Controller"
   },
   "nav": {
+    "dashboard": "Dashboard",
+    "learn": "Learn",
+    "play": "Play",
+    "mujoco": "MuJoCo",
+    "settings": "Settings",
     "back": "Back",
     "home": "Home"
   },
@@ -20,7 +25,8 @@
     "open": "Open",
     "control": "Control",
     "launch": "Launch",
-    "configure": "Configure"
+    "configure": "Configure",
+    "no_device": "no device"
   },
   "home": {
     "hero_eyebrow": "PARC Robotics Lab / SO-101 Controller",
@@ -98,6 +104,11 @@
     "not_connected": "Not Connected",
     "calibrated": "Calibrated",
     "not_calibrated": "Not Calibrated",
+    "ready": "Ready",
+    "viewer_launched": "MuJoCo viewer launched",
+    "viewer_already_running": "Viewer already running",
+    "launch_failed": "Launch failed",
+    "error": "Error",
     "tracking": "Tracking",
     "no_mode": "No mode selected"
   },

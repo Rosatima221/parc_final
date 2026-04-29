@@ -93,7 +93,7 @@
         display: block;
         text-decoration: none;
         color: inherit;
-        transition: border-color 0.18s, background 0.18s, transform 0.18s, box-shadow 0.18s;
+        transition: all 0.25s var(--ease-out);
         overflow: hidden;
         cursor: pointer;
     }
@@ -101,22 +101,20 @@
     .mcard::after {
         content: '';
         position: absolute;
-        bottom: 0; left: 0; right: 0;
-        height: 1px;
-        background: var(--mc-accent, var(--amber));
-        transform: scaleX(0);
-        transition: transform 0.22s cubic-bezier(0.16,1,0.3,1);
-        transform-origin: left;
+        inset: 0;
+        background: linear-gradient(125deg, rgba(255,255,255,0.05) 0%, transparent 50%);
+        opacity: 0;
+        transition: opacity 0.25s;
     }
 
     .mcard:hover {
-        background: var(--glass-highlight);
-        border-color: var(--mc-accent);
-        transform: translateY(-4px);
-        box-shadow: var(--glass-shadow);
+        background: rgba(25, 32, 55, 0.85);
+        border-color: var(--glass-highlight);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(59, 130, 246, 0.08);
     }
 
-    .mcard:hover::after { transform: scaleX(1); }
+    .mcard:hover::after { opacity: 1; }
 
     .mcard:focus-visible {
         outline: 2px solid var(--mc-accent, var(--amber));
@@ -363,7 +361,7 @@
                 <p class="dash-copy">{{ t('home.hero_desc') }}</p>
                 <div class="dash-hero-actions">
                     <a href="/learn" class="btn btn-primary">{{ t('home.btn_learn') }}</a>
-                    <a href="/play" class="btn btn-secondary" style="background: var(--glass-bg); backdrop-filter: blur(4px); border: 1px solid var(--glass-border); color: var(--text);">{{ t('home.btn_play') }}</a>
+                    <a href="/play" class="btn btn-glass">{{ t('home.btn_play') }}</a>
                 </div>
             </div>
             
@@ -502,30 +500,30 @@
             const { running } = await (await fetch('/api/viewer/status')).json();
             dashVRun = running;
             viewerTag.className = 'mc-tag ' + (running ? 'run' : 'idle');
-            viewerTag.textContent = running ? 'Running' : 'Stopped';
+            viewerTag.textContent = running ? window.t('common.available') : window.t('common.stopped');
         } catch {}
     }
 
     async function dashLaunchViewer(e) {
-        e.preventDefault();
-        if (dashVRun) { PRL.toast('Viewer already running', 'info'); return; }
-        viewerTag.textContent = 'Starting…';
+        if (e) e.preventDefault();
+        if (dashVRun) { PARC.toast(window.t('status.viewer_already_running'), 'info'); return; }
+        viewerTag.textContent = window.t('actions.starting') + '…';
         try {
             const { ok, error } = await (await fetch('/api/viewer/start', { method:'POST' })).json();
             if (ok) {
                 dashVRun = true;
                 viewerTag.className = 'mc-tag run';
-                viewerTag.textContent = 'Running';
-                PRL.toast('MuJoCo viewer launched', 'ok');
+                viewerTag.textContent = window.t('common.available');
+                PARC.toast(window.t('status.viewer_launched'), 'ok');
             } else {
                 viewerTag.className = 'mc-tag idle';
-                viewerTag.textContent = 'Stopped';
-                PRL.toast('Launch failed: ' + (error || 'unknown'), 'err');
+                viewerTag.textContent = window.t('common.stopped');
+                PARC.toast(window.t('status.launch_failed') + ': ' + (error || 'unknown'), 'err');
             }
         } catch(err) {
             viewerTag.className = 'mc-tag idle';
-            viewerTag.textContent = 'Stopped';
-            PRL.toast('Error: ' + err, 'err');
+            viewerTag.textContent = window.t('common.stopped');
+            PARC.toast(window.t('status.error') + ': ' + err, 'err');
         }
     }
 
@@ -536,7 +534,7 @@
             const tag = document.getElementById('play-tag');
             if (d.connected) {
                 tag.className = 'mc-tag avail';
-                tag.textContent = 'Ready';
+                tag.textContent = window.t('status.ready');
             }
         } catch {}
     })();

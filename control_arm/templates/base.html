@@ -330,7 +330,7 @@
         <div class="parc-conn" role="status" aria-live="polite" aria-atomic="true">
             <span class="parc-dot" id="parc-dot" aria-hidden="true"></span>
             <span id="parc-label">Parc Robotics</span>
-            <span id="parc-port" aria-label="Serial port">no device</span>
+            <span id="parc-port" aria-label="Serial port">{{ t('common.no_device') }}</span>
         </div>
 
         <div class="parc-hdr-right">
@@ -435,6 +435,7 @@
             }
         };
         window.PARC = PARC;
+        window.PRL  = PARC; // Alias for compatibility
 
         /* ── Robot status ──────────────────────────────────────────────────── */
         const _dot   = document.getElementById('parc-dot');
@@ -494,14 +495,14 @@
         }
 
         window.prlLaunchViewer = async function(e) {
-            e.preventDefault();
-            if (_vrun) { PRL.toast('Viewer already running', 'info'); return; }
-            PRL.toast('Launching MuJoCo viewer…', 'info');
+            if (e) e.preventDefault();
+            if (_vrun) { PARC.toast(window.t('status.viewer_already_running'), 'info'); return; }
+            PARC.toast(window.t('actions.starting') + '…', 'info');
             try {
-                const { ok, error } = await (await fetch('/api/viewer/start', {method:'POST'})).json();
-                if (ok) { _vrun = true; _vdot.classList.add('live'); PRL.toast('Viewer launched', 'ok'); }
-                else PRL.toast('Failed: '+(error||'unknown'), 'err');
-            } catch(e) { PRL.toast('Error: '+e, 'err'); }
+                const { ok, error } = await (await fetch('/api/viewer/start', { method:'POST' })).json();
+                if (ok) { _vrun = true; _vdot.classList.add('live'); PARC.toast(window.t('status.viewer_launched'), 'ok'); }
+                else PARC.toast(window.t('status.launch_failed') + ': '+(error||'unknown'), 'err');
+            } catch(e) { PARC.toast(window.t('status.error') + ': '+e, 'err'); }
         };
 
         prlCheckViewer();

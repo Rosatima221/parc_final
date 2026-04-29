@@ -431,6 +431,18 @@ small, .text-sm {
     background: var(--blue-dim);
 }
 
+.btn-glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+}
+.btn-glass:hover:not(:disabled) {
+    background: var(--glass-highlight);
+    border-color: var(--border3);
+}
+
 /* Button Row */
 .btn-row {
     display: flex;
@@ -467,8 +479,8 @@ small, .text-sm {
 
 .card:hover {
     border-color: var(--border2);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(59, 130, 246, 0.1);
 }
 
 .card:hover::before {
