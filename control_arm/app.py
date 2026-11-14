@@ -11,7 +11,7 @@ sys.path.insert(0, str(SDK_PATH))
 
 import numpy as np
 import cv2
-from flask import Flask, Response, render_template, request, jsonify, stream_with_context
+from flask import Flask, Response, render_template, request, jsonify, stream_with_context, g
 import serial.tools.list_ports
 from scservo_sdk import PortHandler, sms_sts, COMM_SUCCESS
 
@@ -128,7 +128,7 @@ class Robot:
             if not self.port_handler.setBaudRate(self.baudrate):
                 self.port_handler.closePort()
                 return False, f"Failed to set baudrate {self.baudrate}"
-            self.servo = sms_sts(self.port_handler)
+            self.servo = ServoGate(sms_sts(self.port_handler), _lab_sessions)
             self.connected = True
             log(f"Connected to {self.port_name}")
             return True, "Connected"
@@ -676,14 +676,19 @@ class FaceDetector:
                     cx = nose_tip.x
                     cy = nose_tip.y
                     return (float(np.clip(cx, 0, 1)), float(np.clip(cy, 0, 1)), landmarks)
-            except: pass
-        if self.backend == "opencv_cascade" and self._cv2_face_cascade:
-            small = cv2.resize(bgr, (160, 120))
-            gray  = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY)
-            faces = self._cv2_face_cascade.detectMultiScale(gray, 1.2, 3, minSize=(20, 20))
-            if len(faces) > 0:
-                x, y, w, h = faces[0]
-                return (float((x + w/2) / 160), float((y + h/2) / 120), None)
+            except Exception as e:
+                log(f"Face detect error (mediapipe): {e}")
+                self._cv2_face_cascade = None  # disable after repeated failures
+        if self._cv2_face_cascade:
+            try:
+                small = cv2.resize(bgr, (160, 120))
+                gray  = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY)
+                faces = self._cv2_face_cascade.detectMultiScale(gray, 1.2, 3, minSize=(20, 20))
+                if len(faces) > 0:
+                    x, y, fw, fh = faces[0]
+                    return (float((x + fw/2) / 160), float((y + fh/2) / 120), None)
+            except Exception as e:
+                log(f"Face detect error (cascade): {e}")
         return None
 
     def detect_hand(self, bgr) -> tuple | None:
@@ -700,7 +705,8 @@ class FaceDetector:
                     if r.handedness:
                         side = r.handedness[0][0].category_name
                     return (float(np.clip(cx, 0, 1)), float(np.clip(cy, 0, 1)), side, r.hand_landmarks[0])
-            except: pass
+            except Exception as e:
+                log(f"Hand detect error: {e}")
         return None
 
     def draw_hand_mesh(self, frame, landmarks, handedness="Right"):
@@ -733,7 +739,8 @@ class FaceDetector:
                     cx = nose.x
                     cy = nose.y
                     return (float(np.clip(cx, 0, 1)), float(np.clip(cy, 0, 1)), r.pose_landmarks[0])
-            except: pass
+            except Exception as e:
+                log(f"Pose detect error: {e}")
         return None
 
     def detect_pose_full(self, bgr) -> dict | None:
@@ -752,7 +759,8 @@ class FaceDetector:
                         'left_hip': lm[23], 'right_hip': lm[24],
                         'landmarks': lm
                     }
-            except: pass
+            except Exception as e:
+                log(f"Pose full detect error: {e}")
         return None
 
     def detect_pose_detail(self, bgr) -> dict | None:
@@ -775,7 +783,8 @@ class FaceDetector:
                             27: ('L_ankle', lm[27]), 28: ('R_ankle', lm[28]),
                         }
                     }
-            except: pass
+            except Exception as e:
+                log(f"Pose detail detect error: {e}")
         return None
 
     def draw_pose_mesh(self, frame, landmarks):
@@ -1121,7 +1130,7 @@ class TrackerThread(threading.Thread):
                              "wrist_roll": self.s["wrist_roll"], "gripper": self.s["gripper"]},
                             speed=1000, acc=100)
                         with self._stats_lock:
-                            self.stats.update(pan=pan, tilt=tilt)
+                            self.stats.update(detected=True, hand_side=hand_side, pan=pan, tilt=tilt)
                         px, py = int(cx * w), int(cy * h)
                         color = (80, 200, 255) if hand_side == "Left" else (255, 150, 80)
                         cv2.circle(frame, (px, py), 22, color, 2)
@@ -1272,6 +1281,8 @@ class TrackerThread(threading.Thread):
                     if result:
                         nose = result.get('nose')
                         landmarks = result.get('landmarks')
+                        pan = 0.0
+                        tilt = 0.0
                         if nose:
                             cx = nose.x / w if hasattr(nose, 'x') else 0.5
                             cy = nose.y / h if hasattr(nose, 'y') else 0.5
@@ -1292,6 +1303,9 @@ class TrackerThread(threading.Thread):
                             cv2.circle(frame, (px, py), 22, (255, 165, 0), 2)
                             cv2.line(frame, (px-30, py), (px+30, py), (255, 165, 0), 1)
                             cv2.line(frame, (px, py-30), (px, py+30), (255, 165, 0), 1)
+                        else:
+                            with self._stats_lock:
+                                self.stats["detected"] = False
                         if landmarks:
                             frame = self.detector.draw_yolo_pose(frame, result)
                         cv2.putText(frame, f"YOLO-Pose GPU Pan:{pan:.1f} Tilt:{tilt:.1f}",
@@ -1581,6 +1595,82 @@ state = {
 
 # ── Flask ─────────────────────────────────────────────────────────────────────
 app = Flask(__name__)
+
+from lab_sessions import LabSessions, session_blueprint
+from lab_motion import LabMotion, ServoGate
+_session_token_file = Path(os.environ.get(
+    'PARC_CONTROLLER_TOKEN_FILE', str(Path(__file__).resolve().parents[2] / '.runtime' / 'controller-token')
+))
+try:
+    _session_token = _session_token_file.read_text().strip()
+except FileNotFoundError:
+    _session_token = ''  # Session endpoints remain disabled without a credential.
+_lab_sessions = LabSessions()
+_legacy_mode_count = 0
+_lab_sessions.motion = LabMotion(
+    lambda: state.get('robot'), lambda: dict(SERVO_IDS), lambda: dict(SERVO_INVERT),
+    lambda: bool(state.get('tracking_active') or state.get('calibrating') or
+                 state.get('teleop') or _legacy_mode_count or
+                 (globals().get('_viewer_proc') and _viewer_proc.poll() is None) or
+                 (globals().get('_sim_proc') and _sim_proc.poll() is None)),
+    time.monotonic,
+    lambda: bool(globals().get('_lab_camera') and
+                 time.monotonic() - _lab_camera.captured_at < 2),
+)
+app.register_blueprint(session_blueprint(_lab_sessions, _session_token))
+threading.Thread(target=_lab_sessions.watchdog, daemon=True).start()
+
+@app.before_request
+def lock_legacy_control():
+    if request.method in ('GET', 'HEAD', 'OPTIONS') or request.path == '/api/lab/session':
+        return None
+    # Serialize configuration/connection/movement requests with assignments too.
+    _lab_sessions.lock.acquire()
+    g.legacy_session_lock = True
+    if _lab_sessions.lease or _lab_sessions.motion.managed:
+        return jsonify({'ok': False, 'error': 'Live lab owns the robot. End the session and return to local control first.'}), 423
+
+@app.teardown_request
+def unlock_legacy_control(error=None):
+    if getattr(g, 'legacy_session_lock', False):
+        g.legacy_session_lock = False
+        _lab_sessions.lock.release()
+
+def track_legacy_mode(function):
+    def wrapped(*args, **kwargs):
+        global _legacy_mode_count
+        with _lab_sessions.lock:
+            if _lab_sessions.lease or _lab_sessions.motion.managed:
+                return
+            _legacy_mode_count += 1
+        try:
+            return function(*args, **kwargs)
+        finally:
+            with _lab_sessions.lock:
+                _legacy_mode_count -= 1
+    return wrapped
+
+# Separate observation from tracking: viewing the lab must never move the arm.
+from lab_camera import LabCamera
+_lab_camera = LabCamera(
+    cv2,
+    lambda: int(os.environ.get('PARC_CAMERA_INDEX', state['settings'].get('cam_index') or 0)),
+    lambda: bool(state.get('tracking_active') or state.get('teleop') or
+                 (state.get('gripper_cam') and state['gripper_cam'].running)),
+)
+
+@app.route('/api/lab/camera.jpg')
+def lab_camera_frame():
+    frame = _lab_camera.frame()
+    if frame is None:
+        return jsonify({'error': 'Camera starting, busy, or unavailable'}), 503
+    return Response(frame, mimetype='image/jpeg', headers={'Cache-Control': 'no-store'})
+
+@app.route('/api/lab/camera.mjpeg')
+def lab_camera_stream():
+    return Response(_lab_camera.stream(),
+                    content_type='multipart/x-mixed-replace; boundary=parcframe',
+                    headers={'Cache-Control': 'no-store', 'X-Accel-Buffering': 'no'})
 
 @app.template_filter('t')
 def t_filter(key, lang=None):
@@ -2720,6 +2810,7 @@ def api_move_all():
     return jsonify({'ok': ok})
 
 # ── Mode execution ────────────────────────────────────────────────────────────
+@track_legacy_mode
 def _execute_mode(mode_name: str):
     HOME = {"shoulder_pan": 0, "shoulder_lift": 0, "elbow_flex": 0,
             "wrist_flex": 0, "wrist_roll": 0, "gripper": 0}
