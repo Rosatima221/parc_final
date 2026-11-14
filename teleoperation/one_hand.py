@@ -96,9 +96,7 @@ class RoboticArm:
 
 def main():
     arm = RoboticArm()
-    # Auto-activate tracking when launched from webapp (stream mode)
-    if STREAM_MODE:
-        arm.is_tracking = True
+    arm.is_tracking = True
 
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7, min_tracking_confidence=0.7)
@@ -122,15 +120,8 @@ def main():
         results = hands.process(rgb_frame)
 
         # --- 1. BARRE LATÉRALE ---
-        cv2.rectangle(frame, (0, 0), (220, h), (30, 30, 30), -1) 
-        cv2.putText(frame, "CONTROLES", (10, 40), cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
-        cv2.putText(frame, "[B] Toggle Track", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
-        cv2.putText(frame, "[R] Reset Stance", (10, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
-        cv2.putText(frame, "[Q] Quitter", (10, 140), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
-        
-        status_color = (0, 255, 0) if arm.is_tracking else (0, 0, 255)
-        status_text = "ACTIF" if arm.is_tracking else "BLOQUE"
-        cv2.putText(frame, f"STATUS: {status_text}", (10, 200), cv2.FONT_HERSHEY_SIMPLEX, 0.7, status_color, 2)
+        cv2.rectangle(frame, (0, 0), (220, h), (30, 30, 30), -1)
+        cv2.putText(frame, "STATUS: ACTIF", (10, 200), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
         # --- 2. DESSIN DU FRAME ET RÉTICULE ---
         bx1, by1 = int(BOX_X_MIN * w), int(BOX_Y_MIN * h)
@@ -147,29 +138,9 @@ def main():
         if results.multi_hand_landmarks:
             for hand_lms in results.multi_hand_landmarks:
                 wrist = hand_lms.landmark[mp_hands.HandLandmark.WRIST]
-                
-                # Indicateurs de position si bloqué
-                if not arm.is_tracking:
-                    if wrist.y < BOX_Y_MIN:
-                        cv2.putText(frame, "TROP HAUT", (cx - 60, by1 - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-                    elif wrist.y > BOX_Y_MAX:
-                        cv2.putText(frame, "TROP BAS", (cx - 60, by2 + 35), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-                    elif BOX_X_MIN < wrist.x < BOX_X_MAX:
-                        cv2.putText(frame, "OK! APPUYEZ SUR [B]", (cx - 100, by1 - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
-                # Reset par poing
-                tips = [mp_hands.HandLandmark.INDEX_FINGER_TIP, mp_hands.HandLandmark.MIDDLE_FINGER_TIP,
-                        mp_hands.HandLandmark.RING_FINGER_TIP, mp_hands.HandLandmark.PINKY_TIP]
-                avg_dist = sum([np.sqrt((hand_lms.landmark[t].x - wrist.x)**2 + (hand_lms.landmark[t].y - wrist.y)**2) for t in tips]) / 4
-
-                if avg_dist < FIST_THRESHOLD:
-                    if arm.is_tracking:
-                        arm.reset_to_initial()
-                        last_wrist_pos = None
-                    cv2.putText(frame, "RESET PAR POING", (250, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-                
                 # Mouvement
-                elif arm.is_tracking:
+                if arm.is_tracking:
                     target_1 = np.interp(wrist.x, [0, 1], [3000, 1000])
                     target_2 = np.interp(wrist.y, [0, 1], [1500, 3500])
 
@@ -189,19 +160,8 @@ def main():
             stream_frame(frame)
         else:
             cv2.imshow("Interface SO-101 MediaPipe", frame)
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord('q'): break
-            elif key == ord('r'):
-                arm.reset_to_initial()
-                last_wrist_pos = None
-            elif key == ord('b'):
-                if not arm.is_tracking and results.multi_hand_landmarks:
-                    w_check = results.multi_hand_landmarks[0].landmark[mp_hands.HandLandmark.WRIST]
-                    if (BOX_X_MIN < w_check.x < BOX_X_MAX) and (BOX_Y_MIN < w_check.y < BOX_Y_MAX):
-                        arm.is_tracking = True
-                else:
-                    arm.is_tracking = False
-                    last_wrist_pos = None
+            if cv2.waitKey(1) & 0xFF == 27:  # ESC to exit
+                break
 
         # FPS cap — sleep the remainder of the frame budget
         elapsed = time.monotonic() - t0

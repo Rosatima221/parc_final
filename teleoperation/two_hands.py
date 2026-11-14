@@ -166,7 +166,8 @@ def main():
                 stream_frame(frame)
             else:
                 cv2.imshow('SO101 Hybrid Control', frame)
-                if cv2.waitKey(1) & 0xFF == ord('q'): break
+                if cv2.waitKey(1) & 0xFF == 27:  # ESC to exit
+                    break
 
             # FPS cap — sleep the remainder of the frame budget
             elapsed = time.monotonic() - t0

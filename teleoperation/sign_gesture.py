@@ -121,9 +121,10 @@ def main():
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    # Auto-activate when launched from webapp; require keyboard 'b' in local mode
-    is_active = STREAM_MODE
+    is_active = True
     last_gesture = "IDLE"
+    pending_gesture = "IDLE"
+    pending_count = 0
     _frame_dt = 1.0 / TARGET_FPS
 
     with mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.8) as hands:
@@ -150,8 +151,18 @@ def main():
                     lm = hand_lms.landmark
                     gesture = get_sign_gesture(lm)
                     current_axis = gesture
-                    
-                    is_new = (gesture != last_gesture)
+
+                    # 3-frame debounce before committing a gesture change
+                    if gesture == pending_gesture:
+                        pending_count = min(pending_count + 1, 3)
+                    else:
+                        pending_gesture = gesture
+                        pending_count = 1
+
+                    is_new = False
+                    if pending_count >= 3 and gesture != last_gesture:
+                        is_new = True
+                        last_gesture = gesture
                     
                     # Vertical Tracking (Y) - Tilt, Elbow, Wrist
                     if gesture in ["TILT", "ELBOW", "WRIST"]:
@@ -173,9 +184,10 @@ def main():
                         # Refresh all other servos to hold position
                         for s_id, pos in robot.last_sent_pos.items(): robot.send_raw(s_id, pos)
 
-                    last_gesture = gesture
             else:
                 last_gesture = "IDLE"
+                pending_gesture = "IDLE"
+                pending_count = 0
                 robot.ref_hand = None
 
             # ── PARC-style minimal overlay ────────────────────────────────────
@@ -201,7 +213,7 @@ def main():
                             cv2.FONT_HERSHEY_DUPLEX, 0.5, WHITE, 1, cv2.LINE_AA)
 
             # Hint text right side
-            hint = "B:start  R:reset" if not STREAM_MODE else ""
+            hint = f"gesture in {pending_count}/3" if pending_gesture != "IDLE" and pending_count < 3 else ""
             cv2.putText(frame, hint, (w - 160, h - 15),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.38, MUTED, 1, cv2.LINE_AA)
 
@@ -236,12 +248,8 @@ def main():
                 stream_frame(frame)
             else:
                 cv2.imshow('SO101 SIGN relative-control', frame)
-                key = cv2.waitKey(1) & 0xFF
-                if key == ord('b'): is_active = True
-                elif key == ord('r'):
-                    is_active = False
-                    robot.reset_to_stance()
-                elif key == ord('q'): break
+                if cv2.waitKey(1) & 0xFF == 27:  # ESC to exit
+                    break
 
             # FPS cap — sleep the remainder of the frame budget
             elapsed = time.monotonic() - t0
