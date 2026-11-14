@@ -155,6 +155,7 @@ class Robot:
             return False
 
     def read_raw_positions(self) -> dict:
+        """Positions of the servos that answered. A failed read is left out, never guessed."""
         positions = {}
         if self.connected and self.servo:
             with self._lock:
@@ -162,21 +163,19 @@ class Robot:
                     pos, result, _ = self.servo.ReadPos(sid)
                     if result == COMM_SUCCESS and isinstance(pos, (int, float)):
                         positions[name] = int(pos)
-                    else:
-                        positions[name] = 2048
         return positions
 
     def get_joint_states(self) -> dict:
         """
         Read joint positions in degrees and compute FK position.
-        Uses Tucker course formulas from ECE 4560 Assignment 6.
 
         Returns:
             dict with:
-                - joints: {joint_name: angle_in_degrees}
+                - joints: {joint_name: angle_in_degrees}, only for servos that answered
                 - raw: {joint_name: raw_servo_value}
-                - fk_position: [x, y, z] in meters
-                - fk_rotation: 3x3 rotation matrix
+                - missing: joints whose read failed
+                - fk_position: [x, y, z] in meters, or None unless every joint was read
+                - fk_rotation: 3x3 rotation matrix, or None likewise
         """
         raw = self.read_raw_positions()
         joints = {}
@@ -185,11 +184,13 @@ class Robot:
             deg = (val - 2048) * inv / DEGREE_TO_UNIT
             joints[name] = round(deg, 2)
 
-        fk_pos, fk_rot = self.compute_fk(joints)
+        missing = [name for name in SERVO_IDS if name not in raw]
+        fk_pos, fk_rot = (None, None) if missing else self.compute_fk(joints)
 
         return {
             'joints': joints,
             'raw': raw,
+            'missing': missing,
             'fk_position': fk_pos.tolist() if hasattr(fk_pos, 'tolist') else fk_pos,
             'fk_rotation': fk_rot.tolist() if hasattr(fk_rot, 'tolist') else fk_rot
         }
@@ -197,60 +198,21 @@ class Robot:
     @staticmethod
     def compute_fk(joints: dict) -> tuple:
         """
-        Compute forward kinematics using Tucker course formulas.
+        Compute forward kinematics from the SO-101 model.
 
         IMPORTANT:
         - Input: joint angles in DEGREES
-        - Output: position in METERS, rotation as 3x3 matrix
+        - Output: position in METERS of the point between the jaw tips, rotation as 3x3 matrix
+        - Frame: origin on the table under the base, x forward, z up
 
-        Based on: https://maegantucker.com/ECE4560/assignment6-so101/
+        Uses learning_dashboards/scripts/robot/safe_zone.py, the same geometry as the
+        safe zone and the platform's simulator. The earlier formulas from ECE 4560 put
+        the gripper 12 cm below the table with every joint at 0°.
         """
-        def Rx(thetadeg):
-            th = np.deg2rad(thetadeg)
-            c, s = np.cos(th), np.sin(th)
-            return np.array([[1, 0, 0], [0, c, -s], [0, s, c]])
-
-        def Ry(thetadeg):
-            th = np.deg2rad(thetadeg)
-            c, s = np.cos(th), np.sin(th)
-            return np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]])
-
-        def Rz(thetadeg):
-            th = np.deg2rad(thetadeg)
-            c, s = np.cos(th), np.sin(th)
-            return np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
-
-        t1 = joints.get('shoulder_pan', 0)
-        t2 = joints.get('shoulder_lift', 0)
-        t3 = joints.get('elbow_flex', 0)
-        t4 = joints.get('wrist_flex', 0)
-        t5 = joints.get('wrist_roll', 0)
-
-        gw1 = np.block([[Rz(180) @ Rx(180) @ Rz(t1),
-                         np.array([0.0388353, 0.0, 0.0624]).reshape(3, 1)],
-                        [0, 0, 0, 1]])
-
-        g12 = np.block([[Rx(-90 - t2), np.array([0, 0, 0.100]).reshape(3, 1)],
-                        [0, 0, 0, 1]])
-
-        g23 = np.block([[Rx(90 + t3), np.array([0.100, 0, 0]).reshape(3, 1)],
-                        [0, 0, 0, 1]])
-
-        g34 = np.block([[Rx(-90 - t4), np.array([0, 0, 0.080]).reshape(3, 1)],
-                        [0, 0, 0, 1]])
-
-        g45 = np.block([[Rz(t5), np.array([0, 0, 0.050]).reshape(3, 1)],
-                        [0, 0, 0, 1]])
-
-        g5t = np.block([[np.eye(3), np.array([0, 0, 0.050]).reshape(3, 1)],
-                        [0, 0, 0, 1]])
-
-        g0t = gw1 @ g12 @ g23 @ g34 @ g45 @ g5t
-
-        position = g0t[0:3, 3]
-        rotation = g0t[0:3, 0:3]
-
-        return position, rotation
+        from lab_motion import safe_zone
+        if safe_zone is None:
+            raise RuntimeError('The SO-101 geometry in learning_dashboards/scripts/robot is missing')
+        return safe_zone.gripper_pose(safe_zone.to_model(joints))
 
     @staticmethod
     def compute_ik(target_position: list, target_rotation: list = None, initial_joints: dict = None, max_iterations: int = 300, tolerance: float = 0.005) -> dict:
@@ -267,21 +229,13 @@ class Robot:
         Returns:
             dict with 'joints' (solution), 'error' (final error), 'success' (bool)
         """
-        # Link lengths
-        l1 = 0.0624  # base to j1
-        l2 = 0.100   # j1 to j2
-        l3 = 0.100   # j2 to j3
-        l4 = 0.080   # j3 to j4
-        l5 = 0.050   # j4 to j5
-        l6 = 0.050   # j5 to tip
-
-        # Total reach
-        max_reach = l2 + l3 + l4 + l5 + l6
+        # The model's gripper point gets at most 0.546 m from the base origin, arm pointing up.
+        max_reach = 0.55
 
         # Check if target is reachable
         target = np.array(target_position)
         distance = np.linalg.norm(target)
-        if distance > max_reach * 0.95:
+        if distance > max_reach:
             return {'joints': None, 'error': 'Target out of reach', 'success': False}
 
         # Initialize joints (home position or provided)
