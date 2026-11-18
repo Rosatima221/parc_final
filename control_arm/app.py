@@ -1571,6 +1571,7 @@ _lab_sessions.motion = LabMotion(
     lambda: bool(globals().get('_lab_camera') and
                  time.monotonic() - _lab_camera.captured_at < 2),
 )
+_lab_sessions.motion.connect_robot = lambda: connect_robot_now()
 app.register_blueprint(session_blueprint(_lab_sessions, _session_token))
 threading.Thread(target=_lab_sessions.watchdog, daemon=True).start()
 
@@ -1871,11 +1872,10 @@ def api_status():
     })
 
 # ── Connection ────────────────────────────────────────────────────────────────
-@app.route('/api/connect', methods=['POST'])
-def api_connect():
-    data = request.json or {}
-    port     = data.get('port',     state['settings']['port'])
-    baudrate = int(data.get('baudrate', state['settings']['baudrate']))
+def connect_robot_now(port=None, baudrate=None):
+    """Open the arm's serial port. Used by the Play page and by the live lab's Connect button."""
+    port     = port or state['settings']['port']
+    baudrate = int(baudrate or state['settings']['baudrate'])
     with _state_lock:
         if state['robot']: state['robot'].disconnect()
         robot = Robot(port, baudrate)
@@ -1884,6 +1884,12 @@ def api_connect():
         state['connected'] = ok
         state['settings']['port']     = port
         state['settings']['baudrate'] = baudrate
+    return ok, msg
+
+@app.route('/api/connect', methods=['POST'])
+def api_connect():
+    data = request.json or {}
+    ok, msg = connect_robot_now(data.get('port'), data.get('baudrate'))
     return jsonify({'ok': ok, 'msg': msg})
 
 @app.route('/api/disconnect', methods=['POST'])

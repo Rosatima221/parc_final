@@ -233,14 +233,30 @@ class MotionTests(unittest.TestCase):
         self.sessions.update(ADMIN, None, 'local')
         self.robot.servo.WritePosEx(1, 2048, 100, 10)
 
-    def test_heartbeat_loss_holds_and_invalidates_session(self):
+    def test_heartbeat_loss_holds_the_arm_and_keeps_it_armed_until_the_owner_returns(self):
         self.arm()
         self.now += 10
         state = self.sessions.snapshot()
-        self.assertIsNone(state['session'])
+        self.assertTrue(state['session']['disconnected'])
         self.assertEqual(len(self.sdk.writes), 6)
+        self.assertTrue(self.motion.armed)
+        self.assertFalse(state['controlEnabled'])
         with self.assertRaises(SessionError):
             self.move()
+        self.assertEqual(len(self.sdk.writes), 6)
+        self.sessions.update(OWNER, self.sid, 'heartbeat')
+        self.assertTrue(self.sessions.snapshot()['controlEnabled'])
+        self.now += 1
+        self.move()
+        self.assertEqual(len(self.sdk.writes), 7)
+
+    def test_failed_hold_on_disconnect_disarms(self):
+        self.arm()
+        self.sdk.write_error = True
+        self.now += 10
+        self.sessions.snapshot()
+        self.assertFalse(self.motion.armed)
+        self.assertIsNotNone(self.motion.fault)
 
     def test_failed_hold_latches_closed(self):
         self.arm()
@@ -256,6 +272,125 @@ class MotionTests(unittest.TestCase):
         with self.assertRaises(SessionError):
             self.robot.servo.WritePosEx(1, 3000, 500, 50)
         self.assertEqual(self.sdk.writes, [])
+
+    FOLDED = {'shoulder_pan': -92, 'shoulder_lift': -111, 'elbow_flex': 98, 'wrist_flex': 76,
+              'wrist_roll': -7, 'gripper': -1}
+
+    def fold(self, **changes):
+        for name, degrees in dict(self.FOLDED, **changes).items():
+            self.sdk.positions[self.ids[name]] = raw(degrees)
+
+    def start(self):
+        self.sessions.update(ADMIN, self.sid, 'start', {'workspaceClear': True})
+        deadline = lab_motion.time.monotonic() + 5
+        while self.motion.start_state['running'] and lab_motion.time.monotonic() < deadline:
+            lab_motion.time.sleep(0.01)
+
+    def test_start_pose_moves_stage_by_stage_to_the_start_pose(self):
+        self.fold()
+        self.start()
+        self.assertTrue(self.motion.start_state['done'], self.motion.fault)
+        self.assertFalse(self.motion.start_state['running'])
+        for name, degrees in lab_motion.START_POSE.items():
+            self.assertEqual(self.sdk.positions[self.ids[name]], raw(degrees), name)
+        order = [sid for sid, *_ in self.sdk.writes]
+        names = {sid: name for name, sid in self.ids.items()}
+        seen = []
+        for sid in order:
+            if names[sid] not in seen:
+                seen.append(names[sid])
+        # The elbow unfolds first, then the shoulder lifts, then the wrist, then the rest.
+        self.assertEqual(seen[:3], ['elbow_flex', 'shoulder_lift', 'wrist_flex'])
+        self.assertTrue(all(speed == lab_motion.START_SPEED for _, _, speed, _ in self.sdk.writes))
+        # Each step is a few degrees at most.
+        previous = {}
+        for sid, target, _, _ in self.sdk.writes:
+            if sid in previous:
+                self.assertLessEqual(abs(target - previous[sid]), raw(lab_motion.START_STEP_DEGREES + 1) - 2048)
+            previous[sid] = target
+        self.assertTrue(self.motion.managed)
+        self.assertFalse(self.motion.armed)
+        self.assertIsNone(self.motion.fault)
+
+    def test_start_pose_then_arm_controls(self):
+        self.fold()
+        self.start()
+        self.arm()
+        self.assertTrue(self.sessions.snapshot()['controlEnabled'])
+
+    def test_start_pose_needs_admin_and_confirmation(self):
+        self.fold()
+        for actor, data in [(OWNER, {'workspaceClear': True}), (ADMIN, {})]:
+            with self.assertRaises(SessionError):
+                self.sessions.update(actor, self.sid, 'start', data)
+        self.assertEqual(self.sdk.writes, [])
+
+    def test_start_pose_refuses_when_the_arm_is_not_at_the_rest_pose(self):
+        self.fold(elbow_flex=50)
+        with self.assertRaises(SessionError) as refused:
+            self.start()
+        self.assertIn('folded rest pose', refused.exception.message)
+        self.assertEqual(self.sdk.writes, [])
+        self.assertFalse(self.motion.managed)
+
+    def test_start_pose_says_when_the_arm_is_already_inside_the_ranges(self):
+        with self.assertRaises(SessionError) as refused:
+            self.start()
+        self.assertIn('already inside', refused.exception.message)
+
+    def test_start_pose_refuses_with_a_bad_servo_reading(self):
+        self.fold()
+        self.sdk.failed_read = self.ids['wrist_flex']
+        with self.assertRaises(SessionError):
+            self.start()
+        self.assertEqual(self.sdk.writes, [])
+
+    def test_stop_during_the_start_move_holds_the_arm(self):
+        self.fold()
+        proceed = threading.Event()
+        original = self.sdk.WritePosEx
+        def slow(sid, target, speed, acc):
+            proceed.wait(2)
+            return original(sid, target, speed, acc)
+        self.sdk.WritePosEx = slow
+        self.sessions.update(ADMIN, self.sid, 'start', {'workspaceClear': True})
+        self.assertTrue(self.motion.start_state['running'])
+        stopper = threading.Thread(target=lambda: self.sessions.update(ADMIN, self.sid, 'stop'))
+        stopper.start()
+        lab_motion.time.sleep(0.05)
+        proceed.set()
+        stopper.join(timeout=3)
+        deadline = lab_motion.time.monotonic() + 2
+        while self.motion.starting and lab_motion.time.monotonic() < deadline:
+            lab_motion.time.sleep(0.01)
+        self.assertFalse(self.motion.start_state['running'])
+        self.assertFalse(self.motion.start_state['done'])
+        # The arm is nowhere near the start pose, and every joint was told to stay put.
+        self.assertNotEqual(self.sdk.positions[self.ids['elbow_flex']], raw(lab_motion.START_POSE['elbow_flex']))
+        self.assertGreaterEqual(len(self.sdk.writes), 6)
+
+    def test_start_move_that_the_arm_does_not_follow_is_stopped(self):
+        self.fold()
+        self.sdk.WritePosEx = lambda sid, target, speed, acc: (0, 0)  # accepted, but the arm never moves
+        original = lab_motion.ARRIVE_SECONDS
+        lab_motion.ARRIVE_SECONDS = 0.2
+        try:
+            self.start()
+        finally:
+            lab_motion.ARRIVE_SECONDS = original
+        self.assertFalse(self.motion.start_state['running'])
+        self.assertFalse(self.motion.start_state['done'])
+        self.assertIn('did not follow', self.motion.fault)
+
+    def test_connect_goes_through_the_controller_and_reports_failure(self):
+        results = [(True, 'Connected'), (False, 'No such port')]
+        self.motion.connect_robot = lambda: results.pop(0)
+        self.sessions.update(ADMIN, self.sid, 'connect')
+        with self.assertRaises(SessionError) as refused:
+            self.sessions.update(ADMIN, self.sid, 'connect')
+        self.assertIn('No such port', refused.exception.message)
+        with self.assertRaises(SessionError):
+            self.sessions.update(OWNER, self.sid, 'connect')
 
     def test_real_safe_zone_is_loaded(self):
         self.assertIsNotNone(lab_motion.safe_zone)

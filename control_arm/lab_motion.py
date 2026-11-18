@@ -1,6 +1,7 @@
 """Supervised incremental motion using strict servo feedback, never guessed poses."""
 import sys
 import threading
+import time
 import math
 from contextlib import contextmanager
 from pathlib import Path
@@ -19,6 +20,19 @@ JOINT_LIMITS = {
     'elbow_flex': (0, 40), 'wrist_flex': (-30, 0),
     'wrist_roll': (-20, 20), 'gripper': (0, 60),
 }
+
+
+# Bringing the arm from its folded rest pose to a start pose inside the approved ranges, so staff don't need the
+# Play page. One stage at a time, in the order checked against the SO-101 model: unfold the elbow, raise the
+# shoulder, lift the wrist, then swing the base, roll the wrist and open the gripper.
+START_POSE = {'shoulder_pan': 0, 'shoulder_lift': -15, 'elbow_flex': 20,
+              'wrist_flex': -15, 'wrist_roll': 0, 'gripper': 30}
+START_STAGES = (('elbow_flex',), ('shoulder_lift',), ('wrist_flex',), ('shoulder_pan', 'wrist_roll', 'gripper'))
+FOLDED_REST = {'shoulder_lift': (-125, -80), 'elbow_flex': (70, 115), 'wrist_flex': (40, 100)}  # degrees
+START_STEP_DEGREES = 3
+START_SPEED, START_ACC = 100, 10
+ARRIVED_WITHIN = round(3 * UNITS_PER_DEGREE)
+ARRIVE_SECONDS = 8  # a step that hasn't been reached by then means the arm is blocked
 
 
 class ServoGate:
@@ -66,6 +80,11 @@ class LabMotion:
         self.targets = {}
         self.last_move = float('-inf')
         self.local = threading.local()
+        self.lock = threading.RLock()       # LabSessions replaces this with its own lock
+        self.connect_robot = None           # () -> (ok, message), set by the controller
+        self.abort = threading.Event()
+        self.starting = False
+        self.start_state = {'running': False, 'done': False, 'step': 0, 'steps': 0}
 
     def permitted(self):
         return getattr(self.local, 'allowed', False)
@@ -202,32 +221,177 @@ class LabMotion:
             self.positions[joint] = pos
             self.targets[joint] = target
 
+    def _hold(self):
+        """Command every joint to stay where it is. Raises if any reading or write fails."""
+        robot = self.connected()
+        with robot._lock:
+            # Read every joint successfully before issuing any hold target.
+            positions = {name: self.checked(robot.servo.ReadPos(sid), name, True)
+                         for name, sid in self.joint_ids().items()}
+            with self.permission():
+                failures = []
+                for name, sid in self.joint_ids().items():
+                    try:
+                        ok = robot.servo.WritePosEx(sid, positions[name], 100, 10) == (0, 0)
+                    except Exception:
+                        ok = False
+                    if not ok:
+                        failures.append(name)
+                if failures:
+                    raise SessionError('Hold command failed: ' + ', '.join(failures), 503)
+            self.positions = positions
+            self.targets = dict(positions)
+
     def stop(self):
-        was_armed = self.armed
+        was_active = self.armed or self.starting
         self.armed = False  # Latch closed even if feedback or holding fails.
-        if not was_armed:
+        self.abort.set()
+        if not was_active:
             return
         try:
-            robot = self.connected()
-            with robot._lock:
-                # Read every joint successfully before issuing any hold target.
-                positions = {name: self.checked(robot.servo.ReadPos(sid), name, True)
-                             for name, sid in self.joint_ids().items()}
-                with self.permission():
-                    failures = []
-                    for name, sid in self.joint_ids().items():
-                        try:
-                            ok = robot.servo.WritePosEx(sid, positions[name], 100, 10) == (0, 0)
-                        except Exception:
-                            ok = False
-                        if not ok:
-                            failures.append(name)
-                    if failures:
-                        raise SessionError('Hold command failed: ' + ', '.join(failures), 503)
-                self.positions = positions
-                self.targets = dict(positions)
+            self._hold()
         except Exception as error:
             self.fault = 'Software hold failed; switch off the servo power. ' + str(error)
+        self.starting = False
+        self.start_state['running'] = False
+
+    def hold(self):
+        """The learner's page went quiet: hold where the arm is, but stay armed so they can come back."""
+        if not (self.armed or self.starting):
+            return
+        if self.starting:
+            self.abort.set()
+        try:
+            self._hold()
+        except Exception as error:
+            self.armed = False
+            self.fault = 'Software hold failed; switch off the servo power. ' + str(error)
+        if self.starting:
+            self.starting = False
+            self.start_state['running'] = False
+
+    def connect(self):
+        if self.armed or self.starting:
+            raise SessionError('End the motion window before reconnecting the arm')
+        if self.connect_robot is None:
+            raise SessionError('Connecting from here is not available', 501)
+        ok, message = self.connect_robot()
+        if not ok:
+            raise SessionError('Could not connect to the arm: ' + str(message), 503)
+
+    def read_positions(self, robot):
+        with robot._lock:
+            return {name: self.checked(robot.servo.ReadPos(sid), name, True)
+                    for name, sid in self.joint_ids().items()}
+
+    def plan_start(self, measured):
+        """Waypoints (raw positions) from the measured pose to START_POSE, stage by stage. Raises if one is unsafe."""
+        current = dict(measured)
+        plan = []
+        for stage in START_STAGES:
+            goal = {name: round(2048 + START_POSE[name] * UNITS_PER_DEGREE) for name in stage}
+            steps = max(1, math.ceil(max(abs(goal[name] - current[name]) for name in stage)
+                                     / UNITS_PER_DEGREE / START_STEP_DEGREES))
+            for step in range(1, steps + 1):
+                plan.append({name: round(current[name] + (goal[name] - current[name]) * step / steps) for name in stage})
+            current.update(goal)
+        # By the last stage the arm is raised and clear, so the table, base, height and reach rules apply to it.
+        pose = dict(measured)
+        for waypoint in plan:
+            pose.update(waypoint)
+            if set(waypoint) == set(START_STAGES[3]):
+                reason = self.zone.check_shape(self.zone.to_model({name: self.degrees(raw) for name, raw in pose.items()}))
+                if reason:
+                    raise SessionError('The path to the start pose is not safe. ' + reason, 400)
+        return plan
+
+    def start_pose(self):
+        if self.armed or self.starting:
+            raise SessionError('Controls are already armed or moving; end the session first')
+        if self.busy():
+            raise SessionError('Stop tracking, calibration, motion modes, teleoperation and simulation first')
+        if self.zone is None:
+            raise SessionError('The safe zone is not installed, so remote controls stay locked', 503)
+        robot = self.connected()
+        measured = self.read_positions(robot)
+        pose = {name: self.degrees(raw) for name, raw in measured.items()}
+        folded = all(low <= pose[name] <= high for name, (low, high) in FOLDED_REST.items())
+        inside = all(low <= pose[name] <= high for name, (low, high) in JOINT_LIMITS.items())
+        if not folded:
+            if inside and self.zone.check_pose(pose) is None:
+                raise SessionError('The arm is already inside the approved ranges. Arm the controls.')
+            raise SessionError('Start from the folded rest pose, or move the arm into the approved ranges with local Play. '
+                               'This move is only checked from the rest pose.')
+        plan = self.plan_start(measured)
+        self.fault = None
+        self.managed = True
+        self.starting = True
+        self.abort = threading.Event()
+        self.start_state = {'running': True, 'done': False, 'step': 0, 'steps': len(plan)}
+        threading.Thread(target=self._run_start, args=(plan, self.abort), daemon=True).start()
+
+    def _fail_start(self, message):
+        self.fault = message
+        self.starting = False
+        self.start_state['running'] = False
+        try:
+            self._hold()
+        except Exception:
+            self.fault += ' The hold failed too: switch off the servo power.'
+
+    def _write_waypoint(self, waypoint):
+        robot = self.connected()
+        ids = self.joint_ids()
+        with robot._lock, self.permission():
+            for name, raw in waypoint.items():
+                for attempt in range(5):
+                    try:
+                        result = robot.servo.WritePosEx(ids[name], raw, START_SPEED, START_ACC)
+                        break
+                    except SessionError:
+                        if attempt == 4:
+                            raise
+                        time.sleep(0.05)
+                if result != (0, 0):
+                    return False
+        return True
+
+    def _run_start(self, plan, abort):
+        try:
+            for index, waypoint in enumerate(plan):
+                with self.lock:
+                    if abort.is_set():
+                        return
+                    if not self._write_waypoint(waypoint):
+                        self._fail_start('Servo command failed during the move to the start pose; '
+                                         'switch off the servo power and check the robot')
+                        return
+                arrive_by = time.monotonic() + ARRIVE_SECONDS
+                while True:
+                    with self.lock:
+                        if abort.is_set():
+                            return
+                        positions = self.read_positions(self.connected())
+                    if all(abs(positions[name] - raw) <= ARRIVED_WITHIN for name, raw in waypoint.items()):
+                        break
+                    if time.monotonic() > arrive_by:
+                        with self.lock:
+                            if not abort.is_set():
+                                self._fail_start('The arm did not follow the move to the start pose and was stopped. '
+                                                 'Check that nothing is in the way.')
+                        return
+                    time.sleep(0.15)
+                self.start_state['step'] = index + 1
+            with self.lock:
+                if not abort.is_set():
+                    self.positions = self.read_positions(self.connected())
+                    self.targets = dict(self.positions)
+                    self.starting = False
+                    self.start_state.update(running=False, done=True)
+        except Exception as error:
+            with self.lock:
+                if not abort.is_set():
+                    self._fail_start('Moving to the start pose failed: ' + str(error))
 
     def return_local(self):
         self.stop()
@@ -235,9 +399,13 @@ class LabMotion:
             raise SessionError(self.fault, 503)
         self.managed = False
         self.bounds = {}
+        self.start_state = {'running': False, 'done': False, 'step': 0, 'steps': 0}
 
     def status(self):
+        robot = self.robot()
         return {'armed': self.armed, 'managed': self.managed, 'fault': self.fault,
+                'armConnected': bool(robot and robot.connected and robot.servo),
+                'start': dict(self.start_state), 'startPoseDegrees': dict(START_POSE),
                 'joints': list(self.bounds), 'stepDegrees': 1,
                 'limitsDegrees': {name: list(limits) for name, limits in JOINT_LIMITS.items()},
                 'positionsDegrees': {name: round((pos - 2048) / UNITS_PER_DEGREE, 1) for name, pos in self.positions.items()},

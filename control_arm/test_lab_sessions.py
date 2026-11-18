@@ -52,16 +52,38 @@ class SessionTests(unittest.TestCase):
         self.sessions.update(OWNER, self.assign(), 'release')
         self.assertEqual(self.sessions.snapshot()['lastEndReason'], 'released')
 
-    def test_heartbeat_timeout_cannot_be_resurrected(self):
+    def test_quiet_page_disconnects_but_keeps_the_slot_and_can_rejoin(self):
         session_id = self.assign()
         self.sessions.update(OWNER, session_id, 'heartbeat')
         self.now += 9
-        self.assertIsNotNone(self.sessions.snapshot()['session'])
+        state = self.sessions.snapshot()
+        self.assertTrue(state['session']['joined'])
+        self.assertFalse(state['session']['disconnected'])
         self.now += 1
+        state = self.sessions.snapshot()
+        self.assertEqual(state['session']['id'], session_id)
+        self.assertFalse(state['session']['joined'])
+        self.assertTrue(state['session']['disconnected'])
+        self.assertIsNone(state['lastEndReason'])
+        self.sessions.update(OWNER, session_id, 'heartbeat')
+        state = self.sessions.snapshot()
+        self.assertTrue(state['session']['joined'])
+        self.assertFalse(state['session']['disconnected'])
+
+    def test_disconnected_session_still_expires_and_can_be_revoked(self):
+        session_id = self.assign()
+        self.sessions.update(OWNER, session_id, 'heartbeat')
+        self.now += 10
+        self.assertTrue(self.sessions.snapshot()['session']['disconnected'])
+        self.now += 60
         self.assertIsNone(self.sessions.snapshot()['session'])
-        self.assertEqual(self.sessions.snapshot()['lastEndReason'], 'connection_lost')
-        with self.assertRaises(SessionError):
-            self.sessions.update(OWNER, session_id, 'heartbeat')
+        self.assertEqual(self.sessions.snapshot()['lastEndReason'], 'expired')
+        session_id = self.assign(5)
+        self.sessions.update(OWNER, session_id, 'heartbeat')
+        self.now += 10
+        self.sessions.update(ADMIN, session_id, 'release')
+        self.assertIsNone(self.sessions.snapshot()['session'])
+        self.assertEqual(self.sessions.snapshot()['lastEndReason'], 'revoked')
 
     def test_expiry_applies_even_with_heartbeats(self):
         session_id = self.assign()
