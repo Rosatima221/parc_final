@@ -397,6 +397,56 @@ class MotionTests(unittest.TestCase):
         self.assertIn('stopped following', self.motion.fault)
         self.assertIn('wrist flex', self.motion.fault)
 
+    def stall_start(self, volts):
+        self.fold()
+        self.sdk.WritePosEx = lambda sid, target, speed, acc: (0, 0)  # accepted, but the arm never moves
+        self.sdk.read1ByteTxRx = lambda sid, address: ({33: 0, lab_motion.VOLTAGE: volts}.get(address, 1), 0, 0)
+        original = lab_motion.ARRIVE_SECONDS
+        lab_motion.ARRIVE_SECONDS = 0.2
+        try:
+            self.start()
+        finally:
+            lab_motion.ARRIVE_SECONDS = original
+
+    def test_start_stop_names_a_low_servo_supply(self):
+        self.stall_start(53)
+        self.assertIn('stopped following', self.motion.fault)
+        self.assertIn('5.3 V', self.motion.fault)
+
+    def test_start_stop_says_nothing_about_a_good_supply(self):
+        self.stall_start(74)
+        self.assertIn('stopped following', self.motion.fault)
+        self.assertNotIn('supply', self.motion.fault)
+
+    def test_stopped_start_pose_can_be_handed_back_to_local_control(self):
+        self.stall_start(74)
+        self.sessions.update(ADMIN, self.sid, 'release')
+        self.sessions.update(ADMIN, None, 'local')
+        self.assertIsNone(self.motion.fault)
+        self.assertFalse(self.motion.managed)
+
+    def test_failed_hold_still_blocks_local_control(self):
+        self.stall_start(74)
+        self.motion.fault = 'Software hold failed; switch off the servo power. bus error'
+        self.sessions.update(ADMIN, self.sid, 'release')
+        with self.assertRaises(SessionError):
+            self.sessions.update(ADMIN, None, 'local')
+        self.assertTrue(self.motion.managed)
+
+    def test_status_reports_servo_health(self):
+        self.sdk.read1ByteTxRx = lambda sid, address: ({lab_motion.VOLTAGE: 74, lab_motion.TEMPERATURE: 31,
+                                                        lab_motion.STATUS: 0b100001}.get(address, 0), 0, 0)
+        self.sdk.read2ByteTxRx = lambda sid, address: ((1 << 10) | 250 if address == lab_motion.LOAD else 0, 0, 0)
+        self.motion.health_at = float('-inf')  # skip the reading cached when the session started
+        elbow = self.motion.status()['health']['elbow_flex']
+        self.assertEqual(elbow, {'volts': 7.4, 'celsius': 31, 'load': 25.0, 'errors': ['voltage', 'overload']})
+        self.assertEqual(self.sdk.writes, [])
+
+    def test_status_skips_health_when_the_bus_is_busy(self):
+        self.motion.health, self.motion.health_at = {}, float('-inf')
+        with self.robot._lock:
+            self.assertEqual(self.motion.status()['health'], {})
+
     def test_connect_goes_through_the_controller_and_reports_failure(self):
         results = [(True, 'Connected'), (False, 'No such port')]
         self.motion.connect_robot = lambda: results.pop(0)
