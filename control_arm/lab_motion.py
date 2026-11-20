@@ -36,6 +36,14 @@ START_SPEED, START_ACC = 100, 10
 ARRIVED_WITHIN = round(3 * UNITS_PER_DEGREE)
 ARRIVE_SECONDS = 8  # a step that hasn't been reached by then means the arm is blocked
 
+# Servo health, read only (addresses from the bundled sms_sts SDK memory table). The SO-101 follower uses the
+# 7.4 V STS3215 on the 5 V supply from its parts list (5.3 V at rest here). The servos are set to drop their
+# torque below 4.0 V, or after 2 s above 80 % load, so a stalled joint reports its load, voltage and flags.
+VOLTAGE, TEMPERATURE, STATUS, LOAD = 62, 63, 65, 60
+LOW_VOLTAGE = 4.5  # close to the 4.0 V cut-off
+HEALTH_SECONDS = 2
+ERROR_FLAGS = {0: 'voltage', 1: 'angle sensor', 2: 'temperature', 3: 'current', 5: 'overload'}
+
 
 def on_start_route(pose):
     """True when the arm is folded at rest, or part of the way along the start route, so the rest of it is checked."""
@@ -105,6 +113,8 @@ class LabMotion:
         self.abort = threading.Event()
         self.starting = False
         self.start_state = {'running': False, 'done': False, 'step': 0, 'steps': 0}
+        self.start_fault = None  # a stopped start pose whose hold worked, which doesn't block local control
+        self.health, self.health_at = {}, float('-inf')
 
     def permitted(self):
         return getattr(self.local, 'allowed', False)
@@ -355,8 +365,58 @@ class LabMotion:
         self.start_state['running'] = False
         try:
             self._hold()
+            self.start_fault = message
         except Exception:
             self.fault += ' The hold failed too: switch off the servo power.'
+
+    def read_health(self, robot, wait=True):
+        """Supply voltage, temperature, load and error flags for each joint. None if the bus is busy."""
+        if not robot._lock.acquire(timeout=1 if wait else 0.2):
+            return None
+        try:
+            health = {}
+            for name, sid in self.joint_ids().items():
+                values = {}
+                for key, read, address in (('volts', 'read1ByteTxRx', VOLTAGE), ('celsius', 'read1ByteTxRx', TEMPERATURE),
+                                           ('flags', 'read1ByteTxRx', STATUS), ('load', 'read2ByteTxRx', LOAD)):
+                    value, comm, _ = getattr(robot.servo, read)(sid, address)
+                    if comm == 0 and type(value) is int:
+                        values[key] = value
+                if 'volts' in values:
+                    values['volts'] = values['volts'] / 10
+                if 'load' in values:
+                    values['load'] = (values['load'] & 0x3FF) / 10  # percent of full torque; bit 10 is the direction
+                if 'flags' in values:
+                    values['errors'] = [label for bit, label in ERROR_FLAGS.items() if values['flags'] >> bit & 1]
+                    del values['flags']
+                health[name] = values
+            return health
+        finally:
+            robot._lock.release()
+
+    def stall_note(self, robot, joints):
+        """What the lagging servos report, to add to a stop message: load, voltage and any protection flags."""
+        try:
+            health = self.read_health(robot, wait=True) or {}
+        except Exception:
+            return ''
+        parts = []
+        for name in joints:
+            servo = health.get(name, {})
+            details = []
+            if 'load' in servo:
+                details.append(f"{servo['load']:.0f}% load")
+            if 'volts' in servo:
+                details.append(f"{servo['volts']:.1f} V")
+            if servo.get('errors'):
+                details.append('protection: ' + ', '.join(servo['errors']))
+            if details:
+                parts.append(f"{name.replace('_', ' ')} reads " + ', '.join(details))
+        note = (' ' + '; '.join(parts) + '.') if parts else ''
+        volts = [servo['volts'] for servo in health.values() if 'volts' in servo]
+        if volts and min(volts) < LOW_VOLTAGE:
+            note += f' The servo supply is down to {min(volts):.1f} V, close to the 4.0 V cut-off.'
+        return note
 
     def _write_waypoint(self, waypoint):
         robot = self.connected()
@@ -399,9 +459,11 @@ class LabMotion:
                                 behind = ', '.join(
                                     f"{name.replace('_', ' ')} {abs(positions[name] - raw) / UNITS_PER_DEGREE:.0f}° short"
                                     for name, raw in waypoint.items() if abs(positions[name] - raw) > ARRIVED_WITHIN)
+                                note = self.stall_note(self.connected(), [
+                                    name for name, raw in waypoint.items() if abs(positions[name] - raw) > ARRIVED_WITHIN])
                                 self._fail_start(f'The arm stopped following the move to the start pose ({behind}) and is '
                                                  'holding. Check that nothing is in the way, then press Move to start pose '
-                                                 'again to continue from here.')
+                                                 'again to continue from here.' + note)
                         return
                     time.sleep(0.15)
                 self.start_state['step'] = index + 1
@@ -418,15 +480,31 @@ class LabMotion:
 
     def return_local(self):
         self.stop()
-        if self.fault:
+        # A start pose that stopped and held safely can be handed back. A failed hold can't.
+        if self.fault and self.fault != self.start_fault:
             raise SessionError(self.fault, 503)
+        self.fault = self.start_fault = None
         self.managed = False
         self.bounds = {}
         self.start_state = {'running': False, 'done': False, 'step': 0, 'steps': 0}
 
+    def current_health(self, robot):
+        """Health read at most every HEALTH_SECONDS, never waiting long for the bus."""
+        if not (robot and robot.connected and robot.servo):
+            self.health, self.health_at = {}, float('-inf')
+        elif time.monotonic() - self.health_at >= HEALTH_SECONDS:
+            try:
+                health = self.read_health(robot, wait=False)
+            except Exception:
+                health = None
+            if health is not None:
+                self.health, self.health_at = health, time.monotonic()
+        return self.health
+
     def status(self):
         robot = self.robot()
-        return {'armed': self.armed, 'managed': self.managed, 'fault': self.fault,
+        return {'health': self.current_health(robot), 'lowVoltage': LOW_VOLTAGE,
+                'armed': self.armed, 'managed': self.managed, 'fault': self.fault,
                 'armConnected': bool(robot and robot.connected and robot.servo),
                 'start': dict(self.start_state), 'startPoseDegrees': dict(START_POSE),
                 'joints': list(self.bounds), 'stepDegrees': 1,
