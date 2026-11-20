@@ -36,11 +36,11 @@ START_SPEED, START_ACC = 100, 10
 ARRIVED_WITHIN = round(3 * UNITS_PER_DEGREE)
 ARRIVE_SECONDS = 8  # a step that hasn't been reached by then means the arm is blocked
 
-# Servo health, read only (addresses from the bundled sms_sts SDK memory table). These STS3215 servos are set
-# for 4.0-8.0 V and drop their torque below 4.0 V. Under about 6 V they are too weak to lift the forearm, and a
-# 5 V supply sags under load until they let go: that is what stopped the start pose on 2026-11-20 (5.3 V at rest).
+# Servo health, read only (addresses from the bundled sms_sts SDK memory table). The SO-101 follower uses the
+# 7.4 V STS3215 on the 5 V supply from its parts list (5.3 V at rest here). The servos are set to drop their
+# torque below 4.0 V, or after 2 s above 80 % load, so a stalled joint reports its load, voltage and flags.
 VOLTAGE, TEMPERATURE, STATUS, LOAD = 62, 63, 65, 60
-LOW_VOLTAGE = 6.0
+LOW_VOLTAGE = 4.5  # close to the 4.0 V cut-off
 HEALTH_SECONDS = 2
 ERROR_FLAGS = {0: 'voltage', 1: 'angle sensor', 2: 'temperature', 3: 'current', 5: 'overload'}
 
@@ -394,17 +394,29 @@ class LabMotion:
         finally:
             robot._lock.release()
 
-    def supply_note(self, robot):
-        """A sentence about the servo supply when it is low, to add to a stop message. Empty otherwise."""
+    def stall_note(self, robot, joints):
+        """What the lagging servos report, to add to a stop message: load, voltage and any protection flags."""
         try:
             health = self.read_health(robot, wait=True) or {}
         except Exception:
             return ''
-        volts = [joint['volts'] for joint in health.values() if 'volts' in joint]
+        parts = []
+        for name in joints:
+            servo = health.get(name, {})
+            details = []
+            if 'load' in servo:
+                details.append(f"{servo['load']:.0f}% load")
+            if 'volts' in servo:
+                details.append(f"{servo['volts']:.1f} V")
+            if servo.get('errors'):
+                details.append('protection: ' + ', '.join(servo['errors']))
+            if details:
+                parts.append(f"{name.replace('_', ' ')} reads " + ', '.join(details))
+        note = (' ' + '; '.join(parts) + '.') if parts else ''
+        volts = [servo['volts'] for servo in health.values() if 'volts' in servo]
         if volts and min(volts) < LOW_VOLTAGE:
-            return (f' The servo supply reads {min(volts):.1f} V, too low for these servos to lift the arm: '
-                    'check the servo power supply (they need 6 to 8 V).')
-        return ''
+            note += f' The servo supply is down to {min(volts):.1f} V, close to the 4.0 V cut-off.'
+        return note
 
     def _write_waypoint(self, waypoint):
         robot = self.connected()
@@ -447,7 +459,8 @@ class LabMotion:
                                 behind = ', '.join(
                                     f"{name.replace('_', ' ')} {abs(positions[name] - raw) / UNITS_PER_DEGREE:.0f}° short"
                                     for name, raw in waypoint.items() if abs(positions[name] - raw) > ARRIVED_WITHIN)
-                                note = self.supply_note(self.connected())
+                                note = self.stall_note(self.connected(), [
+                                    name for name, raw in waypoint.items() if abs(positions[name] - raw) > ARRIVED_WITHIN])
                                 self._fail_start(f'The arm stopped following the move to the start pose ({behind}) and is '
                                                  'holding. Check that nothing is in the way, then press Move to start pose '
                                                  'again to continue from here.' + note)

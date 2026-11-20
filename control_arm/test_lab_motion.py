@@ -397,10 +397,13 @@ class MotionTests(unittest.TestCase):
         self.assertIn('stopped following', self.motion.fault)
         self.assertIn('wrist flex', self.motion.fault)
 
-    def stall_start(self, volts):
+    def stall_start(self, volts, flags=0):
         self.fold()
         self.sdk.WritePosEx = lambda sid, target, speed, acc: (0, 0)  # accepted, but the arm never moves
-        self.sdk.read1ByteTxRx = lambda sid, address: ({33: 0, lab_motion.VOLTAGE: volts}.get(address, 1), 0, 0)
+        self.sdk.read1ByteTxRx = lambda sid, address: (
+            {33: 0, lab_motion.VOLTAGE: volts, lab_motion.STATUS: flags}.get(address, 1), 0, 0)
+        self.sdk.read2ByteTxRx = lambda sid, address: (950 if address == lab_motion.LOAD else
+                                                       (100 if address == 9 else 4000), 0, 0)
         original = lab_motion.ARRIVE_SECONDS
         lab_motion.ARRIVE_SECONDS = 0.2
         try:
@@ -408,25 +411,25 @@ class MotionTests(unittest.TestCase):
         finally:
             lab_motion.ARRIVE_SECONDS = original
 
-    def test_start_stop_names_a_low_servo_supply(self):
-        self.stall_start(53)
+    def test_start_stop_reports_what_the_stalled_servo_reads(self):
+        self.stall_start(53, flags=1 << 5)
         self.assertIn('stopped following', self.motion.fault)
-        self.assertIn('5.3 V', self.motion.fault)
+        self.assertIn('wrist flex reads 95% load, 5.3 V, protection: overload', self.motion.fault)
+        self.assertNotIn('cut-off', self.motion.fault)
 
-    def test_start_stop_says_nothing_about_a_good_supply(self):
-        self.stall_start(74)
-        self.assertIn('stopped following', self.motion.fault)
-        self.assertNotIn('supply', self.motion.fault)
+    def test_start_stop_warns_near_the_voltage_cut_off(self):
+        self.stall_start(42)
+        self.assertIn('4.2 V, close to the 4.0 V cut-off', self.motion.fault)
 
     def test_stopped_start_pose_can_be_handed_back_to_local_control(self):
-        self.stall_start(74)
+        self.stall_start(53)
         self.sessions.update(ADMIN, self.sid, 'release')
         self.sessions.update(ADMIN, None, 'local')
         self.assertIsNone(self.motion.fault)
         self.assertFalse(self.motion.managed)
 
     def test_failed_hold_still_blocks_local_control(self):
-        self.stall_start(74)
+        self.stall_start(53)
         self.motion.fault = 'Software hold failed; switch off the servo power. bus error'
         self.sessions.update(ADMIN, self.sid, 'release')
         with self.assertRaises(SessionError):
