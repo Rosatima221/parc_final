@@ -23,16 +23,36 @@ JOINT_LIMITS = {
 
 
 # Bringing the arm from its folded rest pose to a start pose inside the approved ranges, so staff don't need the
-# Play page. One stage at a time, in the order checked against the SO-101 model: unfold the elbow, raise the
-# shoulder, lift the wrist, then swing the base, roll the wrist and open the gripper.
+# Play page. One stage at a time, in the order checked against the SO-101 model from rest poses with the elbow
+# folded past 88 degrees: lift the wrist away from the shoulder, unfold the elbow, raise the shoulder, then swing the
+# base, roll the wrist and open the gripper. Unfolding the elbow first swung the gripper into the upper arm.
 START_POSE = {'shoulder_pan': 0, 'shoulder_lift': -15, 'elbow_flex': 20,
               'wrist_flex': -15, 'wrist_roll': 0, 'gripper': 30}
-START_STAGES = (('elbow_flex',), ('shoulder_lift',), ('wrist_flex',), ('shoulder_pan', 'wrist_roll', 'gripper'))
-FOLDED_REST = {'shoulder_lift': (-125, -80), 'elbow_flex': (70, 115), 'wrist_flex': (40, 100)}  # degrees
+START_STAGES = (('wrist_flex',), ('elbow_flex',), ('shoulder_lift',), ('shoulder_pan', 'wrist_roll', 'gripper'))
+FOLDED_REST = {'shoulder_lift': (-125, -80), 'elbow_flex': (88, 115), 'wrist_flex': (40, 100)}  # degrees
+ON_TARGET = 4  # degrees from a start angle that count as that stage being done
 START_STEP_DEGREES = 3
 START_SPEED, START_ACC = 100, 10
 ARRIVED_WITHIN = round(3 * UNITS_PER_DEGREE)
 ARRIVE_SECONDS = 8  # a step that hasn't been reached by then means the arm is blocked
+
+
+def on_start_route(pose):
+    """True when the arm is folded at rest, or part of the way along the start route, so the rest of it is checked."""
+    def near(name):
+        return abs(pose[name] - START_POSE[name]) <= ON_TARGET
+
+    def folded(name):
+        low, high = FOLDED_REST[name]
+        return low <= pose[name] <= high
+
+    def between(name):
+        low, high = FOLDED_REST[name]
+        return min(low, START_POSE[name]) - ON_TARGET <= pose[name] <= max(high, START_POSE[name]) + ON_TARGET
+
+    return ((folded('shoulder_lift') and folded('elbow_flex') and between('wrist_flex'))
+            or (near('wrist_flex') and folded('shoulder_lift') and between('elbow_flex'))
+            or (near('wrist_flex') and near('elbow_flex') and between('shoulder_lift')))
 
 
 class ServoGate:
@@ -315,13 +335,12 @@ class LabMotion:
         robot = self.connected()
         measured = self.read_positions(robot)
         pose = {name: self.degrees(raw) for name, raw in measured.items()}
-        folded = all(low <= pose[name] <= high for name, (low, high) in FOLDED_REST.items())
         inside = all(low <= pose[name] <= high for name, (low, high) in JOINT_LIMITS.items())
-        if not folded:
-            if inside and self.zone.check_pose(pose) is None:
-                raise SessionError('The arm is already inside the approved ranges. Arm the controls.')
+        if inside and self.zone.check_pose(pose) is None:
+            raise SessionError('The arm is already inside the approved ranges. Arm the controls.')
+        if not on_start_route(pose):
             raise SessionError('Start from the folded rest pose, or move the arm into the approved ranges with local Play. '
-                               'This move is only checked from the rest pose.')
+                               'This move is only checked from the rest pose and along its own route.')
         plan = self.plan_start(measured)
         self.fault = None
         self.managed = True
@@ -377,8 +396,12 @@ class LabMotion:
                     if time.monotonic() > arrive_by:
                         with self.lock:
                             if not abort.is_set():
-                                self._fail_start('The arm did not follow the move to the start pose and was stopped. '
-                                                 'Check that nothing is in the way.')
+                                behind = ', '.join(
+                                    f"{name.replace('_', ' ')} {abs(positions[name] - raw) / UNITS_PER_DEGREE:.0f}° short"
+                                    for name, raw in waypoint.items() if abs(positions[name] - raw) > ARRIVED_WITHIN)
+                                self._fail_start(f'The arm stopped following the move to the start pose ({behind}) and is '
+                                                 'holding. Check that nothing is in the way, then press Move to start pose '
+                                                 'again to continue from here.')
                         return
                     time.sleep(0.15)
                 self.start_state['step'] = index + 1

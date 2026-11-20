@@ -299,8 +299,8 @@ class MotionTests(unittest.TestCase):
         for sid in order:
             if names[sid] not in seen:
                 seen.append(names[sid])
-        # The elbow unfolds first, then the shoulder lifts, then the wrist, then the rest.
-        self.assertEqual(seen[:3], ['elbow_flex', 'shoulder_lift', 'wrist_flex'])
+        # The wrist lifts away from the shoulder first, then the elbow unfolds, then the shoulder lifts.
+        self.assertEqual(seen[:3], ['wrist_flex', 'elbow_flex', 'shoulder_lift'])
         self.assertTrue(all(speed == lab_motion.START_SPEED for _, _, speed, _ in self.sdk.writes))
         # Each step is a few degrees at most.
         previous = {}
@@ -311,6 +311,20 @@ class MotionTests(unittest.TestCase):
         self.assertTrue(self.motion.managed)
         self.assertFalse(self.motion.armed)
         self.assertIsNone(self.motion.fault)
+
+    def test_start_pose_continues_from_part_of_the_way(self):
+        # A move that stopped after the wrist and part of the elbow carries on from there.
+        self.fold(wrist_flex=-15, elbow_flex=60)
+        self.start()
+        self.assertTrue(self.motion.start_state['done'], self.motion.fault)
+        for name, degrees in lab_motion.START_POSE.items():
+            self.assertEqual(self.sdk.positions[self.ids[name]], raw(degrees), name)
+
+    def test_start_pose_refuses_a_less_folded_elbow(self):
+        self.fold(elbow_flex=80)
+        with self.assertRaises(SessionError):
+            self.start()
+        self.assertEqual(self.sdk.writes, [])
 
     def test_start_pose_then_arm_controls(self):
         self.fold()
@@ -380,7 +394,8 @@ class MotionTests(unittest.TestCase):
             lab_motion.ARRIVE_SECONDS = original
         self.assertFalse(self.motion.start_state['running'])
         self.assertFalse(self.motion.start_state['done'])
-        self.assertIn('did not follow', self.motion.fault)
+        self.assertIn('stopped following', self.motion.fault)
+        self.assertIn('wrist flex', self.motion.fault)
 
     def test_connect_goes_through_the_controller_and_reports_failure(self):
         results = [(True, 'Connected'), (False, 'No such port')]
